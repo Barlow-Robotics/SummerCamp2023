@@ -5,16 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Drive;
 import java.util.*;
 
 public class Pivot extends CommandBase {
 
-    DriveSubsystem drive;
+    Drive drive;
     double targetDistance;
     double speed;
     double targetAngle;
@@ -24,7 +23,7 @@ public class Pivot extends CommandBase {
 
 
     /** Creates a new DriveDistance. */
-    public Pivot(DriveSubsystem d, double a, double s) {
+    public Pivot(Drive d, double a, double s) {
         // Use addRequirements() here to declare subsystem dependencies.
         drive = d;
         targetAngle = a;

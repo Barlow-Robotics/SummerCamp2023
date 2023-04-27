@@ -8,12 +8,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Drive;
 import java.util.*;
 
 public class DriveDistance extends CommandBase {
 
-    DriveSubsystem drive;
+    Drive drive;
     double targetDistance;
     double speed ;
 
@@ -22,7 +22,7 @@ public class DriveDistance extends CommandBase {
 
 
     /** Creates a new DriveDistance. */
-    public DriveDistance(DriveSubsystem d, double dist, double s) {
+    public DriveDistance(Drive d, double dist, double s) {
         // Use addRequirements() here to declare subsystem dependencies.
         drive = d;
         targetDistance = dist;

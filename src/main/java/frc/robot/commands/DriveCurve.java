@@ -8,11 +8,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Drive;
 
 public class DriveCurve extends CommandBase {
 
-  DriveSubsystem drive;
+  Drive drive;
   double targetDistance;
   double speed;
   double otherSpeed;
@@ -23,7 +23,7 @@ public class DriveCurve extends CommandBase {
   double startingRightDistance;
 
   /** Creates a new DriveCurve. */
-  public DriveCurve(DriveSubsystem d, double a, double s, double o, double r) {
+  public DriveCurve(Drive d, double a, double s, double o, double r) {
     // Use addRequirements() here to declare subsystem dependencies.
     drive = d;
     targetAngle = a;

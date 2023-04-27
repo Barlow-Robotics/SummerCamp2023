@@ -4,90 +4,37 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
-import frc.robot.sim.PhysicsSim;
-
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Index extends SubsystemBase {
+  WPI_TalonFX hopperMotor;
 
-  WPI_TalonSRX m_hopperMotor;
-  WPI_TalonSRX m_feederMotor;
-
-  boolean feederIsRunning = false;  
-  boolean simulationInitialized = false;
-
+  
   /** Creates a new Index. */
   public Index() {
-    m_hopperMotor = new WPI_TalonSRX(Constants.IndexConstants.ID_HopperMotor);
-    m_feederMotor = new WPI_TalonSRX(Constants.IndexConstants.ID_FeederMotor);
+    hopperMotor = new WPI_TalonFX(Constants.IndexConstants.hopperMotorID);
+    setMotorConfig(hopperMotor);
+    hopperMotor.configFactoryDefault();
+  }
   
-    setHopperMotorConfig(m_hopperMotor);
-    setFeederMotorConfig(m_feederMotor);
 
-    //m_hopperMotor.setInverted(InvertType.InvertMotorOutput);
+  private void setMotorConfig(WPI_TalonFX motor) {
+    motor.configFactoryDefault();
+        motor.configClosedloopRamp(Constants.DriveConstants.closedVoltageRampingConstant);
+        motor.configOpenloopRamp(Constants.DriveConstants.manualVoltageRampingConstant);
+        motor.config_kF(0, Constants.DriveConstants.kF);
+        motor.config_kP(0, Constants.DriveConstants.kP);
+        motor.config_kI(0, Constants.DriveConstants.kI);
+        motor.config_kD(0, Constants.DriveConstants.kD);
+        motor.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
-
-  public void startFeeder() {
-    m_feederMotor.set(TalonSRXControlMode.PercentOutput, Constants.IndexConstants.feederMotorSpeed);
-    feederIsRunning = true;
-  }
-
-  public void stopFeeder() {
-    m_feederMotor.set(TalonSRXControlMode.PercentOutput, 0);
-    feederIsRunning = false;
-  }
-  
-  public void startHopper() {
-    m_hopperMotor.set(TalonSRXControlMode.PercentOutput, Constants.IndexConstants.hopperMotorSpeed);
-  }
-
-  public void stopHopper() {
-      m_hopperMotor.set(TalonSRXControlMode.PercentOutput, 0);
-  }
-
-  private void setHopperMotorConfig(WPI_TalonSRX motor) {
-    motor.configFactoryDefault();
-    motor.configClosedloopRamp(Constants.IndexConstants.closedVoltageRampingConstant);
-    motor.configOpenloopRamp(Constants.IndexConstants.manualVoltageRampingConstant);
-    motor.config_kF(Constants.IndexConstants.PID_id, Constants.IndexConstants.Hopper_kF);
-    motor.config_kP(Constants.IndexConstants.PID_id, Constants.IndexConstants.Hopper_kP);
-    motor.config_kI(Constants.IndexConstants.PID_id, Constants.IndexConstants.Hopper_kI);
-    motor.config_kD(Constants.IndexConstants.PID_id, Constants.IndexConstants.Hopper_kD);
-    motor.setNeutralMode(NeutralMode.Brake);
-  }
-
-  private void setFeederMotorConfig(WPI_TalonSRX motor) {
-    motor.configFactoryDefault();
-    motor.configClosedloopRamp(Constants.IndexConstants.closedVoltageRampingConstant);
-    motor.configOpenloopRamp(Constants.IndexConstants.manualVoltageRampingConstant);
-    motor.config_kF(Constants.IndexConstants.PID_id, Constants.IndexConstants.Feeder_kF);
-    motor.config_kP(Constants.IndexConstants.PID_id, Constants.IndexConstants.Feeder_kP);
-    motor.config_kI(Constants.IndexConstants.PID_id, Constants.IndexConstants.Feeder_kI);
-    motor.config_kD(Constants.IndexConstants.PID_id, Constants.IndexConstants.Feeder_kD);
-    motor.setNeutralMode(NeutralMode.Brake);
-  }
-
-  public void simulationInit() {
-      PhysicsSim.getInstance().addTalonSRX(m_feederMotor, 0.5, 6800);
-      PhysicsSim.getInstance().addTalonSRX(m_hopperMotor, 0.5, 6800);
-    }
-
-  @Override
-  public void simulationPeriodic() {
-      if (!simulationInitialized) {
-          simulationInit();
-          simulationInitialized = true;
-      }
   }
 }
