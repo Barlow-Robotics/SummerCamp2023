@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.DriveDistance;
+import frc.robot.commands.InstrumentedSequentialCommandGroup;
 import frc.robot.commands.Pivot;
 import frc.robot.subsystems.Drive;
 
@@ -40,7 +41,7 @@ import frc.robot.subsystems.Drive;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
-    private final Drive driveSub = new Drive();
+    public final Drive driveSub = new Drive();
     // private final UnderGlow m_underGlow = new UnderGlow();
     // private final Vision m_vision = new Vision();
 
@@ -162,17 +163,17 @@ public class RobotContainer {
         theCommand
                 .addCommands(new InstantCommand(() -> driveSub.resetOdometry(reversePath.getInitialPose()), driveSub));
 
-        theCommand.addCommands(new PPRamseteCommand(
-                reversePath,
-                driveSub::getPose,
-                new RamseteController(),
-                new DifferentialDriveKinematics(Constants.DriveConstants.TrackWidth),
-                driveSub::setSpeeds,
-                false,
-                driveSub));
+        // theCommand.addCommands(new PPRamseteCommand(
+        //         reversePath,
+        //         driveSub::getPose,
+        //         new RamseteController(),
+        //         new DifferentialDriveKinematics(Constants.DriveConstants.TrackWidth),
+        //         driveSub::setSpeeds,
+        //         false,
+        //         driveSub));
 
-        theCommand.onCommandInitialize(Robot::reportCommandStart);
-        theCommand.onCommandFinish(Robot::reportCommandFinish);
+        // theCommand.onCommandInitialize(Robot::reportCommandStart);
+        // theCommand.onCommandFinish(Robot::reportCommandFinish);
 
         return theCommand;
     }

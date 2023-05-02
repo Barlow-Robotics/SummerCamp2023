@@ -16,13 +16,13 @@ public class Index extends SubsystemBase {
 
   /** Creates a new Index. */
   public Index() {
-    hopperMotor = new WPI_TalonFX(Constants.IndexConstants.hopperMotorID);
+    hopperMotor = new WPI_TalonFX(Constants.IndexConstants.HopperMotorID);
     setMotorConfig(hopperMotor);
     hopperMotor.configFactoryDefault();
   }
 
   public void startHopper() {
-    hopperMotor.set(TalonFXControlMode.Velocity, Constants.IndexConstants.hopperMotorSpeed);
+    hopperMotor.set(TalonFXControlMode.Velocity, Constants.IndexConstants.HopperMotorSpeed);
   }
 
   public void stopHopper() {
@@ -31,8 +31,8 @@ public class Index extends SubsystemBase {
 
   private void setMotorConfig(WPI_TalonFX motor) {
     motor.configFactoryDefault();
-    motor.configClosedloopRamp(Constants.DriveConstants.closedVoltageRampingConstant);
-    motor.configOpenloopRamp(Constants.DriveConstants.manualVoltageRampingConstant);
+    motor.configClosedloopRamp(Constants.DriveConstants.ClosedVoltageRampingConstant);
+    motor.configOpenloopRamp(Constants.DriveConstants.ManualVoltageRampingConstant);
     motor.config_kF(0, Constants.DriveConstants.kF);
     motor.config_kP(0, Constants.DriveConstants.kP);
     motor.config_kI(0, Constants.DriveConstants.kI);

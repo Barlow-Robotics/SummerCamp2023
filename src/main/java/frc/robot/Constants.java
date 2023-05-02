@@ -28,66 +28,65 @@ public final class Constants {
         public static final double WheelRadius = 0.0508; // meters
         public static final int EncoderResolution = 4096;
 
-        public static final double Gear_Ratio = 1.0;
-        public static final double Counts_Per_Revolution = EncoderResolution * Gear_Ratio;
+        public static final double GearRatio = 12.75; // Not 100% sure this is right
+        public static final double CountsPerRevolution = EncoderResolution * GearRatio;
         public static final double InchesToMeters = 0.0254;
-        public static final double Wheel_Diameter = 6.0 * InchesToMeters;
-        public static final double Meters_Per_Revolution = Wheel_Diameter * Math.PI;
-        public static final double Meters_Per_Count = Meters_Per_Revolution / Counts_Per_Revolution;
-        public static final double Counts_Per_Meter = Counts_Per_Revolution / Meters_Per_Revolution;
-        public static final double Meters_Per_Second_to_Counts_per_100_mSec = Counts_Per_Meter / 10.0;
-        public static final double MetersPerSecondToCountsPerSecond = (1 / Meters_Per_Revolution)
-                * Counts_Per_Revolution;
+        public static final double WheelDiameter = 6.0 * InchesToMeters;
+        public static final double MetersPerRevolution = WheelDiameter * Math.PI;
+        public static final double MetersPerCount = MetersPerRevolution / CountsPerRevolution;
+        public static final double CountsPerMeter = CountsPerRevolution / MetersPerRevolution;
+        public static final double MetersPerSecondToCountsPer100MSec = CountsPerMeter / 10.0;
+        public static final double MetersPerSecondToCountsPerSecond = (1 / MetersPerRevolution)
+                * CountsPerRevolution;
 
         public static final double baseDiameter = 33 * InchesToMeters;
         public static final double cirucmferenceWithBD = baseDiameter * Math.PI;
         public static final double wheelBase = 22 * InchesToMeters;
         public static final double circumferenceWithWB = wheelBase * Math.PI;
 
-        public static final double max_velocity_counts = kMaxSpeed * Meters_Per_Second_to_Counts_per_100_mSec;
+        public static final double MaxVelocityCounts = kMaxSpeed * MetersPerSecondToCountsPer100MSec;
 
-        public static final double closedVoltageRampingConstant = 0.0;
-        public static final double manualVoltageRampingConstant = 0.0;
+        public static final double ClosedVoltageRampingConstant = 0.0;
+        public static final double ManualVoltageRampingConstant = 0.0;
 
         public static final double kF = 0.341;
         public static final double kP = 0.001;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double AutoAlignkP = 0;
-        public static final double AutoAlignkI = 0;
-        public static final double AutoAlignkD = 0;
+        public static final double kPAutoAlign = 0;
+        public static final double kIAutoAlign = 0;
+        public static final double kDAutoAlign = 0;
         public static final double CorrectionRotationSpeed = 0;
         
         public static final double DefaultAutoAccel = 4.0;
         public static final double DefaultAutoVelocity = 1.0; //metres per second
 
-        public static int ID_leftLeaderMotor = 4;
-        public static int ID_leftFollowerMotor = 5;
-        public static int ID_rightLeaderMotor = 6;
-        public static int ID_rightFollowerMotor = 7;
+        public static int LeftLeaderMotorID = 4;
+        public static int LeftFollowerMotorID = 5;
+        public static int RightLeaderMotorID = 6;
+        public static int RightFollowerMotorID = 7;
     }
 
     public static final class IndexConstants {
         // All variables are placeholders
-        public static final int hopperMotorID = 15;
-        public static final int ID_FeederMotor = 16;
+        public static final int HopperMotorID = 15;
         public static final int PID_id = 0;
 
-        public static final double closedVoltageRampingConstant = 0;
-        public static final double manualVoltageRampingConstant = 0;
+        public static final double ClosedVoltageRampingConstant = 0;
+        public static final double ManualVoltageRampingConstant = 0;
 
-        public static final double hopperMotorSpeed = 0.25;
-        public static final double Hopper_kF = 0.048;
-        public static final double Hopper_kP = 0.001;
-        public static final double Hopper_kI = 0.0;
-        public static final double Hopper_kD = 0.0;
+        public static final double HopperMotorSpeed = 0.25;
+        public static final double HopperKF = 0.048;
+        public static final double HopperKP = 0.001;
+        public static final double HopperKI = 0.0;
+        public static final double HopperKD = 0.0;
 
-        public static final double Feeder_kF = 0.048;
-        public static final double Feeder_kP = 0.001;
-        public static final double Feeder_kI = 0.0;
-        public static final double Feeder_kD = 0.0;
+        public static final double FeederKF = 0.048;
+        public static final double FeederKP = 0.001;
+        public static final double FeederKI = 0.0;
+        public static final double FeederKD = 0.0;
 
-        public static final double feederMotorSpeed = 0.9;
+        public static final double FeederMotorSpeed = 0.9;
 
     }
 
@@ -95,7 +94,7 @@ public final class Constants {
         // All variables are placeholders
 
         public static final class Flywheel {
-            public static final int flyWheelMotorID = 11;
+            public static final int FlyWheelMotorID = 11;
 
             // public static final double kF = 0.048;
             public static final double kF = 0.059;
@@ -103,7 +102,7 @@ public final class Constants {
             public static final double kP = 0.005;
             public static final double kI = 0.0;
             public static final double kD = 0.0;
-            public static final int PID_id = 0;
+            public static final int PID_ID = 0;
 
             public static final int UnitsPerMotorRotation = 2048;
 

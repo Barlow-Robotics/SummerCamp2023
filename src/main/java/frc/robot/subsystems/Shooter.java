@@ -29,7 +29,7 @@ public class Shooter extends SubsystemBase {
     boolean extended = false;
 
     public Shooter() {
-        flyWheelMotor = new WPI_TalonFX(Constants.ShooterConstants.Flywheel.flyWheelMotorID);
+        flyWheelMotor = new WPI_TalonFX(Constants.ShooterConstants.Flywheel.FlyWheelMotorID);
         setMotorConfig(flyWheelMotor);
         flyWheelMotor.configFactoryDefault();
 
@@ -50,8 +50,8 @@ public class Shooter extends SubsystemBase {
 
     private void setMotorConfig(WPI_TalonFX motor) {
         motor.configFactoryDefault();
-        motor.configClosedloopRamp(Constants.DriveConstants.closedVoltageRampingConstant);
-        motor.configOpenloopRamp(Constants.DriveConstants.manualVoltageRampingConstant);
+        motor.configClosedloopRamp(Constants.DriveConstants.ClosedVoltageRampingConstant);
+        motor.configOpenloopRamp(Constants.DriveConstants.ManualVoltageRampingConstant);
         motor.config_kF(0, Constants.DriveConstants.kF);
         motor.config_kP(0, Constants.DriveConstants.kP);
         motor.config_kI(0, Constants.DriveConstants.kI);

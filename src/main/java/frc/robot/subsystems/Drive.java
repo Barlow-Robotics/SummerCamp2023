@@ -34,8 +34,7 @@ public class Drive extends SubsystemBase {
     // private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
     //         Constants.DriveConstants.kTrackWidth);
 
-    private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d(),
-            getLeftDistance(), getRightDistance());
+    private final DifferentialDriveOdometry odometry;
 
     // private final DifferentialDrive diffDrive = new DifferentialDrive(leftLeader, rightLeader);
 
@@ -46,10 +45,12 @@ public class Drive extends SubsystemBase {
 
     public Drive() {
 
-        leftLeader = new WPI_TalonSRX(Constants.DriveConstants.ID_leftLeaderMotor);
-        leftFollower = new WPI_VictorSPX(Constants.DriveConstants.ID_leftFollowerMotor);
-        rightLeader = new WPI_TalonSRX(Constants.DriveConstants.ID_rightLeaderMotor);
-        rightFollower = new WPI_VictorSPX(Constants.DriveConstants.ID_rightFollowerMotor);
+        leftLeader = new WPI_TalonSRX(Constants.DriveConstants.LeftLeaderMotorID);
+        leftFollower = new WPI_VictorSPX(Constants.DriveConstants.LeftFollowerMotorID);
+        rightLeader = new WPI_TalonSRX(Constants.DriveConstants.RightLeaderMotorID);
+        rightFollower = new WPI_VictorSPX(Constants.DriveConstants.RightFollowerMotorID);
+
+        odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), getLeftDistance(), getRightDistance());
 
         // Config Motors
         setMotorConfig(leftLeader);
@@ -75,8 +76,8 @@ public class Drive extends SubsystemBase {
 
     private void setMotorConfig(WPI_TalonSRX motor) {
         motor.configFactoryDefault();
-        motor.configClosedloopRamp(Constants.DriveConstants.closedVoltageRampingConstant);
-        motor.configOpenloopRamp(Constants.DriveConstants.manualVoltageRampingConstant);
+        motor.configClosedloopRamp(Constants.DriveConstants.ClosedVoltageRampingConstant);
+        motor.configOpenloopRamp(Constants.DriveConstants.ManualVoltageRampingConstant);
         motor.config_kF(0, Constants.DriveConstants.kF);
         motor.config_kP(0, Constants.DriveConstants.kP);
         motor.config_kI(0, Constants.DriveConstants.kI);
@@ -103,24 +104,24 @@ public class Drive extends SubsystemBase {
     }
 
     private double getLeftSpeed() {
-        double s = leftLeader.getSelectedSensorVelocity() * 10.0 * Constants.DriveConstants.Meters_Per_Count;
+        double s = leftLeader.getSelectedSensorVelocity() * 10.0 * Constants.DriveConstants.MetersPerCount;
         return (s);
     }
 
     private double getRightSpeed() {
-        double s = -rightLeader.getSelectedSensorVelocity() * 10.0 * Constants.DriveConstants.Meters_Per_Count;
+        double s = -rightLeader.getSelectedSensorVelocity() * 10.0 * Constants.DriveConstants.MetersPerCount;
         return (s);
     }
 
     public double getLeftDistance() {
-        double d = (leftLeader.getSelectedSensorPosition() / Constants.DriveConstants.Counts_Per_Revolution)
-                * Constants.DriveConstants.Meters_Per_Revolution;
+        double d = (leftLeader.getSelectedSensorPosition() / Constants.DriveConstants.CountsPerRevolution)
+                * Constants.DriveConstants.MetersPerRevolution;
         return (d);
     }
 
     public double getRightDistance() {
-        double d = (-rightLeader.getSelectedSensorPosition() / Constants.DriveConstants.Counts_Per_Revolution)
-                * Constants.DriveConstants.Meters_Per_Revolution;
+        double d = (-rightLeader.getSelectedSensorPosition() / Constants.DriveConstants.CountsPerRevolution)
+                * Constants.DriveConstants.MetersPerRevolution;
         return (d);
     }
 
@@ -163,9 +164,9 @@ public class Drive extends SubsystemBase {
 
     public void setWheelSpeeds(DifferentialDrive.WheelSpeeds speeds) {
         leftLeader.set(TalonSRXControlMode.Velocity,
-                speeds.left * Constants.DriveConstants.Meters_Per_Second_to_Counts_per_100_mSec);
+                speeds.left * Constants.DriveConstants.MetersPerSecondToCountsPer100MSec);
         rightLeader.set(TalonSRXControlMode.Velocity,
-                speeds.right * Constants.DriveConstants.Meters_Per_Second_to_Counts_per_100_mSec);
+                speeds.right * Constants.DriveConstants.MetersPerSecondToCountsPer100MSec);
     }
 
     public void setWheelSpeeds(double left, double right) {
@@ -210,9 +211,9 @@ public class Drive extends SubsystemBase {
     }
 
     public void simulationInit() {
-        PhysicsSim.getInstance().addTalonSRX(leftLeader, 0.75, 6800, false);
+        PhysicsSim.getInstance().addTalonSRX(leftLeader, 0.75, 21777, false);
         PhysicsSim.getInstance().addVictorSPX(leftFollower);
-        PhysicsSim.getInstance().addTalonSRX(rightLeader, 0.75, 6800, false);
+        PhysicsSim.getInstance().addTalonSRX(rightLeader, 0.75, 21777, false);
         PhysicsSim.getInstance().addVictorSPX(rightFollower);
     }
 

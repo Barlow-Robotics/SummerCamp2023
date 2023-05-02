@@ -53,9 +53,9 @@ public class DriveRobot extends CommandBase {
         this.controllerTurnID = turnID;
 
         pid = new PIDController(
-                Constants.DriveConstants.AutoAlignkP,
-                Constants.DriveConstants.AutoAlignkI,
-                Constants.DriveConstants.AutoAlignkD);
+                Constants.DriveConstants.kPAutoAlign,
+                Constants.DriveConstants.kIAutoAlign,
+                Constants.DriveConstants.kDAutoAlign);
 
         addRequirements(driveSub);
     }
