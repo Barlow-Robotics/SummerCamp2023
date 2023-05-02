@@ -5,30 +5,38 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.UnderGlow;
+import frc.robot.subsystems.Index;
+import frc.robot.subsystems.Shooter;
 
-public class TurnOnUnderGlow extends CommandBase {
+public class StopIndexAndShooter extends CommandBase {
 
-  private UnderGlow underGlow;
+  private Index indexSub;
+  private Shooter shooterSub;
 
-  /** Creates a new TurnOnLEDs. */
-  public TurnOnUnderGlow(UnderGlow g) {
-    underGlow = g;
-    addRequirements(underGlow);
+  /** Creates a new StopIndex. */
+  public StopIndexAndShooter(Index i, Shooter s) {
+    indexSub = i;
+    shooterSub = s;
+    addRequirements(shooterSub, indexSub);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    shooterSub.stopShooting();
+    indexSub.stopHopper();
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

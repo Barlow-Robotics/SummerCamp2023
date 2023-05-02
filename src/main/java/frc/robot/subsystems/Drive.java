@@ -12,7 +12,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -32,13 +31,13 @@ public class Drive extends SubsystemBase {
     private final ADXRS450_Gyro gyro = new ADXRS450_Gyro();
     private final ADXRS450_GyroSim gyroSim = new ADXRS450_GyroSim(gyro);
 
-    private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
-            Constants.DriveConstants.kTrackWidth);
+    // private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
+    //         Constants.DriveConstants.kTrackWidth);
 
     private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d(),
             getLeftDistance(), getRightDistance());
 
-    private final DifferentialDrive diffDrive = new DifferentialDrive(leftLeader, rightLeader);
+    // private final DifferentialDrive diffDrive = new DifferentialDrive(leftLeader, rightLeader);
 
     boolean simulationInitialized = false;
 

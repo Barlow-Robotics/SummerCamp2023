@@ -53,6 +53,10 @@ public final class Constants {
         public static final double kP = 0.001;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
+        public static final double AutoAlignkP = 0;
+        public static final double AutoAlignkI = 0;
+        public static final double AutoAlignkD = 0;
+        public static final double CorrectionRotationSpeed = 0;
 
         public static int ID_leftLeaderMotor = 4;
         public static int ID_leftFollowerMotor = 5;
@@ -102,10 +106,14 @@ public final class Constants {
 
             public static final double RPM = 0;
 
+            public static double FlywheelVelocity;
+
         }
 
         public static final double closedVoltageRampingConstant = 0.1;
         public static final double manualVoltageRampingConstant = 0.2;
+        public static final int ExtendSolenoidID = 0; // Need to change
+        public static final int RetractSolenoidID = 0; // Need to change
         
     }
 

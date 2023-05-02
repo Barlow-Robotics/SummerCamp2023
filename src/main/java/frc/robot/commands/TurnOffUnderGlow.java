@@ -9,12 +9,12 @@ import frc.robot.subsystems.UnderGlow;
 
 public class TurnOffUnderGlow extends CommandBase {
 
-  private UnderGlow m_underGlow;
+  private UnderGlow underGlow;
 
   /** Creates a new TurnOffLEDs. */
   public TurnOffUnderGlow(UnderGlow g) {
-    m_underGlow = g;
-    addRequirements(m_underGlow);
+    underGlow = g;
+    addRequirements(underGlow);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

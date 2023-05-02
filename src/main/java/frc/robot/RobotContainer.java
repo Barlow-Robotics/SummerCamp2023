@@ -26,22 +26,22 @@ import edu.wpi.first.wpilibj2.command.*;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
-    private final Drive m_drive = new Drive();
+    private final Drive driveSub = new Drive();
     // private final UnderGlow m_underGlow = new UnderGlow();
     // private final Vision m_vision = new Vision();
 
-    private final DriveDistance driveDistanceCommand = new DriveDistance(m_drive, 2, 1);
-    private final Pivot pivotCommand = new Pivot(m_drive, 180, 0.5);
+    private final DriveDistance driveDistanceCommand = new DriveDistance(driveSub, 2, 1);
+    private final Pivot pivotCommand = new Pivot(driveSub, 180, 0.5);
     // private final TurnOffUnderGlow turnOffUnderGlowCommand = new
     // TurnOffUnderGlow(m_underGlow);
     // private final TurnOnUnderGlow turnOnUnderGlowCommand = new
     // TurnOnUnderGlow(m_underGlow);
 
-    Joystick m_driverController; // Joystick 1
-    Joystick m_operatorController; // Joystick 2
+    Joystick driverController; // Joystick 1
+    Joystick operatorController; // Joystick 2
 
-    // private JoystickButton alignWithTargetButton;
-    // private JoystickButton indexAndShooterButton;
+    private JoystickButton alignWithTargetButton;
+    private JoystickButton indexAndShooterButton;
     private JoystickButton driveDistanceButton;
     private JoystickButton pivotButton;
 
@@ -56,13 +56,13 @@ public class RobotContainer {
         // loadTrajectories();
         // createAutonomousCommands();
 
-        m_drive.setDefaultCommand(
+        driveSub.setDefaultCommand(
                 // A split-stick arcade command, with forward/backward controlled by the left
                 // hand, and turning controlled by the right.
                 new RunCommand( // new instance
                         () -> {
-                            double x = -m_driverController.getRawAxis(Constants.Logitech_Dual_Action.Left_Stick_Y);
-                            double yaw = m_driverController.getRawAxis(Constants.Logitech_Dual_Action.Right_Stick_X);
+                            double x = -driverController.getRawAxis(Constants.Logitech_Dual_Action.Left_Stick_Y);
+                            double yaw = driverController.getRawAxis(Constants.Logitech_Dual_Action.Right_Stick_X);
                             // fancy exponential formulas to shape the controller inputs to be flat when
                             // only
                             // pressed a little, and ramp up as stick pushed more.
@@ -83,9 +83,9 @@ public class RobotContainer {
                             // speed.
                             // turn = turn * (-0.4 * Math.abs(speed) + 0.5);
 
-                            m_drive.drive(-speed, -turn * 0.4, false);
+                            driveSub.drive(-speed, -turn * 0.4, false);
                         },
-                        m_drive));
+                        driveSub));
 
     }
 
@@ -98,26 +98,27 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        if (m_driverController == null) {
+        if (driverController == null) {
             System.out.println("Null driver controller, using joystick 1");
-            m_driverController = new Joystick(1);
+            driverController = new Joystick(1);
         }
 
-        if (m_operatorController == null) {
+        if (operatorController == null) {
             System.out.println("Null operator controller, using joystick 2");
-            m_operatorController = new Joystick(2);
+            operatorController = new Joystick(2);
         }
 
-        String controllerType = m_driverController.getName();
+        String controllerType = driverController.getName();
         System.out.println("The controller name is " + controllerType);
         // boolean controllerFound = false;
 
-        // alignWithTargetButton = new JoystickButton(m_operatorController, Constants.Logitech_Dual_Action.Left_Bumper);
-        // indexAndShooterButton = new JoystickButton(m_operatorController, Constants.Logitech_Dual_Action.Right_Bumper);
-        driveDistanceButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Button_Y);
-        pivotButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Button_X);
+        alignWithTargetButton = new JoystickButton(operatorController, Constants.Logitech_Dual_Action.Left_Bumper);
+        alignWithTargetButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.Left_Bumper);
+        indexAndShooterButton = new JoystickButton(operatorController, Constants.Logitech_Dual_Action.Right_Trigger);
+        driveDistanceButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.Button_Y);
+        pivotButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.Button_X);
 
-        // driveDistanceButton.whileHeld(driveDistanceCommand);
+        driveDistanceButton.onTrue(driveDistanceCommand);
         driveDistanceButton.onTrue(driveDistanceCommand);
         pivotButton.onTrue(pivotCommand);
     }

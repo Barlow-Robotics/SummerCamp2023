@@ -23,23 +23,43 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public boolean visionTargetIsVisible() {
+  public boolean targetIsVisible() {
     // The data for this will come from the Jetson Nano via network tables.
     return NetworkTableInstance.getDefault().getEntry("vision/target_detected").getBoolean(false);
   }
 
-  public double visionTargetDistanceFromCenter() {
+  public double targetDistanceFromCenter() {
     // returns the number of pixels from the center of the screen to the center of
     // the vision target.
     // The data for this will come from the Jetson Nano via network tables.
     return NetworkTableInstance.getDefault().getEntry("vision/target_distance_from_center").getDouble(0.0);
   }
 
-  public double bbHeight() {
+  public double bbTargetHeight() {
     return NetworkTableInstance.getDefault().getEntry("vision/target_bb_height").getDouble(0.0);
   }
 
-  public double bbWidth() {
+  public double bbTargetWidth() {
     return NetworkTableInstance.getDefault().getEntry("vision/target_bb_width").getDouble(0.0);
+  }
+
+  public boolean aprilTagIsVisible() {
+    // The data for this will come from the Jetson Nano via network tables.
+    return NetworkTableInstance.getDefault().getEntry("vision/april_tag_detected").getBoolean(false);
+  }
+
+  public double aprilTagDistanceFromCenter() {
+    // returns the number of pixels from the center of the screen to the center of
+    // the vision target.
+    // The data for this will come from the Jetson Nano via network tables.
+    return NetworkTableInstance.getDefault().getEntry("vision/april_tag_distance_from_center").getDouble(0.0);
+  }
+
+  public double bbAprilTagHeight() {
+    return NetworkTableInstance.getDefault().getEntry("vision/april_tag_bb_height").getDouble(0.0);
+  }
+
+  public double bbAprilTagWidth() {
+    return NetworkTableInstance.getDefault().getEntry("vision/april_tag_bb_width").getDouble(0.0);
   }
 }

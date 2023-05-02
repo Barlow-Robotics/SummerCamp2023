@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drive;
-import java.util.*;
 
 public class Pivot extends CommandBase {
 
