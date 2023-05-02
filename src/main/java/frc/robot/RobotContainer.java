@@ -4,15 +4,29 @@
 
 package frc.robot;
 
-import frc.robot.commands.DriveDistance;
-import frc.robot.commands.Pivot;
-import frc.robot.subsystems.Drive;
+import javax.swing.text.Position;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPRamseteCommand;
+
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.DriveDistance;
+import frc.robot.commands.Pivot;
+import frc.robot.subsystems.Drive;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -44,6 +58,20 @@ public class RobotContainer {
     private JoystickButton indexAndShooterButton;
     private JoystickButton driveDistanceButton;
     private JoystickButton pivotButton;
+
+    SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+    final SendableChooser<String> stringChooser = new SendableChooser<String>();
+
+    PathPlannerTrajectory reversePath;
+    PathPlannerTrajectory engagePath;
+    PathPlannerTrajectory shortSideGamePiecePath1;
+    PathPlannerTrajectory shortSideGamePiecePath2;
+    PathPlannerTrajectory longSideGamePiecePath1;
+    PathPlannerTrajectory longSideGamePiecePath2;
+
+    // The current trajectory that will be sent to the filed object for
+    // debug/instrumentation
+    PathPlannerTrajectory currentTrajectory = null;
 
     // HashMap<String, PathPlannerTrajectory> trajectories;
 
@@ -121,6 +149,40 @@ public class RobotContainer {
         driveDistanceButton.onTrue(driveDistanceCommand);
         driveDistanceButton.onTrue(driveDistanceCommand);
         pivotButton.onTrue(pivotCommand);
+    }
+
+    InstrumentedSequentialCommandGroup createPlaceTopAndReverseCommand() {
+        /* Place Game Piece on Bottom Row, Reverse Out of Community */
+        InstrumentedSequentialCommandGroup theCommand = new InstrumentedSequentialCommandGroup();
+
+        reversePath = loadPath(
+                "Reverse", DriveConstants.DefaultAutoVelocity, DriveConstants.DefaultAutoAccel, true);
+
+        theCommand.addCommands(new InstantCommand(() -> this.currentTrajectory = reversePath));
+        theCommand
+                .addCommands(new InstantCommand(() -> driveSub.resetOdometry(reversePath.getInitialPose()), driveSub));
+
+        theCommand.addCommands(new PPRamseteCommand(
+                reversePath,
+                driveSub::getPose,
+                new RamseteController(),
+                new DifferentialDriveKinematics(Constants.DriveConstants.TrackWidth),
+                driveSub::setSpeeds,
+                false,
+                driveSub));
+
+        theCommand.onCommandInitialize(Robot::reportCommandStart);
+        theCommand.onCommandFinish(Robot::reportCommandFinish);
+
+        return theCommand;
+    }
+
+    private PathPlannerTrajectory loadPath(String name, double velocity, double accel, boolean reverse) {
+        PathPlannerTrajectory temp = PathPlanner.loadPath(
+                name,
+                new PathConstraints(velocity, accel),
+                reverse);
+        return PathPlannerTrajectory.transformTrajectoryForAlliance(temp, DriverStation.getAlliance());
     }
 
     /**

@@ -24,12 +24,12 @@ public final class Constants {
         public static final double kMaxAngularSpeed = 2 * Math.PI; // one rotation per second
         public static final double DriveSpeed = 0.5;
 
-        public static final double kTrackWidth = 0.381 * 2; // meters
-        public static final double kWheelRadius = 0.0508; // meters
-        public static final int kEncoderResolution = 4096;
+        public static final double TrackWidth = 0.381 * 2; // meters
+        public static final double WheelRadius = 0.0508; // meters
+        public static final int EncoderResolution = 4096;
 
         public static final double Gear_Ratio = 1.0;
-        public static final double Counts_Per_Revolution = kEncoderResolution * Gear_Ratio;
+        public static final double Counts_Per_Revolution = EncoderResolution * Gear_Ratio;
         public static final double InchesToMeters = 0.0254;
         public static final double Wheel_Diameter = 6.0 * InchesToMeters;
         public static final double Meters_Per_Revolution = Wheel_Diameter * Math.PI;
@@ -57,6 +57,9 @@ public final class Constants {
         public static final double AutoAlignkI = 0;
         public static final double AutoAlignkD = 0;
         public static final double CorrectionRotationSpeed = 0;
+        
+        public static final double DefaultAutoAccel = 4.0;
+        public static final double DefaultAutoVelocity = 1.0; //metres per second
 
         public static int ID_leftLeaderMotor = 4;
         public static int ID_leftFollowerMotor = 5;
