@@ -39,10 +39,10 @@ public final class Constants {
         public static final double MetersPerSecondToCountsPerSecond = (1 / MetersPerRevolution)
                 * CountsPerRevolution;
 
-        public static final double baseDiameter = 33 * InchesToMeters;
-        public static final double cirucmferenceWithBD = baseDiameter * Math.PI;
-        public static final double wheelBase = 22 * InchesToMeters;
-        public static final double circumferenceWithWB = wheelBase * Math.PI;
+        public static final double BaseDiameter = 33 * InchesToMeters;
+        public static final double CircumferenceWithBD = BaseDiameter * Math.PI;
+        public static final double WheelBase = 22 * InchesToMeters;
+        public static final double CircumferenceWithWB = WheelBase * Math.PI;
 
         public static final double MaxVelocityCounts = kMaxSpeed * MetersPerSecondToCountsPer100MSec;
 
