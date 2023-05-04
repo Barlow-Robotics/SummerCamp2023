@@ -41,10 +41,10 @@ public class DriveCurve extends CommandBase {
     startingLeftDistance = drive.getLeftDistance();
     startingRightDistance = drive.getRightDistance();
 
-    targetDistance = (radiusOfTurn + Constants.DriveConstants.circumferenceWithWB / 2) * (targetAngle / 360.0);
+    targetDistance = (radiusOfTurn + Constants.DriveConstants.CircumferenceWithWB / 2) * (targetAngle / 360.0);
 
-    otherSpeed = speed * ((radiusOfTurn - (Constants.DriveConstants.circumferenceWithWB / 2)
-        / (radiusOfTurn + (Constants.DriveConstants.circumferenceWithWB / 2))));
+    otherSpeed = speed * ((radiusOfTurn - (Constants.DriveConstants.CircumferenceWithWB / 2)
+        / (radiusOfTurn + (Constants.DriveConstants.CircumferenceWithWB / 2))));
   }
 
   // Called every time the scheduler runs while the command is scheduled.

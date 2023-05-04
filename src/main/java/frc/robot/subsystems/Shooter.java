@@ -85,7 +85,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void startShooting() {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.Flywheel.FlywheelVelocity);
+        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.Flywheel.FlyWheelVelocity);
         isShooting = true;
     }
 

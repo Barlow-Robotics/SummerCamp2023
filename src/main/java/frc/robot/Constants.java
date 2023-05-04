@@ -39,10 +39,10 @@ public final class Constants {
         public static final double MetersPerSecondToCountsPerSecond = (1 / MetersPerRevolution)
                 * CountsPerRevolution;
 
-        public static final double baseDiameter = 33 * InchesToMeters;
-        public static final double cirucmferenceWithBD = baseDiameter * Math.PI;
-        public static final double wheelBase = 22 * InchesToMeters;
-        public static final double circumferenceWithWB = wheelBase * Math.PI;
+        public static final double BaseDiameter = 33 * InchesToMeters;
+        public static final double CircumferenceWithBD = BaseDiameter * Math.PI;
+        public static final double WheelBase = 22 * InchesToMeters;
+        public static final double CircumferenceWithWB = WheelBase * Math.PI;
 
         public static final double MaxVelocityCounts = kMaxSpeed * MetersPerSecondToCountsPer100MSec;
 
@@ -108,12 +108,12 @@ public final class Constants {
 
             public static final double RPM = 0;
 
-            public static double FlywheelVelocity;
+            public static double FlyWheelVelocity;
 
         }
 
-        public static final double closedVoltageRampingConstant = 0.1;
-        public static final double manualVoltageRampingConstant = 0.2;
+        public static final double ClosedVoltageRampingConstant = 0.1;
+        public static final double ManualVoltageRampingConstant = 0.2;
         public static final int ExtendSolenoidID = 0; // Need to change
         public static final int RetractSolenoidID = 0; // Need to change
         

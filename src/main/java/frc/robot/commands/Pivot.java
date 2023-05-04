@@ -36,7 +36,7 @@ public class Pivot extends CommandBase {
         drive.resetOdometry(new Pose2d());
         startingLeftDistance = drive.getLeftDistance() ;
         startingRightDistance = drive.getRightDistance() ;
-        targetDistance = Constants.DriveConstants.circumferenceWithWB * ( targetAngle / 360.0 ) ;
+        targetDistance = Constants.DriveConstants.CircumferenceWithWB * ( targetAngle / 360.0 ) ;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
