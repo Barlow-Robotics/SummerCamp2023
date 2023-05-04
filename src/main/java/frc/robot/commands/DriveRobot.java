@@ -19,7 +19,6 @@ public class DriveRobot extends CommandBase {
     Drive driveSub;
     Vision visionSub;
 
-
     private boolean lastAutoSteer = false;
     private float yawMultiplier = 1.0f;
     private double error;
@@ -39,15 +38,12 @@ public class DriveRobot extends CommandBase {
     public String selectedTarget = "None";
 
     public DriveRobot(
-            Drive d, Vision v, Trigger autoAlignButton, Trigger toggleTargetButton,
-            Joystick driverController,
-            int throttleID, int turnID) {
+            Drive d, Vision v, Trigger autoAlignButton, Joystick driverController, int throttleID, int turnID) {
 
         driveSub = d;
         visionSub = v;
 
         this.autoAlignButton = autoAlignButton;
-        this.toggleTargetButton = toggleTargetButton;
         this.driverController = driverController;
         this.controllerThrottleID = throttleID;
         this.controllerTurnID = turnID;
@@ -69,12 +65,11 @@ public class DriveRobot extends CommandBase {
     @Override
     public void execute() {
         boolean autoAlignEnabled = autoAlignButton.getAsBoolean();
-        boolean toggleTarget = toggleTargetButton.getAsBoolean();
 
         SmartDashboard.putBoolean("Auto Align Enabled", autoAlignEnabled);
         SmartDashboard.putString("Auto Align Target", selectedTarget);
 
-        double x = driverController.getRawAxis(controllerThrottleID);
+        double x = - driverController.getRawAxis(controllerThrottleID);
         if (Math.abs(x) < 0.01) {
             x = 0.0;
         }
@@ -89,8 +84,8 @@ public class DriveRobot extends CommandBase {
             yaw = -turn;
 
             // if (armSub.getAngle() > 60.0) {
-            //     speed = speed * 0.45;
-            //     yaw = yaw * 0.6;
+            // speed = speed * 0.45;
+            // yaw = yaw * 0.6;
             // }
 
             // yawMultiplier = (float) (0.3 + Math.abs(speed) * 0.2f);
@@ -107,7 +102,7 @@ public class DriveRobot extends CommandBase {
                 pid.reset();
             }
 
-            if (toggleTarget == true) { /* switch indicates game piece with switch value of 1 (maybe or 0?) */
+            // if (toggleTarget == true) { /* switch indicates game piece with switch value of 1 (maybe or 0?) */
 
                 selectedTarget = "Game Piece";
 
@@ -119,29 +114,30 @@ public class DriveRobot extends CommandBase {
                     leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
                     rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
 
-                    driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
-                } else {
-                    missedFrames++;
-                }
-            } else { /* switch indicates april tag with switch value of -1 */
-
-                selectedTarget = "April Tag";
-
-                if (visionSub.aprilTagIsVisible()) {
-                    error = visionSub.aprilTagDistanceFromCenter();
-                    adjustment = pid.calculate(error);
-                    adjustment = Math.signum(adjustment)
-                            * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
-                    leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
-                    rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
 
                     driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
                 } else {
                     missedFrames++;
                 }
-                yaw = pid.calculate(visionSub.targetDistanceFromCenter());
-                lastAutoSteer = true;
-            }
+            // } else { /* switch indicates april tag with switch value of -1 */
+
+            //     selectedTarget = "April Tag";
+
+            //     if (visionSub.aprilTagIsVisible()) {
+            //         error = visionSub.aprilTagDistanceFromCenter();
+            //         adjustment = pid.calculate(error);
+            //         adjustment = Math.signum(adjustment)
+            //                 * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
+            //         leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
+            //         rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+
+            //         driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
+            //     } else {
+            //         missedFrames++;
+            //     }
+            //     yaw = pid.calculate(visionSub.targetDistanceFromCenter());
+            //     lastAutoSteer = true;
+            // }
         }
 
         NetworkTableInstance.getDefault().getEntry("drive/speed").setDouble(-speed);

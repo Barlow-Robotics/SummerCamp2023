@@ -20,7 +20,7 @@ public class Shooter extends SubsystemBase {
 
     WPI_TalonFX flyWheelMotor;
 
-    Solenoid retractSolenoid;
+    Solenoid solenoid;
     Solenoid extendSolenoid;
 
     boolean isShooting = false;
@@ -33,10 +33,8 @@ public class Shooter extends SubsystemBase {
         setMotorConfig(flyWheelMotor);
         flyWheelMotor.configFactoryDefault();
 
-        retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM /* <- This probably needs to change */,
+        solenoid = new Solenoid(PneumaticsModuleType.CTREPCM /* <- This probably needs to change */,
                 Constants.ShooterConstants.RetractSolenoidID);
-        extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM /* <- This probably needs to change */,
-                Constants.ShooterConstants.ExtendSolenoidID);
     }
 
     public void setFlyWheelVelocity(double velocity) {
@@ -69,13 +67,13 @@ public class Shooter extends SubsystemBase {
 
     public void retract() {
         extendSolenoid.set(true);
-        retractSolenoid.set(false);
+        solenoid.set(false);
         extended = false;
     }
 
     public void open() {
         extendSolenoid.set(false);
-        retractSolenoid.set(true);
+        solenoid.set(true);
         extended = true;
     }
 
@@ -85,7 +83,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void startShooting() {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.Flywheel.FlywheelVelocity);
+        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.Flywheel.FlyWheelVelocity);
         isShooting = true;
     }
 

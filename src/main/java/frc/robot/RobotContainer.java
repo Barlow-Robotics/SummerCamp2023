@@ -4,15 +4,10 @@
 
 package frc.robot;
 
-import javax.swing.text.Position;
-
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPRamseteCommand;
 
-import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -20,14 +15,17 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.DriveDistance;
+import frc.robot.commands.DriveRobot;
 import frc.robot.commands.InstrumentedSequentialCommandGroup;
 import frc.robot.commands.Pivot;
+import frc.robot.commands.StartIndexAndShooter;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Index;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -42,11 +40,14 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
     public final Drive driveSub = new Drive();
+    public final Shooter shooterSub = new Shooter();
+    public final Index indexSub = new Index();
     // private final UnderGlow m_underGlow = new UnderGlow();
-    // private final Vision m_vision = new Vision();
+    private final Vision visionSub = new Vision();
 
-    private final DriveDistance driveDistanceCommand = new DriveDistance(driveSub, 2, 1);
-    private final Pivot pivotCommand = new Pivot(driveSub, 180, 0.5);
+    private final StartIndexAndShooter indexAndShooterCom = new StartIndexAndShooter(shooterSub, indexSub);
+    private final DriveDistance driveDistanceCom = new DriveDistance(driveSub, 2, 1);
+    private final Pivot pivotCom = new Pivot(driveSub, 180, 0.5);
     // private final TurnOffUnderGlow turnOffUnderGlowCommand = new
     // TurnOffUnderGlow(m_underGlow);
     // private final TurnOnUnderGlow turnOnUnderGlowCommand = new
@@ -59,6 +60,9 @@ public class RobotContainer {
     private JoystickButton indexAndShooterButton;
     private JoystickButton driveDistanceButton;
     private JoystickButton pivotButton;
+
+    public int throttleJoystickID;
+    public int turnJoystickID;
 
     SendableChooser<Command> autoChooser = new SendableChooser<Command>();
     final SendableChooser<String> stringChooser = new SendableChooser<String>();
@@ -86,35 +90,9 @@ public class RobotContainer {
         // createAutonomousCommands();
 
         driveSub.setDefaultCommand(
-                // A split-stick arcade command, with forward/backward controlled by the left
-                // hand, and turning controlled by the right.
-                new RunCommand( // new instance
-                        () -> {
-                            double x = -driverController.getRawAxis(Constants.Logitech_Dual_Action.Left_Stick_Y);
-                            double yaw = driverController.getRawAxis(Constants.Logitech_Dual_Action.Right_Stick_X);
-                            // fancy exponential formulas to shape the controller inputs to be flat when
-                            // only
-                            // pressed a little, and ramp up as stick pushed more.
-                            double speed = 0.0;
-                            if (x != 0) {
-                                speed = (Math.abs(x) / x) * (Math.exp(-400.0 * Math.pow(x / 3.0, 4.0)))
-                                        + (-Math.abs(x) / x);
-                            }
-                            double turn = -yaw;
-                            // double turn = 0.0;
-                            // if (yaw != 0) {
-                            // turn = (Math.abs(yaw) / yaw) * (Math.exp(-400.0 * Math.pow(yaw / 3.0, 4.0)))
-                            // + (-Math.abs(yaw) / yaw);
-                            // }
-                            // The turn input results in really quick movement of the bot, so
-                            // let's reduce the turn input and make it even less if we are going faster
-                            // This is a simple y = mx + b equation to adjust the turn input based on the
-                            // speed.
-                            // turn = turn * (-0.4 * Math.abs(speed) + 0.5);
-
-                            driveSub.drive(-speed, -turn * 0.4, false);
-                        },
-                        driveSub));
+                new DriveRobot(
+                        driveSub, visionSub, alignWithTargetButton, driverController, throttleJoystickID,
+                        turnJoystickID));
 
     }
 
@@ -141,15 +119,19 @@ public class RobotContainer {
         System.out.println("The controller name is " + controllerType);
         // boolean controllerFound = false;
 
-        alignWithTargetButton = new JoystickButton(operatorController, Constants.Logitech_Dual_Action.Left_Bumper);
-        alignWithTargetButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.Left_Bumper);
-        indexAndShooterButton = new JoystickButton(operatorController, Constants.Logitech_Dual_Action.Right_Trigger);
-        driveDistanceButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.Button_Y);
-        pivotButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.Button_X);
+        alignWithTargetButton = new JoystickButton(operatorController, Constants.Logitech_Dual_Action.LeftBumper);
+        alignWithTargetButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.LeftBumper); // wrong
+                                                                                                                 // constant
+        indexAndShooterButton = new JoystickButton(operatorController, Constants.Logitech_Dual_Action.RightTrigger);
+        driveDistanceButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.ButtonY);
+        pivotButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.ButtonX);
 
-        driveDistanceButton.onTrue(driveDistanceCommand);
-        driveDistanceButton.onTrue(driveDistanceCommand);
-        pivotButton.onTrue(pivotCommand);
+        throttleJoystickID = Constants.Logitech_Dual_Action.LeftStickY;
+        turnJoystickID = Constants.Logitech_Dual_Action.RightStickX;
+
+        indexAndShooterButton.onTrue(indexAndShooterCom);
+        driveDistanceButton.onTrue(driveDistanceCom);
+        pivotButton.onTrue(pivotCom);
     }
 
     InstrumentedSequentialCommandGroup createPlaceTopAndReverseCommand() {
@@ -164,13 +146,13 @@ public class RobotContainer {
                 .addCommands(new InstantCommand(() -> driveSub.resetOdometry(reversePath.getInitialPose()), driveSub));
 
         // theCommand.addCommands(new PPRamseteCommand(
-        //         reversePath,
-        //         driveSub::getPose,
-        //         new RamseteController(),
-        //         new DifferentialDriveKinematics(Constants.DriveConstants.TrackWidth),
-        //         driveSub::setSpeeds,
-        //         false,
-        //         driveSub));
+        // reversePath,
+        // driveSub::getPose,
+        // new RamseteController(),
+        // new DifferentialDriveKinematics(Constants.DriveConstants.TrackWidth),
+        // driveSub::setSpeeds,
+        // false,
+        // driveSub));
 
         // theCommand.onCommandInitialize(Robot::reportCommandStart);
         // theCommand.onCommandFinish(Robot::reportCommandFinish);

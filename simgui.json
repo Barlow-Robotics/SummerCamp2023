@@ -5,6 +5,16 @@
         "header": {
           "open": true
         }
+      },
+      "Talon SRX[4]/Quad Encoder": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[6]/Quad Encoder": {
+        "header": {
+          "open": true
+        }
       }
     }
   },

@@ -108,12 +108,12 @@ public final class Constants {
 
             public static final double RPM = 0;
 
-            public static double FlywheelVelocity;
+            public static double FlyWheelVelocity;
 
         }
 
-        public static final double closedVoltageRampingConstant = 0.1;
-        public static final double manualVoltageRampingConstant = 0.2;
+        public static final double ClosedVoltageRampingConstant = 0.1;
+        public static final double ManualVoltageRampingConstant = 0.2;
         public static final int ExtendSolenoidID = 0; // Need to change
         public static final int RetractSolenoidID = 0; // Need to change
         
@@ -131,53 +131,53 @@ public final class Constants {
     public final class Logitech_Dual_Action {
 
         // Constants for Axes
-        public static final int Left_Stick_X = 0;
-        public static final int Left_Stick_Y = 1;
-        public static final int Right_Stick_X = 2;
-        public static final int Right_Stick_Y = 3;
+        public static final int LeftStickX = 0;
+        public static final int LeftStickY = 1;
+        public static final int RightStickX = 2;
+        public static final int RightStickY = 3;
 
         // Constants for buttons
-        public static final int Left_Trigger = 7;
-        public static final int Right_Trigger = 8;
-        public static final int Button_A = 2;
-        public static final int Button_B = 3;
-        public static final int Button_X = 1;
-        public static final int Button_Y = 4;
-        public static final int Left_Bumper = 5;
-        public static final int Right_Bumper = 6;
-        public static final int Back_Button = 9;
-        public static final int Start_Button = 10;
-        public static final int Left_Stick = 11;
-        public static final int Right_Stick = 12;
+        public static final int LeftTrigger = 7;
+        public static final int RightTrigger = 8;
+        public static final int ButtonA = 2;
+        public static final int ButtonB = 3;
+        public static final int ButtonX = 1;
+        public static final int ButtonY = 4;
+        public static final int LeftBumper = 5;
+        public static final int RightBumper = 6;
+        public static final int BackButton = 9;
+        public static final int StartButton = 10;
+        public static final int LeftStick = 11;
+        public static final int RightStick = 12;
 
-        public static final double Forward_Axis_Attenuation = -0.5;
-        public static final double Lateral_Axis_Attenuation = 0.5;
-        public static final double Yaw_Axis_Attenuation = 0.5;
+        public static final double ForwardAxisAttenuation = -0.5;
+        public static final double LateralAxisAttenuation = 0.5;
+        public static final double YawAxisAttenuation = 0.5;
     }
 
     public final class Logitech_F310_Controller {
         // Constants for Axes
-        public static final int Left_Stick_X = 0;
-        public static final int Left_Stick_Y = 1;
-        public static final int Left_Trigger = 2;
-        public static final int Right_Trigger = 3;
-        public static final int Right_Stick_X = 4;
-        public static final int Right_Stick_Y = 5;
+        public static final int LeftStickX = 0;
+        public static final int LeftStickY = 1;
+        public static final int LeftTrigger = 2;
+        public static final int RightTrigger = 3;
+        public static final int RightStickX = 4;
+        public static final int RightStickY = 5;
 
         // Constants for buttons
-        public static final int Button_A = 1;
-        public static final int Button_B = 2;
-        public static final int Button_X = 3;
-        public static final int Button_Y = 4;
-        public static final int Left_Bumper = 5;
-        public static final int Right_Bumper = 6;
-        public static final int Back_Button = 7;
-        public static final int Start_Button = 8;
-        public static final int Left_Stick = 9;
-        public static final int Right_Stick = 10;
+        public static final int ButtonA = 1;
+        public static final int ButtonB = 2;
+        public static final int ButtonX = 3;
+        public static final int ButtonY = 4;
+        public static final int LeftBumper = 5;
+        public static final int RightBumper = 6;
+        public static final int BackButton = 7;
+        public static final int StartButton = 8;
+        public static final int LeftStick = 9;
+        public static final int RightStick = 10;
 
-        public static final double Forward_Axis_Attenuation = -0.5;
-        public static final double Lateral_Axis_Attenuation = 0.5;
-        public static final double Yaw_Axis_Attenuation = 0.5;
+        public static final double ForwardAxisAttenuation = -0.5;
+        public static final double LateralAxisAttenuation = 0.5;
+        public static final double YawAxisAttenuation = 0.5;
     }
 }
