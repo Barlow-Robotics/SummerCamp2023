@@ -96,8 +96,8 @@ public final class Constants {
         public static final class Flywheel {
             public static final int FlyWheelMotorID = 11;
 
-            // public static final double kF = 0.048;
-            public static final double kF = 0.059;
+            public static final double kF = 0.048;
+            //public static final double kF = 0.059;
             // public static final double kP = 0.001;
             public static final double kP = 0.005;
             public static final double kI = 0.0;
@@ -105,17 +105,18 @@ public final class Constants {
             public static final int PID_ID = 0;
 
             public static final int UnitsPerMotorRotation = 2048;
+            public static final double ChainGearRatio = 42.0 / 24.0; // need to change
 
-            public static final double RPM = 0;
+            public static final double RPM = ChainGearRatio / 60.0 * UnitsPerMotorRotation / 10.0 ;
 
-            public static double FlyWheelVelocity;
+            public static final double FlyWheelVelocity = 1200; // * RPM
 
         }
 
         public static final double ClosedVoltageRampingConstant = 0.1;
         public static final double ManualVoltageRampingConstant = 0.2;
         public static final int ExtendSolenoidID = 0; // Need to change
-        public static final int RetractSolenoidID = 0; // Need to change
+        public static final int RetractSolenoidID = 1; // Need to change
         
     }
 

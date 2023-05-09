@@ -219,12 +219,12 @@ public class Drive extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        if (!simulationInitialized) {
-            simulationInit();
-            simulationInitialized = true;
-        }
+        // if (!simulationInitialized) {
+        //     simulationInit();
+        //     simulationInitialized = true;
+        // }
 
-        PhysicsSim.getInstance().run();
+        // PhysicsSim.getInstance().run();
 
         gyroSim.setAngle(5.0);
         gyroSim.setRate(1.0);

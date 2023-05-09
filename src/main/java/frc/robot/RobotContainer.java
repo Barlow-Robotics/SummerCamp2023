@@ -122,6 +122,7 @@ public class RobotContainer {
         alignWithTargetButton = new JoystickButton(operatorController, Constants.Logitech_Dual_Action.LeftBumper);
         alignWithTargetButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.LeftBumper); // wrong
                                                                                                                  // constant
+
         indexAndShooterButton = new JoystickButton(operatorController, Constants.Logitech_Dual_Action.RightTrigger);
         driveDistanceButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.ButtonY);
         pivotButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.ButtonX);
@@ -129,7 +130,7 @@ public class RobotContainer {
         throttleJoystickID = Constants.Logitech_Dual_Action.LeftStickY;
         turnJoystickID = Constants.Logitech_Dual_Action.RightStickX;
 
-        indexAndShooterButton.onTrue(indexAndShooterCom);
+        indexAndShooterButton.whileTrue(indexAndShooterCom);
         driveDistanceButton.onTrue(driveDistanceCom);
         pivotButton.onTrue(pivotCom);
     }

@@ -1,17 +1,22 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "Talon SRX[4]": {
+      "Talon FX[11]": {
         "header": {
           "open": true
         }
       },
-      "Talon SRX[4]/Quad Encoder": {
+      "Talon FX[11]/Fwd Limit": {
         "header": {
           "open": true
         }
       },
-      "Talon SRX[6]/Quad Encoder": {
+      "Talon FX[11]/Integrated Sensor": {
+        "header": {
+          "open": true
+        }
+      },
+      "Victor SPX[7]": {
         "header": {
           "open": true
         }

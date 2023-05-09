@@ -16,11 +16,11 @@ import frc.robot.Constants;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
-    private static final TalonSRX hopperMotor = null;
+    // private static final TalonSRX hopperMotor = null;
 
     WPI_TalonFX flyWheelMotor;
 
-    Solenoid solenoid;
+    Solenoid retractSolenoid;
     Solenoid extendSolenoid;
 
     boolean isShooting = false;
@@ -31,50 +31,13 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         flyWheelMotor = new WPI_TalonFX(Constants.ShooterConstants.Flywheel.FlyWheelMotorID);
         setMotorConfig(flyWheelMotor);
-        flyWheelMotor.configFactoryDefault();
 
-        solenoid = new Solenoid(PneumaticsModuleType.CTREPCM /* <- This probably needs to change */,
+        retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM /* <- This probably needs to change */,
                 Constants.ShooterConstants.RetractSolenoidID);
-    }
+        extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM /* <- This probably needs to change */,
+                Constants.ShooterConstants.ExtendSolenoidID);
 
-    public void setFlyWheelVelocity(double velocity) {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, velocity * Constants.ShooterConstants.Flywheel.RPM);
-    }
-
-    public double getFlyWheelVelocity() {
-        double velocity = flyWheelMotor.getSelectedSensorVelocity();
-        return velocity;
-    }
-
-    private void setMotorConfig(WPI_TalonFX motor) {
-        motor.configFactoryDefault();
-        motor.configClosedloopRamp(Constants.DriveConstants.ClosedVoltageRampingConstant);
-        motor.configOpenloopRamp(Constants.DriveConstants.ManualVoltageRampingConstant);
-        motor.config_kF(0, Constants.DriveConstants.kF);
-        motor.config_kP(0, Constants.DriveConstants.kP);
-        motor.config_kI(0, Constants.DriveConstants.kI);
-        motor.config_kD(0, Constants.DriveConstants.kD);
-        motor.setNeutralMode(NeutralMode.Brake);
-    }
-
-    public boolean flyWheelIsUpToSpeed() {
-        if (getFlyWheelVelocity() == Constants.ShooterConstants.Flywheel.RPM) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void retract() {
-        extendSolenoid.set(true);
-        solenoid.set(false);
-        extended = false;
-    }
-
-    public void open() {
-        extendSolenoid.set(false);
-        solenoid.set(true);
-        extended = true;
+        simulationInit();
     }
 
     @Override
@@ -82,8 +45,18 @@ public class Shooter extends SubsystemBase {
         // This method will be called once per scheduler run
     }
 
+    public void setVelocity(double velocity) {
+        flyWheelMotor.set(TalonFXControlMode.Velocity, velocity * Constants.ShooterConstants.Flywheel.RPM);
+    }
+
+    public double getVelocity() {
+        double velocity = flyWheelMotor.getSelectedSensorVelocity();
+        return velocity;
+    }
+
     public void startShooting() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.Flywheel.FlyWheelVelocity);
+        // flyWheelMotor.set(TalonFXControlMode.PercentOutput, 100.0);
         isShooting = true;
     }
 
@@ -92,8 +65,38 @@ public class Shooter extends SubsystemBase {
         isShooting = false;
     }
 
-    public void simulationInit() {
-        PhysicsSim.getInstance().addTalonSRX(hopperMotor, 0.5, 6800);
+    public boolean flyWheelIsUpToSpeed() {
+        if (getVelocity() == Constants.ShooterConstants.Flywheel.RPM) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
+    public void retract() {
+        extendSolenoid.set(true);
+        retractSolenoid.set(false);
+        extended = false;
+    }
+
+    public void open() {
+        extendSolenoid.set(false);
+        retractSolenoid.set(true);
+        extended = true;
+    }
+
+    private void setMotorConfig(WPI_TalonFX motor) {
+        motor.configFactoryDefault();
+        motor.configClosedloopRamp(Constants.DriveConstants.ClosedVoltageRampingConstant);
+        motor.configOpenloopRamp(Constants.DriveConstants.ManualVoltageRampingConstant);
+        motor.config_kF(0, Constants.DriveConstants.kF); // Need to make these not the drive constants
+        motor.config_kP(0, Constants.DriveConstants.kP);
+        motor.config_kI(0, Constants.DriveConstants.kI);
+        motor.config_kD(0, Constants.DriveConstants.kD);
+        motor.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public void simulationInit() {
+        PhysicsSim.getInstance().addTalonFX(flyWheelMotor, 0.5, 6800);
+    }
 }
