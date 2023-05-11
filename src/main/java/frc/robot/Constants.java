@@ -57,9 +57,9 @@ public final class Constants {
         public static final double kIAutoAlign = 0;
         public static final double kDAutoAlign = 0;
         public static final double CorrectionRotationSpeed = 0;
-        
+
         public static final double DefaultAutoAccel = 4.0;
-        public static final double DefaultAutoVelocity = 1.0; //metres per second
+        public static final double DefaultAutoVelocity = 1.0; // metres per second
 
         public static int LeftLeaderMotorID = 4;
         public static int LeftFollowerMotorID = 5;
@@ -87,37 +87,37 @@ public final class Constants {
         public static final double FeederKD = 0.0;
 
         public static final double FeederMotorSpeed = 0.9;
+        public static double kD;
+        public static double kI;
+        public static double kP;
+        public static double kF;
 
     }
 
     public static final class ShooterConstants {
         // All variables are placeholders
 
-        public static final class Flywheel {
-            public static final int FlyWheelMotorID = 11;
+        public static final int FlyWheelMotorID = 11;
+        public static final int PaddleMotorID = 0;
+        // public static final int ExtendSolenoidID = 0; // Need to change
+        // public static final int RetractSolenoidID = 1; // Need to change
 
-            public static final double kF = 0.048;
-            //public static final double kF = 0.059;
-            // public static final double kP = 0.001;
-            public static final double kP = 0.005;
-            public static final double kI = 0.0;
-            public static final double kD = 0.0;
-            public static final int PID_ID = 0;
+        public static final double kF = 0.055;
+        public static final double kP = 0.03;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
 
-            public static final int UnitsPerMotorRotation = 2048;
-            public static final double ChainGearRatio = 42.0 / 24.0; // need to change
+        public static final int UnitsPerMotorRotation = 2048;
+        public static final double ChainGearRatio = 24.0 / 42.0; // need to change
 
-            public static final double RPM = ChainGearRatio / 60.0 * UnitsPerMotorRotation / 10.0 ;
+        public static final double RPM = ChainGearRatio / 60.0 * UnitsPerMotorRotation / 10.0;
 
-            public static final double FlyWheelVelocity = 1200; // * RPM
-
-        }
+        public static final double FlyWheelVelocity = 4500 * RPM; // * RPM
 
         public static final double ClosedVoltageRampingConstant = 0.1;
         public static final double ManualVoltageRampingConstant = 0.2;
-        public static final int ExtendSolenoidID = 0; // Need to change
-        public static final int RetractSolenoidID = 1; // Need to change
-        
+        public static final double PaddleVelocity = 0;
+
     }
 
     public static final class UnderGlowConstants {

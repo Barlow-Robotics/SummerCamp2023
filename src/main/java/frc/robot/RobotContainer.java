@@ -119,11 +119,8 @@ public class RobotContainer {
         System.out.println("The controller name is " + controllerType);
         // boolean controllerFound = false;
 
-        alignWithTargetButton = new JoystickButton(operatorController, Constants.Logitech_Dual_Action.LeftBumper);
-        alignWithTargetButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.LeftBumper); // wrong
-                                                                                                                 // constant
-
-        indexAndShooterButton = new JoystickButton(operatorController, Constants.Logitech_Dual_Action.RightTrigger);
+        alignWithTargetButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.LeftBumper);
+        indexAndShooterButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.RightTrigger);
         driveDistanceButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.ButtonY);
         pivotButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.ButtonX);
 

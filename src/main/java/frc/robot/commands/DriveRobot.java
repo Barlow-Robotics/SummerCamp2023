@@ -69,7 +69,7 @@ public class DriveRobot extends CommandBase {
         SmartDashboard.putBoolean("Auto Align Enabled", autoAlignEnabled);
         SmartDashboard.putString("Auto Align Target", selectedTarget);
 
-        double x = - driverController.getRawAxis(controllerThrottleID);
+        double x = -driverController.getRawAxis(controllerThrottleID);
         if (Math.abs(x) < 0.01) {
             x = 0.0;
         }
@@ -102,41 +102,43 @@ public class DriveRobot extends CommandBase {
                 pid.reset();
             }
 
-            // if (toggleTarget == true) { /* switch indicates game piece with switch value of 1 (maybe or 0?) */
+            // if (toggleTarget == true) { /* switch indicates game piece with switch value
+            // of 1 (maybe or 0?) */
 
-                selectedTarget = "Game Piece";
+            selectedTarget = "Game Piece";
 
-                if (visionSub.targetIsVisible()) {
-                    error = visionSub.targetDistanceFromCenter();
-                    adjustment = pid.calculate(error);
-                    adjustment = Math.signum(adjustment)
-                            * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
-                    leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
-                    rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+            if (visionSub.targetIsVisible()) {
+                error = visionSub.targetDistanceFromCenter();
+                adjustment = pid.calculate(error);
+                adjustment = Math.signum(adjustment)
+                        * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
+                leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
+                rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
 
-
-                    driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
-                } else {
-                    missedFrames++;
-                }
+                driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
+            } else {
+                missedFrames++;
+            }
             // } else { /* switch indicates april tag with switch value of -1 */
 
-            //     selectedTarget = "April Tag";
+            // selectedTarget = "April Tag";
 
-            //     if (visionSub.aprilTagIsVisible()) {
-            //         error = visionSub.aprilTagDistanceFromCenter();
-            //         adjustment = pid.calculate(error);
-            //         adjustment = Math.signum(adjustment)
-            //                 * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
-            //         leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
-            //         rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+            // if (visionSub.aprilTagIsVisible()) {
+            // error = visionSub.aprilTagDistanceFromCenter();
+            // adjustment = pid.calculate(error);
+            // adjustment = Math.signum(adjustment)
+            // * Math.min(Math.abs(adjustment),
+            // Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
+            // leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
+            // rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed +
+            // adjustment;
 
-            //         driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
-            //     } else {
-            //         missedFrames++;
-            //     }
-            //     yaw = pid.calculate(visionSub.targetDistanceFromCenter());
-            //     lastAutoSteer = true;
+            // driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
+            // } else {
+            // missedFrames++;
+            // }
+            // yaw = pid.calculate(visionSub.targetDistanceFromCenter());
+            // lastAutoSteer = true;
             // }
         }
 

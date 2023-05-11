@@ -31,12 +31,12 @@ public class Index extends SubsystemBase {
 
   private void setMotorConfig(WPI_TalonFX motor) {
     motor.configFactoryDefault();
-    motor.configClosedloopRamp(Constants.DriveConstants.ClosedVoltageRampingConstant);
-    motor.configOpenloopRamp(Constants.DriveConstants.ManualVoltageRampingConstant);
-    motor.config_kF(0, Constants.DriveConstants.kF);
-    motor.config_kP(0, Constants.DriveConstants.kP);
-    motor.config_kI(0, Constants.DriveConstants.kI);
-    motor.config_kD(0, Constants.DriveConstants.kD);
+    motor.configClosedloopRamp(Constants.IndexConstants.ClosedVoltageRampingConstant);
+    motor.configOpenloopRamp(Constants.IndexConstants.ManualVoltageRampingConstant);
+    motor.config_kF(0, Constants.IndexConstants.kF);
+    motor.config_kP(0, Constants.IndexConstants.kP);
+    motor.config_kI(0, Constants.IndexConstants.kI);
+    motor.config_kD(0, Constants.IndexConstants.kD);
     motor.setNeutralMode(NeutralMode.Brake);
   }
 
