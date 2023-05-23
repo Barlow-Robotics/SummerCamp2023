@@ -21,6 +21,11 @@ public class Index extends SubsystemBase {
     hopperMotor.configFactoryDefault();
   }
 
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+
   public void startHopper() {
     hopperMotor.set(TalonFXControlMode.Velocity, Constants.IndexConstants.HopperMotorSpeed);
   }
@@ -38,10 +43,5 @@ public class Index extends SubsystemBase {
     motor.config_kI(0, Constants.IndexConstants.kI);
     motor.config_kD(0, Constants.IndexConstants.kD);
     motor.setNeutralMode(NeutralMode.Brake);
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 }

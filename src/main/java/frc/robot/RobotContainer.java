@@ -4,10 +4,16 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
+import com.pathplanner.lib.commands.PPRamseteCommand;
 
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -15,6 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.DriveDistance;
@@ -67,12 +74,7 @@ public class RobotContainer {
     SendableChooser<Command> autoChooser = new SendableChooser<Command>();
     final SendableChooser<String> stringChooser = new SendableChooser<String>();
 
-    PathPlannerTrajectory reversePath;
-    PathPlannerTrajectory engagePath;
-    PathPlannerTrajectory shortSideGamePiecePath1;
-    PathPlannerTrajectory shortSideGamePiecePath2;
-    PathPlannerTrajectory longSideGamePiecePath1;
-    PathPlannerTrajectory longSideGamePiecePath2;
+    PathPlannerTrajectory autoComPath;
 
     // The current trajectory that will be sent to the filed object for
     // debug/instrumentation
@@ -132,30 +134,40 @@ public class RobotContainer {
         pivotButton.onTrue(pivotCom);
     }
 
-    InstrumentedSequentialCommandGroup createPlaceTopAndReverseCommand() {
+    InstrumentedSequentialCommandGroup createAutoCom() {
         /* Place Game Piece on Bottom Row, Reverse Out of Community */
-        InstrumentedSequentialCommandGroup theCommand = new InstrumentedSequentialCommandGroup();
+        InstrumentedSequentialCommandGroup theCom = new InstrumentedSequentialCommandGroup();
 
-        reversePath = loadPath(
-                "Reverse", DriveConstants.DefaultAutoVelocity, DriveConstants.DefaultAutoAccel, true);
+        HashMap<String, Command> eventMap = new HashMap<>();
+            eventMap.put("FirstBase", new PrintCommand("Passed first leg"));
+            eventMap.put("shoot", new InstantCommand(() -> shooterSub.startShooting()));
 
-        theCommand.addCommands(new InstantCommand(() -> this.currentTrajectory = reversePath));
-        theCommand
-                .addCommands(new InstantCommand(() -> driveSub.resetOdometry(reversePath.getInitialPose()), driveSub));
+        autoComPath = loadPath(
+                "AutoCom", DriveConstants.DefaultAutoVelocity, DriveConstants.DefaultAutoAccel, true);
 
-        // theCommand.addCommands(new PPRamseteCommand(
-        // reversePath,
-        // driveSub::getPose,
-        // new RamseteController(),
-        // new DifferentialDriveKinematics(Constants.DriveConstants.TrackWidth),
-        // driveSub::setSpeeds,
-        // false,
-        // driveSub));
+        theCom.addCommands(new InstantCommand(() -> this.currentTrajectory = autoComPath));
+        theCom.addCommands(new InstantCommand(() -> driveSub.resetOdometry(autoComPath.getInitialPose()), driveSub));
+
+
+        PPRamseteCommand getPathFollowingCom = new PPRamseteCommand(
+            autoComPath,
+            driveSub::getPose,
+            new RamseteController(),
+            new DifferentialDriveKinematics(DriveConstants.WheelBase), 
+            driveSub::setWheelSpeeds,
+            driveSub);
+
+        FollowPathWithEvents pathStuff = new FollowPathWithEvents(
+            getPathFollowingCom,
+            autoComPath.getMarkers(),
+            eventMap);
+
+        theCom.addCommands(pathStuff);
 
         // theCommand.onCommandInitialize(Robot::reportCommandStart);
         // theCommand.onCommandFinish(Robot::reportCommandFinish);
 
-        return theCommand;
+        return theCom;
     }
 
     private PathPlannerTrajectory loadPath(String name, double velocity, double accel, boolean reverse) {
@@ -166,11 +178,17 @@ public class RobotContainer {
         return PathPlannerTrajectory.transformTrajectoryForAlliance(temp, DriverStation.getAlliance());
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
+    public Command getAutonomousCommand() {
+
+        this.currentTrajectory = new PathPlannerTrajectory();
+
+        String choice = stringChooser.getSelected();
+        if (choice == "placeTopAndReverse") {
+            return createAutoCom();
+        } else {
+            return null;
+        }
+    }
 
     // public Command getAutonomousCommand() {
     // This is just an example event map. It would be better to have a constant,
@@ -201,8 +219,7 @@ public class RobotContainer {
     // traj,
     // m_drive::getPose, // Pose supplier
     // controller,
-    // new DifferentialDriveKinematics(0.75), // wpk need to put in correct chassis
-    // width (wheel base)
+    // new DifferentialDriveKinematics(0.75), // wpk need to put in correct chassis width (wheel base)
     // m_drive::setWheelSpeeds,
     // eventMap, // This argument is optional if you don't use event markers
     // m_drive // Requires this drive subsystem

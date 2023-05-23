@@ -4,21 +4,25 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
     // private static final TalonSRX hopperMotor = null;
 
     WPI_TalonFX flyWheelMotor;
-    WPI_TalonFX paddleMotor;
+    WPI_TalonSRX paddleMotor;
 
     // Solenoid retractSolenoid;
     // Solenoid extendSolenoid;
@@ -32,7 +36,7 @@ public class Shooter extends SubsystemBase {
         flyWheelMotor = new WPI_TalonFX(Constants.ShooterConstants.FlyWheelMotorID);
         setMotorConfig(flyWheelMotor);
 
-        paddleMotor = new WPI_TalonFX(Constants.ShooterConstants.PaddleMotorID);
+        paddleMotor = new WPI_TalonSRX(Constants.ShooterConstants.PaddleMotorID);
         setMotorConfig(paddleMotor);
 
         // retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM /* <- This
@@ -47,15 +51,25 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-        // This method will be called once per scheduler run
         SmartDashboard.putNumber("Shooter Closed Loop Error", getClosedLoopError());
         SmartDashboard.putNumber("Shooter Velocity", getVelocity());
-
     }
 
-    public void setVelocity(double velocity) {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, velocity * Constants.ShooterConstants.RPM);
+    public double getAngle() {
+        double result = paddleMotor.getSelectedSensorPosition() / ShooterConstants.CountsPerArmDegree;
+        return result;
+    }
+
+    public void spinPaddle() {
+        paddleMotor.configMotionCruiseVelocity(1200 * ShooterConstants.DegreesPerSecToCountsPer100MSec);
+        // paddleMotor.configMotionAcceleration(1200 * ShooterConstants.DegreesPerSecToCountsPer100MSec / accelerationTime);
+
+        // double ff = Math.sin(Math.toRadians(getAngle())) * rotationFeedForward();
+
+        double setAngle = 180 * ShooterConstants.CountsPerArmDegree;
+
+        //  System.out.println("Setting arm angle to " + desiredAngle + "( " +  setAngle + " ) with feed forward "+ ff ) ;
+        // paddleMotor.set(TalonSRXControlMode.MotionMagic, setAngle, DemandType.ArbitraryFeedForward, ff);
     }
 
     public double getVelocity() {
@@ -65,13 +79,11 @@ public class Shooter extends SubsystemBase {
 
     public void startShooting() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelVelocity);
-        paddleMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.PaddleVelocity);
         isShooting = true;
     }
 
     public void stopShooting() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, 0);
-        paddleMotor.set(TalonFXControlMode.Velocity, 0);
         isShooting = false;
     }
 
@@ -96,6 +108,17 @@ public class Shooter extends SubsystemBase {
     // }
 
     private void setMotorConfig(WPI_TalonFX motor) {
+        motor.configFactoryDefault();
+        motor.configClosedloopRamp(Constants.ShooterConstants.ClosedVoltageRampingConstant);
+        motor.configOpenloopRamp(Constants.ShooterConstants.ManualVoltageRampingConstant);
+        motor.config_kF(0, Constants.ShooterConstants.kF); // Need to make these not the drive constants
+        motor.config_kP(0, Constants.ShooterConstants.kP);
+        motor.config_kI(0, Constants.ShooterConstants.kI);
+        motor.config_kD(0, Constants.ShooterConstants.kD);
+        motor.setNeutralMode(NeutralMode.Brake);
+    }
+
+    private void setMotorConfig(WPI_TalonSRX motor) {
         motor.configFactoryDefault();
         motor.configClosedloopRamp(Constants.ShooterConstants.ClosedVoltageRampingConstant);
         motor.configOpenloopRamp(Constants.ShooterConstants.ManualVoltageRampingConstant);
