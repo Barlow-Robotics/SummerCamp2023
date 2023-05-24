@@ -4,10 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -66,7 +64,7 @@ public class Shooter extends SubsystemBase {
 
         // double ff = Math.sin(Math.toRadians(getAngle())) * rotationFeedForward();
 
-        double setAngle = 180 * ShooterConstants.CountsPerArmDegree;
+        // double setAngle = 180 * ShooterConstants.CountsPerArmDegree;
 
         //  System.out.println("Setting arm angle to " + desiredAngle + "( " +  setAngle + " ) with feed forward "+ ff ) ;
         // paddleMotor.set(TalonSRXControlMode.MotionMagic, setAngle, DemandType.ArbitraryFeedForward, ff);

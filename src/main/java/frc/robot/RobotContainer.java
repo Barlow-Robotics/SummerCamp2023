@@ -74,7 +74,7 @@ public class RobotContainer {
     SendableChooser<Command> autoChooser = new SendableChooser<Command>();
     final SendableChooser<String> stringChooser = new SendableChooser<String>();
 
-    PathPlannerTrajectory autoComPath;
+    PathPlannerTrajectory path;
 
     // The current trajectory that will be sent to the filed object for
     // debug/instrumentation
@@ -134,40 +134,41 @@ public class RobotContainer {
         pivotButton.onTrue(pivotCom);
     }
 
-    InstrumentedSequentialCommandGroup createAutoCom() {
+    InstrumentedSequentialCommandGroup createAutoCmd() {
         /* Place Game Piece on Bottom Row, Reverse Out of Community */
-        InstrumentedSequentialCommandGroup theCom = new InstrumentedSequentialCommandGroup();
+        InstrumentedSequentialCommandGroup theCmd = new InstrumentedSequentialCommandGroup();
 
         HashMap<String, Command> eventMap = new HashMap<>();
-            eventMap.put("FirstBase", new PrintCommand("Passed first leg"));
+            eventMap.put("FirstBase", new PrintCommand("***************Passed first leg****************"));
             eventMap.put("shoot", new InstantCommand(() -> shooterSub.startShooting()));
+            eventMap.put("Final event", new PrintCommand("**************Shoot stuff****************"));
 
-        autoComPath = loadPath(
-                "AutoCom", DriveConstants.DefaultAutoVelocity, DriveConstants.DefaultAutoAccel, true);
+        path = loadPath(
+                "Path", DriveConstants.DefaultAutoVelocity, DriveConstants.DefaultAutoAccel, true);
 
-        theCom.addCommands(new InstantCommand(() -> this.currentTrajectory = autoComPath));
-        theCom.addCommands(new InstantCommand(() -> driveSub.resetOdometry(autoComPath.getInitialPose()), driveSub));
+        theCmd.addCommands(new InstantCommand(() -> this.currentTrajectory = path));
+        theCmd.addCommands(new InstantCommand(() -> driveSub.setOdometry(path.getInitialPose()), driveSub));
 
 
-        PPRamseteCommand getPathFollowingCom = new PPRamseteCommand(
-            autoComPath,
+        PPRamseteCommand getPathFollowingCmd = new PPRamseteCommand(
+            path,
             driveSub::getPose,
             new RamseteController(),
             new DifferentialDriveKinematics(DriveConstants.WheelBase), 
             driveSub::setWheelSpeeds,
             driveSub);
 
-        FollowPathWithEvents pathStuff = new FollowPathWithEvents(
-            getPathFollowingCom,
-            autoComPath.getMarkers(),
+        FollowPathWithEvents pathCmd = new FollowPathWithEvents(
+            getPathFollowingCmd,
+            path.getMarkers(),
             eventMap);
 
-        theCom.addCommands(pathStuff);
+        theCmd.addCommands(pathCmd);
 
         // theCommand.onCommandInitialize(Robot::reportCommandStart);
         // theCommand.onCommandFinish(Robot::reportCommandFinish);
 
-        return theCom;
+        return theCmd;
     }
 
     private PathPlannerTrajectory loadPath(String name, double velocity, double accel, boolean reverse) {
@@ -181,50 +182,12 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
 
         this.currentTrajectory = new PathPlannerTrajectory();
-
-        String choice = stringChooser.getSelected();
-        if (choice == "placeTopAndReverse") {
-            return createAutoCom();
-        } else {
-            return null;
-        }
+        return createAutoCmd();
+        // String choice = stringChooser.getSelected();
+        // if (choice == "autoCom") {
+        //     return createAutoCmd();
+        // } else {
+        //     return null;
+        // }
     }
-
-    // public Command getAutonomousCommand() {
-    // This is just an example event map. It would be better to have a constant,
-    // global event map
-    // in your code that will be used by all path following commands.
-    // HashMap<String, Command> eventMap = new HashMap<>();
-    // eventMap.put("FirstBase", new PrintCommand("Passed first leg"));
-    // eventMap.put("half way", new PrintCommand("half way there"));
-    // eventMap.put("done", new PrintCommand("arrived at detination"));
-    // eventMap.put("intakeDown", new IntakeDown());
-
-    // This will load the file "Example Path.path" and generate it with a max
-    // velocity of 4 m/s and a max acceleration of 3 m/s^2
-    // PathPlannerTrajectory traj = PathPlanner.loadPath("SquarePath", new
-    // PathConstraints(1, 1));
-    // PathPlannerTrajectory traj = PathPlanner.loadPath("FancyPath", new
-    // PathConstraints(2, 1));
-
-    // Command ic = new InstantCommand(() -> {
-    // // Reset odometry for the first path you run during auto
-    // m_drive.resetEncoders();
-    // m_drive.resetOdometry(traj.getInitialPose());
-    // });
-
-    // RamseteController controller = new RamseteController();
-
-    // Command pathFollowingCommand = new PPRamseteCommand(
-    // traj,
-    // m_drive::getPose, // Pose supplier
-    // controller,
-    // new DifferentialDriveKinematics(0.75), // wpk need to put in correct chassis width (wheel base)
-    // m_drive::setWheelSpeeds,
-    // eventMap, // This argument is optional if you don't use event markers
-    // m_drive // Requires this drive subsystem
-    // );
-    // return new SequentialCommandGroup(ic, pathFollowingCommand);
-    // }
-
 }

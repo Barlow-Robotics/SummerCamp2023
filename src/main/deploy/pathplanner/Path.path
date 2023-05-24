@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 8.250986694281083,
-        "y": 4.9812552509720405
+        "x": 8.0,
+        "y": 5.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.133335612825075,
-        "y": 4.9812552509720405
+        "x": 6.8823489185439914,
+        "y": 5.0
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -24,12 +24,12 @@
     },
     {
       "anchorPoint": {
-        "x": 5.48576375998906,
-        "y": 4.9812552509720405
+        "x": 5.0,
+        "y": 5.0
       },
       "prevControl": {
-        "x": 6.911862576877154,
-        "y": 4.9812552509720405
+        "x": 6.426098816888095,
+        "y": 5.0
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -49,7 +49,8 @@
     {
       "position": 1.0,
       "names": [
-        "shoot"
+        "shoot",
+        "Final event"
       ]
     },
     {

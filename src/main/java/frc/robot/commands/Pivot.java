@@ -33,7 +33,7 @@ public class Pivot extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        drive.resetOdometry(new Pose2d());
+        drive.setOdometry(new Pose2d());
         startingLeftDistance = drive.getLeftDistance() ;
         startingRightDistance = drive.getRightDistance() ;
         targetDistance = Constants.DriveConstants.CircumferenceWithWB * ( targetAngle / 360.0 ) ;

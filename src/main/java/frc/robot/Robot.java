@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.sim.PhysicsSim;
@@ -21,45 +25,37 @@ public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer;
 
-    /**
-     * This function is run when the robot is first started up and should be used
-     * for any initialization code.
-     */
+    private Field2d gameField;
+
+    static long startTime = System.currentTimeMillis();
+
+    static HashMap<Command, Long> startTimes = new HashMap();
+
     @Override
     public void robotInit() {
-        // Instantiate our RobotContainer. This will perform all our button bindings,
-        // and put our
-        // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
+
+        // DriverStation.silenceJoystickConnectionWarning(true) ;
+
+        gameField = new Field2d();
+        SmartDashboard.putData("Field", gameField);
+
+        CommandScheduler.getInstance().onCommandInitialize(Robot::reportCommandStart);
+        CommandScheduler.getInstance().onCommandFinish(Robot::reportCommandFinish);
+        CommandScheduler.getInstance().onCommandInterrupt(this::handleInterrupted);
     }
 
-    /**
-     * This function is called every robot packet, no matter the mode. Use this for
-     * items like diagnostics that you want ran during disabled, autonomous,
-     * teleoperated and test.
-     *
-     * <p>
-     * This runs after the mode specific periodic functions, but before LiveWindow
-     * and SmartDashboard integrated updating.
-     */
     @Override
     public void robotPeriodic() {
-        // Runs the Scheduler. This is responsible for polling buttons, adding
-        // newly-scheduled commands, running already-scheduled commands, removing
-        // finished or interrupted commands, and running subsystem periodic() methods.
-        // This must be called from the robot's periodic block in order for anything in
-        // the Command-based framework to work.
+        gameField.setRobotPose(robotContainer.driveSub.getPose());
         CommandScheduler.getInstance().run();
     }
 
-    /** This function is called once each time the robot enters Disabled mode. */
     @Override
-    public void disabledInit() {
-    }
+    public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {
-    }
+    public void disabledPeriodic() {}
 
     /**
      * This autonomous runs the autonomous command selected by your
@@ -75,46 +71,54 @@ public class Robot extends TimedRobot {
         }
     }
 
-    // /** This function is called periodically during autonomous. */
     // @Override
-    public void autonomousPeriodic() {
-    }
+    public void autonomousPeriodic() {}
 
     @Override
     public void teleopInit() {
-        // This makes sure that the autonomous stops running when teleop starts running.
-        // If you want the autonomous to continue until interrupted by another command,
-        // remove this line or comment it out.
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
     }
 
-    /** This function is called periodically during operator control. */
     @Override
-    public void teleopPeriodic() {
-    }
+    public void teleopPeriodic() {}
 
     @Override
     public void testInit() {
-        // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
     }
 
-    /** This function is called periodically during test mode. */
     @Override
-    public void testPeriodic() {
-    }
+    public void testPeriodic() {}
 
-    /** This function is called once when the robot is first started up. */
     @Override
     public void simulationInit() {
         robotContainer.driveSub.simulationInit();
     }
 
-    /** This function is called periodically whilst in simulation. */
     @Override
     public void simulationPeriodic() {
         PhysicsSim.getInstance().run();
+    }
+
+    static public void reportCommandStart(Command c) {
+        double deltaTime = ((double) System.currentTimeMillis() - startTime) / 1000.0;
+        System.out.println(deltaTime + ": Started " + c.getName());
+        startTimes.putIfAbsent(c, System.currentTimeMillis());
+    }
+
+    static public void reportCommandFinish(Command c) {
+        if (startTimes.containsKey(c)) {
+            long currentTime = System.currentTimeMillis();
+            double deltaTime = ((double) currentTime - startTime) / 1000.0;
+            double elapsedTime = (double) (currentTime - startTimes.get(c)) / 1000.0;
+            System.out.println(deltaTime + ": Finished (elapsed time " + elapsedTime + ")" + c.getName());
+            startTimes.remove(c);
+        }
+    }
+
+    private void handleInterrupted(Command c) {
+        System.out.println("Commmand " + c + " named " + c.getName() + " was interrupted");
     }
 }
