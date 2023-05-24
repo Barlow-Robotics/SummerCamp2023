@@ -15,12 +15,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
+import edu.wpi.first.wpilibj.DigitalInput;
+
 
 public class Shooter extends SubsystemBase {
     // private static final TalonSRX hopperMotor = null;
 
     WPI_TalonFX flyWheelMotor;
     WPI_TalonSRX paddleMotor;
+    DigitalInput HallEffect = new DigitalInput(Constants.ShooterConstants.HallEffectID);
 
     // Solenoid retractSolenoid;
     // Solenoid extendSolenoid;
@@ -77,7 +80,27 @@ public class Shooter extends SubsystemBase {
 
     public void startShooting() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelVelocity);
+        // wait until wheel i at full speed
+        // run the spinner
+        // do {
+        // while
+    // }
+    // until (button is clicked to stop and spinner result == false)
+        // than, turn off wheel
+
+        // timer for failsame
+        
         isShooting = true;
+    }
+    public void start() {
+        startShooting();
+        if (flyWheelIsUpToSpeed()) {
+            spinPaddle();
+            if (shoterbuttonunclicked && HallEffect.get() == false)
+                
+
+
+        }
     }
 
     public void stopShooting() {
