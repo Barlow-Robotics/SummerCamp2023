@@ -35,8 +35,6 @@ public class DriveRobot extends CommandBase {
 
     public PIDController pid;
 
-    public String selectedTarget = "None";
-
     public DriveRobot(
             Drive d, Vision v, Trigger autoAlignButton, Joystick driverController, int throttleID, int turnID) {
 
@@ -67,7 +65,6 @@ public class DriveRobot extends CommandBase {
         boolean autoAlignEnabled = autoAlignButton.getAsBoolean();
 
         SmartDashboard.putBoolean("Auto Align Enabled", autoAlignEnabled);
-        SmartDashboard.putString("Auto Align Target", selectedTarget);
 
         double x = -driverController.getRawAxis(controllerThrottleID);
         if (Math.abs(x) < 0.01) {
@@ -97,31 +94,14 @@ public class DriveRobot extends CommandBase {
             }
 
             lastAutoSteer = false;
-        } else {
-            if (!lastAutoSteer) {
-                pid.reset();
-            }
+            // } else {
+            // if (!lastAutoSteer) {
+            // pid.reset();
+            // }
 
-            // if (toggleTarget == true) { /* switch indicates game piece with switch value
-            // of 1 (maybe or 0?) */
-
-            selectedTarget = "Game Piece";
-
-            if (visionSub.targetIsVisible()) {
-                error = visionSub.targetDistanceFromCenter();
-                adjustment = pid.calculate(error);
-                adjustment = Math.signum(adjustment)
-                        * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
-                leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
-                rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
-
-                driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
-            } else {
-                missedFrames++;
-            }
-            // } else { /* switch indicates april tag with switch value of -1 */
-
-            // selectedTarget = "April Tag";
+            // // if (toggleTarget == true) { /* switch indicates game piece with switch
+            // value
+            // // of 1 (maybe or 0?) */
 
             // if (visionSub.aprilTagIsVisible()) {
             // error = visionSub.aprilTagDistanceFromCenter();
@@ -137,20 +117,37 @@ public class DriveRobot extends CommandBase {
             // } else {
             // missedFrames++;
             // }
-            // yaw = pid.calculate(visionSub.targetDistanceFromCenter());
-            // lastAutoSteer = true;
             // }
+        } else { /* switch indicates april tag with switch value of -1 */
+
+            if (visionSub.aprilTagIsVisible()) {
+                error = visionSub.aprilTagDistanceFromCenter();
+                adjustment = pid.calculate(error);
+                adjustment = Math.signum(adjustment)
+                        * Math.min(Math.abs(adjustment),
+                                Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
+                leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
+                rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed +
+                        adjustment;
+
+                driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
+            } else {
+                missedFrames++;
+            }
+            yaw = pid.calculate(visionSub.aprilTagDistanceFromCenter());
+            lastAutoSteer = true;
         }
 
+        NetworkTableInstance.getDefault().getEntry("drive/speed").setDouble(-speed);
         NetworkTableInstance.getDefault().getEntry("drive/speed").setDouble(-speed);
         NetworkTableInstance.getDefault().getEntry("drive/yaw").setDouble(yaw);
 
         driveSub.drive(-speed, yaw * 0.8, true);
+
     }
 
     @Override
-    public void end(boolean interrupted) {
-    }
+    public void end(boolean interrupted) {}
 
     @Override
     public boolean isFinished() {

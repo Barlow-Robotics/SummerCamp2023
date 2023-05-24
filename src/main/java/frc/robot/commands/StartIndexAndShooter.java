@@ -25,7 +25,7 @@ public class StartIndexAndShooter extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    int wpk = 1 ;
+    // int wpk = 1 ;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
