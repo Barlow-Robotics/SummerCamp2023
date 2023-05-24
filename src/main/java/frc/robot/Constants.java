@@ -125,6 +125,7 @@ public final class Constants {
         public static final double RevolutionsPerDegree = 1.0 / 360;
         public static final double CountsPerArmDegree = UnitsPerSRXRotation * RevolutionsPerDegree * RotateGearRatio;
         public static final double DegreesPerSecToCountsPer100MSec = CountsPerArmDegree * SecondsTo100MSec;
+        public static final int HallEffectID = 0;
     }
 
     public static final class AutoConstants {

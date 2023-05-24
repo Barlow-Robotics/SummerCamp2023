@@ -23,7 +23,8 @@ public class Shooter extends SubsystemBase {
 
     WPI_TalonFX flyWheelMotor;
     WPI_TalonSRX paddleMotor;
-    DigitalInput HallEffect = new DigitalInput(Constants.ShooterConstants.HallEffectID);
+    
+    DigitalInput HallEffect;
 
     // Solenoid retractSolenoid;
     // Solenoid extendSolenoid;
@@ -92,16 +93,16 @@ public class Shooter extends SubsystemBase {
         
         isShooting = true;
     }
-    public void start() {
-        startShooting();
-        if (flyWheelIsUpToSpeed()) {
-            spinPaddle();
-            if (shoterbuttonunclicked && HallEffect.get() == false)
+    // public void start() {
+    //     startShooting();
+    //     if (flyWheelIsUpToSpeed()) {
+    //         spinPaddle();
+    //         if (shoterbuttonunclicked && HallEffect.get() == false)
                 
 
 
-        }
-    }
+    //     }
+    // }
 
     public void stopShooting() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, 0);
