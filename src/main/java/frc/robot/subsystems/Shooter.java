@@ -71,10 +71,28 @@ public class Shooter extends SubsystemBase {
 
     public void startShooterIndex() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelVelocity);
-        
+        isShooting = true;
+    }
+    public void StartShooting() {
+        startShooterIndex();
         if (flyWheelIsUpToSpeed()) {
-            
+            spinPaddle();
         }
+    }
+    public void StopShooting() {
+        if (HallEffect.get() == false) {
+            stopShooterIndex();
+        }   
+    }
+    public void failsafe() {
+        int counter = 0;
+        if (button == clicked) {
+            counter++;
+        }
+        if (counter >= 500) {// 10 sec 
+            stopShooterIndex();
+        }
+    }
         // wait until wheel i at full speed
         // run the spinner
         // do {
@@ -85,18 +103,11 @@ public class Shooter extends SubsystemBase {
 
         // timer for failsame
         
-        isShooting = true;
-    }
-    // public void start() {
-    //     startShooting();
-    //     if (flyWheelIsUpToSpeed()) {
-    //         spinPaddle();
-    //         if (shoterbuttonunclicked && HallEffect.get() == false)
-                
 
 
-    //     }
-    // }
+
+
+
 
     public void stopShooterIndex() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
