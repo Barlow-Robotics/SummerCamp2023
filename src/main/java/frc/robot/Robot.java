@@ -47,7 +47,15 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        
+        SmartDashboard.putData(CommandScheduler.getInstance());
+        SmartDashboard.putData(robotContainer.driveSub);
+
+        if (robotContainer.getCurrentTrajectory() != null) {
+            gameField.getObject("traj").setTrajectory(robotContainer.getCurrentTrajectory());
+        }
         gameField.setRobotPose(robotContainer.driveSub.getPose());
+
         CommandScheduler.getInstance().run();
     }
 

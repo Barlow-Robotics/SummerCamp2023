@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -41,25 +43,13 @@ public class Shooter extends SubsystemBase {
         paddleMotor = new WPI_TalonSRX(Constants.ShooterConstants.PaddleMotorID);
         setMotorConfig(paddleMotor);
 
-        // retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM /* <- This
-        // probably needs to change */,
-        // Constants.ShooterConstants.RetractSolenoidID);
-        // extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM /* <- This
-        // probably needs to change */,
-        // Constants.ShooterConstants.ExtendSolenoidID);
-
         simulationInit();
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Shooter Closed Loop Error", getClosedLoopError());
-        SmartDashboard.putNumber("Shooter Velocity", getVelocity());
-    }
-
-    public double getAngle() {
-        double result = paddleMotor.getSelectedSensorPosition() / ShooterConstants.CountsPerArmDegree;
-        return result;
+        SmartDashboard.putNumber("Fly Wheel Velocity", getVelocity(flyWheelMotor));
     }
 
     public void spinPaddle() {
@@ -74,13 +64,17 @@ public class Shooter extends SubsystemBase {
         // paddleMotor.set(TalonSRXControlMode.MotionMagic, setAngle, DemandType.ArbitraryFeedForward, ff);
     }
 
-    public double getVelocity() {
-        double velocity = flyWheelMotor.getSelectedSensorVelocity();
+    public double getVelocity(TalonFX motor) {
+        double velocity = motor.getSelectedSensorVelocity();
         return velocity;
     }
 
-    public void startShooting() {
+    public void startShooterIndex() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelVelocity);
+        
+        if (flyWheelIsUpToSpeed()) {
+            
+        }
         // wait until wheel i at full speed
         // run the spinner
         // do {
@@ -104,13 +98,14 @@ public class Shooter extends SubsystemBase {
     //     }
     // }
 
-    public void stopShooting() {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, 0);
+    public void stopShooterIndex() {
+        flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
+        paddleMotor.set(TalonSRXControlMode.Velocity, 0.0);
         isShooting = false;
     }
 
     public boolean flyWheelIsUpToSpeed() {
-        if (getVelocity() == Constants.ShooterConstants.RPM) {
+        if (getVelocity(flyWheelMotor) == (0.95 * Constants.ShooterConstants.FlyWheelVelocity)) {
             return true;
         } else {
             return false;

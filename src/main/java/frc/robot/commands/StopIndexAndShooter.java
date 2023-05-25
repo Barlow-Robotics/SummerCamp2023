@@ -14,7 +14,7 @@ public class StopIndexAndShooter extends CommandBase {
   private Shooter shooterSub;
 
   /** Creates a new StopIndex. */
-  public StopIndexAndShooter(Index i, Shooter s) {
+  public StopIndexAndShooter(Shooter s, Index i) {
     indexSub = i;
     shooterSub = s;
     addRequirements(shooterSub, indexSub);
@@ -29,7 +29,7 @@ public class StopIndexAndShooter extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSub.stopShooting();
+    shooterSub.stopShooterIndex();
     indexSub.stopHopper();
   }
 

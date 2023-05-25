@@ -26,10 +26,24 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Drive": "Subsystem",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/String Chooser": "String Chooser"
     },
     "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Scheduler": {
         "window": {
           "visible": true
         }
@@ -41,15 +55,28 @@
       "SmartDashboard": {
         "Field": {
           "open": true
-        },
-        "open": true
+        }
       },
       "drive": {
         "odometry": {
           "open": true
         },
-        "open": true,
         "pose": {
+          "open": true
+        }
+      },
+      "pathPlanner": {
+        "open": true,
+        "rotationError": {
+          "open": true
+        },
+        "setpointSpeeds": {
+          "open": true
+        },
+        "targetPose": {
+          "open": true
+        },
+        "translationError": {
           "open": true
         }
       }

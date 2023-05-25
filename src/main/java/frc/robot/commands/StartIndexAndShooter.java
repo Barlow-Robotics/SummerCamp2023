@@ -31,7 +31,7 @@ public class StartIndexAndShooter extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSub.startShooting();
+    shooterSub.startShooterIndex();
 
     if(shooterSub.getVelocity() >= (0.95 * Constants.ShooterConstants.FlyWheelVelocity)) {
       indexSub.startHopper();
@@ -41,7 +41,7 @@ public class StartIndexAndShooter extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSub.stopShooting();
+    shooterSub.stopShooterIndex();
     indexSub.stopHopper();
   }
 
