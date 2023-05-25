@@ -131,6 +131,12 @@ public final class Constants {
     public static final class AutoConstants {
     }
 
+    public static final class VisionConstants {
+
+        public static final int CameraLightID = 0; // Need to change
+
+    }
+
     public final class Logitech_Dual_Action {
 
         // Constants for Axes

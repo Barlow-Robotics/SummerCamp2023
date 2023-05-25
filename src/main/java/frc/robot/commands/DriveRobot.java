@@ -120,7 +120,7 @@ public class DriveRobot extends CommandBase {
             // }
         } else { /* switch indicates april tag with switch value of -1 */
 
-            if (visionSub.aprilTagIsVisible()) {
+            if (visionSub.aprilTagDetected()) {
                 error = visionSub.aprilTagDistanceFromCenter();
                 adjustment = pid.calculate(error);
                 adjustment = Math.signum(adjustment)
