@@ -33,7 +33,7 @@ public class StartIndexAndShooter extends CommandBase {
   public void execute() {
     shooterSub.startShooterIndex();
 
-    if(shooterSub.getVelocity() >= (0.95 * Constants.ShooterConstants.FlyWheelVelocity)) {
+    if(shooterSub.flyWheelIsUpToSpeed()) {
       indexSub.startHopper();
     }
   }
