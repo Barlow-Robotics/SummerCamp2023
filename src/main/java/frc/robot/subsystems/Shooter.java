@@ -79,11 +79,13 @@ public class Shooter extends SubsystemBase {
             spinPaddle();
         }
     }
+    
     public void StopShooting() {
         if (HallEffect.get() == false) {
             stopShooterIndex();
         }   
     }
+
     public void failsafe() {
         int counter = 0;
         if (button == clicked) {
@@ -93,21 +95,6 @@ public class Shooter extends SubsystemBase {
             stopShooterIndex();
         }
     }
-        // wait until wheel i at full speed
-        // run the spinner
-        // do {
-        // while
-    // }
-    // until (button is clicked to stop and spinner result == false)
-        // than, turn off wheel
-
-        // timer for failsame
-        
-
-
-
-
-
 
     public void stopShooterIndex() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
