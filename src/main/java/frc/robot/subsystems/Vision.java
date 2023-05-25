@@ -7,14 +7,12 @@ package frc.robot.subsystems;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,10 +23,7 @@ public class Vision extends SubsystemBase {
   DigitalOutput cameraLight;
 
   boolean aprilTagDetected;
-  double aprilTagDistanceFromCenter;
-  double aprilTagHeight;
-  double aprilTagWidth;
-  double aprilTagAngle;
+  double aprilTagBearing;
   double distanceToAprilTag;
   String sourceIP = "Nothing Received";
 
@@ -78,10 +73,7 @@ public class Vision extends SubsystemBase {
         myMap = objectMapper.readValue(message, new TypeReference<HashMap<String, String>>() {
         });
         this.aprilTagDetected = Boolean.parseBoolean(myMap.get("detected"));
-        this.aprilTagDistanceFromCenter = Double.parseDouble(myMap.get("distance_from_center"));
-        this.aprilTagHeight = Double.parseDouble(myMap.get("bb_height"));
-        this.aprilTagWidth = Double.parseDouble(myMap.get("bb_width"));
-        this.aprilTagAngle = Double.parseDouble(myMap.get("angle"));
+        this.aprilTagBearing = Double.parseDouble(myMap.get("angle"));
         this.distanceToAprilTag = Double.parseDouble(myMap.get("distance_to"));
 
       }
@@ -94,20 +86,8 @@ public class Vision extends SubsystemBase {
     return this.aprilTagDetected;
   }
 
-  public double aprilTagDistanceFromCenter() {
-    return this.aprilTagDistanceFromCenter;
-  }
-
-  public double aprilTagHeight() {
-    return this.aprilTagHeight;
-  }
-
-  public double aprilTagWidth() {
-    return this.aprilTagWidth;
-  }
-
-  public double aprilTagAngle() {
-    return this.aprilTagAngle;
+  public double aprilTagBearing() {
+    return this.aprilTagBearing;
   }
 
   public double distanceToAprilTag() {
