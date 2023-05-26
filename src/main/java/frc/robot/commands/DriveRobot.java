@@ -120,8 +120,8 @@ public class DriveRobot extends CommandBase {
             // }
         } else { /* switch indicates april tag with switch value of -1 */
 
-            if (visionSub.aprilTagIsVisible()) {
-                error = visionSub.aprilTagDistanceFromCenter();
+            if (visionSub.aprilTagDetected()) {
+                error = visionSub.aprilTagBearing();
                 adjustment = pid.calculate(error);
                 adjustment = Math.signum(adjustment)
                         * Math.min(Math.abs(adjustment),
@@ -135,6 +135,9 @@ public class DriveRobot extends CommandBase {
                 // missedFrames++;
             }
             yaw = pid.calculate(visionSub.aprilTagDistanceFromCenter());
+            //     missedFrames++;
+            }
+            yaw = pid.calculate(visionSub.aprilTagBearing());
             // lastAutoSteer = true;
         }
 
