@@ -23,8 +23,9 @@ public class Vision extends SubsystemBase {
   DigitalOutput cameraLight;
 
   boolean aprilTagDetected;
+  double aprilTagID;
   double aprilTagBearing;
-  double distanceToAprilTag;
+  double distanceToAprilTag; // need to change this to include the distnace to all 4 corners
   String sourceIP = "Nothing Received";
 
   private DatagramChannel visionChannel = null;
@@ -73,8 +74,10 @@ public class Vision extends SubsystemBase {
         myMap = objectMapper.readValue(message, new TypeReference<HashMap<String, String>>() {
         });
         this.aprilTagDetected = Boolean.parseBoolean(myMap.get("detected"));
+        this.aprilTagID = Double.parseDouble(myMap.get("ID"));
         this.aprilTagBearing = Double.parseDouble(myMap.get("angle"));
-        this.distanceToAprilTag = Double.parseDouble(myMap.get("distance_to"));
+        this.distanceToAprilTag = Double.parseDouble(myMap.get("distance_to")); // need to change this to include the
+                                                                                // distnace to all 4 corners
 
       }
     } catch (Exception ex) {
