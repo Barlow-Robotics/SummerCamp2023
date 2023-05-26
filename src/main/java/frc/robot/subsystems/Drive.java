@@ -235,5 +235,4 @@ public class Drive extends SubsystemBase {
         SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Pitch"));
         angle.set(5.0);
     }
-   
 }

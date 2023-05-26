@@ -19,12 +19,12 @@ public class DriveRobot extends CommandBase {
     Drive driveSub;
     Vision visionSub;
 
-    private boolean lastAutoSteer = false;
+    // private boolean lastAutoSteer = false;
     private float yawMultiplier = 1.0f;
     private double error;
     private double leftVelocity;
     private double rightVelocity;
-    private int missedFrames = 0;
+    // private int missedFrames = 0;
     private double adjustment;
 
     Trigger autoAlignButton;
@@ -57,7 +57,7 @@ public class DriveRobot extends CommandBase {
     @Override
     public void initialize() {
         pid.reset();
-        missedFrames = 0;
+        // missedFrames = 0;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class DriveRobot extends CommandBase {
                 yaw = 0.0f;
             }
 
-            lastAutoSteer = false;
+            // lastAutoSteer = false;
             // } else {
             // if (!lastAutoSteer) {
             // pid.reset();
@@ -131,11 +131,11 @@ public class DriveRobot extends CommandBase {
                         adjustment;
 
                 driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
-            } else {
-                missedFrames++;
+            // } else {
+                // missedFrames++;
             }
             yaw = pid.calculate(visionSub.aprilTagDistanceFromCenter());
-            lastAutoSteer = true;
+            // lastAutoSteer = true;
         }
 
         NetworkTableInstance.getDefault().getEntry("drive/speed").setDouble(-speed);

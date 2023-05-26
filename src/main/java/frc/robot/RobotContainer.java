@@ -45,7 +45,8 @@ public class RobotContainer {
     private final Vision visionSub = new Vision();
 
     /* Commands */
-    private final StartIndexAndShooter indexAndShooterCmd = new StartIndexAndShooter(shooterSub, indexSub);
+    private final StartIndexAndShooter startIndexShooterCmd = new StartIndexAndShooter(shooterSub, indexSub);
+    private final StopIndexAndShooter stopIndexShooterCmd = new StopIndexAndShooter(shooterSub, indexSub);
     private final DriveDistance driveDistanceCmd = new DriveDistance(driveSub, 2, 1);
     private final Pivot pivotCmd = new Pivot(driveSub, 180, 0.5);
 
@@ -103,7 +104,7 @@ public class RobotContainer {
         throttleJoystickID = Constants.Logitech_Dual_Action.LeftStickY;
         turnJoystickID = Constants.Logitech_Dual_Action.RightStickX;
 
-        indexAndShooterButton.whileTrue(indexAndShooterCmd);
+        indexAndShooterButton.whileTrue(startIndexShooterCmd).whileFalse(stopIndexShooterCmd);
         driveDistanceButton.onTrue(driveDistanceCmd);
         pivotButton.onTrue(pivotCmd);
     }

@@ -98,34 +98,39 @@ public final class Constants {
         public static double kF;
     }
 
-    public static final class ShooterConstants {
+    public static final class Shooter {
         // All variables are placeholders
 
-        public static final int FlyWheelMotorID = 11;
-        public static final int PaddleMotorID = 0;
-        // public static final int ExtendSolenoidID = 0; // Need to change
-        // public static final int RetractSolenoidID = 1; // Need to change
+        public static final class FlyWheel {
+            public static final int FlyWheelMotorID = 11;
 
-        public static final double kF = 0.055;
-        public static final double kP = 0.03;
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
+            public static final double ChainGearRatio = 24.0 / 42.0; // need to change
+            public static final double RPM = ChainGearRatio / 60.0 * UnitsPerFXRotation / 10.0;
+            public static final double Velocity = 4500 * RPM; // * RPM
 
-        public static final double ChainGearRatio = 24.0 / 42.0; // need to change
+           
+            public static final double kF = 0.055;
+            public static final double kP = 0.03;
+            public static final double kI = 0.0;
+            public static final double kD = 0.0;
+            public static final double ClosedVoltageRampingConstant = 0.1;
+            public static final double ManualVoltageRampingConstant = 0.2;
+        }
 
-        public static final double RPM = ChainGearRatio / 60.0 * UnitsPerFXRotation / 10.0;
+        public static final class Paddle {
+            public static final int PaddleMotorID = 20;
+            
+            public static final double Velocity = 0;
 
-        public static final double FlyWheelVelocity = 4500 * RPM; // * RPM
+            public static final int HallEffectID = 0;
 
-        public static final double ClosedVoltageRampingConstant = 0.1;
-        public static final double ManualVoltageRampingConstant = 0.2;
-        public static final double PaddleVelocity = 0;
-       
-        public static final double RotateGearRatio = 100; //placeholder
-        public static final double RevolutionsPerDegree = 1.0 / 360;
-        public static final double CountsPerArmDegree = UnitsPerSRXRotation * RevolutionsPerDegree * RotateGearRatio;
-        public static final double DegreesPerSecToCountsPer100MSec = CountsPerArmDegree * SecondsTo100MSec;
-        public static final int HallEffectID = 0;
+            public static final double kD = 0;
+            public static final double kI = 0;
+            public static final double kP = 0;
+            public static final double kF = 0;
+            public static final double ClosedVoltageRampingConstant = 0;
+            public static final double ManualVoltageRampingConstant = 0;
+        }        
     }
 
     public static final class AutoConstants {

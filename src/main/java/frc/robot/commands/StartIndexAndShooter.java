@@ -5,49 +5,52 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Shooter;
 
 public class StartIndexAndShooter extends CommandBase {
 
-  private Shooter shooterSub;
-  private Index indexSub;
+    private Shooter shooterSub;
+    private Index indexSub;
 
-  /** Creates a new StartShooting. */
-  public StartIndexAndShooter(Shooter s, Index i) {
-    shooterSub = s;
-    indexSub = i;
-    addRequirements(shooterSub, indexSub);
-    // Use addRequirements() here to dclare subsystem dependencies.
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    // int wpk = 1 ;
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    shooterSub.startShooterIndex();
-
-    if(shooterSub.flyWheelIsUpToSpeed()) {
-      indexSub.startHopper();
+    public StartIndexAndShooter(Shooter s, Index i) {
+        shooterSub = s;
+        indexSub = i;
+        addRequirements(shooterSub, indexSub);
     }
-  }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    shooterSub.stopShooterIndex();
-    indexSub.stopHopper();
-  }
+    @Override
+    public void initialize() {
+        int counter = 0;
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    @Override
+    public void execute() {
+        shooterSub.startFlyWheel();
+
+        if (shooterSub.flyWheelUpToSpeed()) {
+            indexSub.startHopper();
+            shooterSub.startPaddle();
+        }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        if (!shooterSub.hallEffectTrue()) {
+            shooterSub.startPaddle();
+        }
+        // counter++;
+        // if (counter >= 500) { // 10 sec
+        // shooter.stopShooterIndex();
+        // } //courtesy of brian
+    }
+
+    @Override
+    public boolean isFinished() {
+        if (shooterSub.hallEffectTrue()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

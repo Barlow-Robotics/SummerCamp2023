@@ -5,21 +5,6 @@
         "header": {
           "open": true
         }
-      },
-      "Talon FX[11]/Fwd Limit": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[11]/Integrated Sensor": {
-        "header": {
-          "open": true
-        }
-      },
-      "Victor SPX[7]": {
-        "header": {
-          "open": true
-        }
       }
     }
   },
@@ -31,23 +16,6 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/String Chooser": "String Chooser"
-    },
-    "windows": {
-      "/SmartDashboard/Auto Chooser": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Field": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Scheduler": {
-        "window": {
-          "visible": true
-        }
-      }
     }
   },
   "NetworkTables": {
@@ -79,6 +47,9 @@
         "translationError": {
           "open": true
         }
+      },
+      "shooter": {
+        "open": true
       }
     }
   }

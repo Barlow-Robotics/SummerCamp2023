@@ -29,7 +29,8 @@ public class StopIndexAndShooter extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSub.stopShooterIndex();
+    shooterSub.stopFlyWheel();
+    shooterSub.stopPaddle();
     indexSub.stopHopper();
   }
 

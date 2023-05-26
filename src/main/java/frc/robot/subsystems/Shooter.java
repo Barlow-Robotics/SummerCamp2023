@@ -8,14 +8,15 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -26,23 +27,21 @@ public class Shooter extends SubsystemBase {
     WPI_TalonFX flyWheelMotor;
     WPI_TalonSRX paddleMotor;
     
-    DigitalInput HallEffect;
-
-    // Solenoid retractSolenoid;
-    // Solenoid extendSolenoid;
+    DigitalInput hallEffect;
 
     boolean isShooting = false;
     boolean simulationInitialized = false;
 
-    boolean extended = false;
-
     public Shooter() {
-        flyWheelMotor = new WPI_TalonFX(Constants.ShooterConstants.FlyWheelMotorID);
+        flyWheelMotor = new WPI_TalonFX(Constants.Shooter.FlyWheel.FlyWheelMotorID);
         setMotorConfig(flyWheelMotor);
 
-        paddleMotor = new WPI_TalonSRX(Constants.ShooterConstants.PaddleMotorID);
+        paddleMotor = new WPI_TalonSRX(Constants.Shooter.Paddle.PaddleMotorID);
         setMotorConfig(paddleMotor);
 
+        hallEffect = new DigitalInput(Constants.Shooter.Paddle.HallEffectID); 
+
+        CreateNetworkTableEntries();
         simulationInit();
     }
 
@@ -50,102 +49,56 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Shooter Closed Loop Error", getClosedLoopError());
         SmartDashboard.putNumber("Fly Wheel Velocity", getVelocity(flyWheelMotor));
+        SmartDashboard.putBoolean("Hall Effect Detected", hallEffectTrue());
+
+        NetworkTableInstance.getDefault().getEntry("shooter/fly_wheel_velocity").setDouble(getVelocity(flyWheelMotor));
+        NetworkTableInstance.getDefault().getEntry("shooter/paddle_velocity").setDouble(getVelocity(paddleMotor));
     }
 
-    public void spinPaddle() {
-        paddleMotor.configMotionCruiseVelocity(1200 * ShooterConstants.DegreesPerSecToCountsPer100MSec);
-        // paddleMotor.configMotionAcceleration(1200 * ShooterConstants.DegreesPerSecToCountsPer100MSec / accelerationTime);
-
-        // double ff = Math.sin(Math.toRadians(getAngle())) * rotationFeedForward();
-
-        // double setAngle = 180 * ShooterConstants.CountsPerArmDegree;
-
-        //  System.out.println("Setting arm angle to " + desiredAngle + "( " +  setAngle + " ) with feed forward "+ ff ) ;
-        // paddleMotor.set(TalonSRXControlMode.MotionMagic, setAngle, DemandType.ArbitraryFeedForward, ff);
+    public void startPaddle() {
+        paddleMotor.set(TalonSRXControlMode.Velocity, Constants.Shooter.Paddle.Velocity);
     }
+
+    public void stopPaddle() {
+        paddleMotor.set(TalonSRXControlMode.Velocity, 0.0);
+        isShooting = false;
+    }
+    public void startFlyWheel() {
+        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.Shooter.FlyWheel.Velocity);
+        isShooting = true;
+    }
+
+    public void stopFlyWheel() {
+        flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
+        isShooting = false;
+    }
+    
 
     public double getVelocity(TalonFX motor) {
         double velocity = motor.getSelectedSensorVelocity();
         return velocity;
     }
 
-    public void startShooterIndex() {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelVelocity);
-        isShooting = true;
-    }
-    public void StartShooting() {
-        startShooterIndex();
-        if (flyWheelIsUpToSpeed()) {
-            spinPaddle();
-        }
+    public double getVelocity(TalonSRX motor) {
+        double velocity = motor.getSelectedSensorVelocity();
+        return velocity;
     }
     
-    public void StopShooting() {
-        if (HallEffect.get() == false) {
-            stopShooterIndex();
-        }   
-    }
-
-    public void failsafe() {
-        int counter = 0;
-        if (button == clicked) {
-            counter++;
-        }
-        if (counter >= 500) {// 10 sec 
-            stopShooterIndex();
-        }
-    }
-
-    public void stopShooterIndex() {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
-        paddleMotor.set(TalonSRXControlMode.Velocity, 0.0);
-        isShooting = false;
-    }
-
-    public boolean flyWheelIsUpToSpeed() {
-        if (getVelocity(flyWheelMotor) == (0.95 * Constants.ShooterConstants.FlyWheelVelocity)) {
+    public boolean hallEffectTrue() {
+        if (hallEffect.get() == false) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
 
-    // public void retract() {
-    // extendSolenoid.set(true);
-    // retractSolenoid.set(false);
-    // extended = false;
-    // }
-
-    // public void open() {
-    // extendSolenoid.set(false);
-    // retractSolenoid.set(true);
-    // extended = true;
-    // }
-
-    private void setMotorConfig(WPI_TalonFX motor) {
-        motor.configFactoryDefault();
-        motor.configClosedloopRamp(Constants.ShooterConstants.ClosedVoltageRampingConstant);
-        motor.configOpenloopRamp(Constants.ShooterConstants.ManualVoltageRampingConstant);
-        motor.config_kF(0, Constants.ShooterConstants.kF); // Need to make these not the drive constants
-        motor.config_kP(0, Constants.ShooterConstants.kP);
-        motor.config_kI(0, Constants.ShooterConstants.kI);
-        motor.config_kD(0, Constants.ShooterConstants.kD);
-        motor.setNeutralMode(NeutralMode.Brake);
-    }
-
-    private void setMotorConfig(WPI_TalonSRX motor) {
-        motor.configFactoryDefault();
-        motor.configClosedloopRamp(Constants.ShooterConstants.ClosedVoltageRampingConstant);
-        motor.configOpenloopRamp(Constants.ShooterConstants.ManualVoltageRampingConstant);
-        motor.config_kF(0, Constants.ShooterConstants.kF); // Need to make these not the drive constants
-        motor.config_kP(0, Constants.ShooterConstants.kP);
-        motor.config_kI(0, Constants.ShooterConstants.kI);
-        motor.config_kD(0, Constants.ShooterConstants.kD);
-        motor.setNeutralMode(NeutralMode.Brake);
-    }
-
-    public void simulationInit() {
-        PhysicsSim.getInstance().addTalonFX(flyWheelMotor, 0.5, 6800);
+    public boolean flyWheelUpToSpeed() {
+        if (getVelocity(flyWheelMotor) == (0.95 * Constants.Shooter.FlyWheel.Velocity)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private double getClosedLoopError() {
@@ -159,5 +112,41 @@ public class Shooter extends SubsystemBase {
         builder.setSmartDashboardType("Shooter Subsystem");
 
         builder.addDoubleProperty("Error", this::getClosedLoopError, null);
+    }
+
+    private void CreateNetworkTableEntries() {
+        NetworkTableInstance.getDefault().getEntry("shooter/fly_wheel_velocity").setDouble(0.0);
+        NetworkTableInstance.getDefault().getEntry("shooter/paddle_velocity").setDouble(0.0);
+    }
+    
+    private void setMotorConfig(WPI_TalonFX motor) {
+        motor.configFactoryDefault();
+        motor.configClosedloopRamp(Constants.Shooter.FlyWheel.ClosedVoltageRampingConstant);
+        motor.configOpenloopRamp(Constants.Shooter.FlyWheel.ManualVoltageRampingConstant);
+        motor.config_kF(0, Constants.Shooter.FlyWheel.kF); // Need to make these not the drive constants
+        motor.config_kP(0, Constants.Shooter.FlyWheel.kP);
+        motor.config_kI(0, Constants.Shooter.FlyWheel.kI);
+        motor.config_kD(0, Constants.Shooter.FlyWheel.kD);
+        motor.setNeutralMode(NeutralMode.Brake);
+    }
+
+    private void setMotorConfig(WPI_TalonSRX motor) {
+        motor.configFactoryDefault();
+        motor.configClosedloopRamp(Constants.Shooter.Paddle.ClosedVoltageRampingConstant);
+        motor.configOpenloopRamp(Constants.Shooter.Paddle.ManualVoltageRampingConstant);
+        motor.config_kF(0, Constants.Shooter.Paddle.kF); // Need to make these not the drive constants
+        motor.config_kP(0, Constants.Shooter.Paddle.kP);
+        motor.config_kI(0, Constants.Shooter.Paddle.kI);
+        motor.config_kD(0, Constants.Shooter.Paddle.kD);
+        motor.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public void simulationInit() {
+        PhysicsSim.getInstance().addTalonFX(flyWheelMotor, 0.5, 6800);
+    }
+
+    @Override
+    public void simulationPeriodic() {
+   
     }
 }
