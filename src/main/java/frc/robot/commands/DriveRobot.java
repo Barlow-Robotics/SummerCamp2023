@@ -131,15 +131,14 @@ public class DriveRobot extends CommandBase {
                         adjustment;
 
                 driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
-            // } else {
+                // } else {
                 // missedFrames++;
             }
             yaw = pid.calculate(visionSub.aprilTagDistanceFromCenter());
-            //     missedFrames++;
-            }
-            yaw = pid.calculate(visionSub.aprilTagBearing());
-            // lastAutoSteer = true;
+            // missedFrames++;
         }
+        yaw = pid.calculate(visionSub.aprilTagBearing());
+        // lastAutoSteer = true;
 
         NetworkTableInstance.getDefault().getEntry("drive/speed").setDouble(-speed);
         NetworkTableInstance.getDefault().getEntry("drive/speed").setDouble(-speed);
@@ -150,7 +149,8 @@ public class DriveRobot extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+    }
 
     @Override
     public boolean isFinished() {
