@@ -51,6 +51,11 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData(CommandScheduler.getInstance());
         SmartDashboard.putData(robotContainer.driveSub);
 
+        SmartDashboard.putData(robotContainer.driveSub);
+        SmartDashboard.putData(robotContainer.visionSub);
+        SmartDashboard.putData(robotContainer.shooterSub);
+        SmartDashboard.putData(robotContainer.indexSub);
+
         if (robotContainer.getCurrentTrajectory() != null) {
             gameField.getObject("traj").setTrajectory(robotContainer.getCurrentTrajectory());
         }

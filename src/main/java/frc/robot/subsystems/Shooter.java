@@ -98,8 +98,9 @@ public class Shooter extends SubsystemBase {
     public void stopShooter() {
         if (shooterState == ShooterState.SpinningUpFlywheel) {
             shooterState = ShooterState.Stopped;
-        } else if (shooterState == ShooterState.AdvancingPaddle) {
-            shooterState = ShooterState.IndexingPaddle;
+        // temporarily commented out until hall effects installed.
+        // } else if (shooterState == ShooterState.AdvancingPaddle) {
+        //     shooterState = ShooterState.IndexingPaddle;
         } else {
             shooterState = ShooterState.Stopped;
         }

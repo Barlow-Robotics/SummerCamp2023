@@ -74,13 +74,13 @@ public final class Constants {
 
     public static final class IndexConstants {
         // All variables are placeholders
-        public static final int HopperMotorID = 15;
+        public static final int HopperMotorID = 10;
         public static final int PID_id = 0;
 
         public static final double ClosedVoltageRampingConstant = 0;
         public static final double ManualVoltageRampingConstant = 0;
 
-        public static final double HopperMotorSpeed = 0.25;
+        public static final double HopperMotorSpeed = 0.15;
         public static final double HopperKF = 0.048;
         public static final double HopperKP = 0.001;
         public static final double HopperKI = 0.0;
@@ -115,9 +115,9 @@ public final class Constants {
         }
 
         public static final class Paddle {
-            public static final int PaddleMotorID = 20;
+            public static final int PaddleMotorID = 16;
             
-            public static final double Velocity = 0.2;
+            public static final double Velocity = 0.15;
 
             public static final int HallEffectID = 0;
 

@@ -45,7 +45,7 @@ public class RobotContainer {
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
     public final Index indexSub = new Index();
-    private final Vision visionSub = new Vision();
+    public final Vision visionSub = new Vision();
 
     /* Commands */
     private final StartShooter startShooterCmd = new StartShooter(shooterSub);
