@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
@@ -30,8 +31,10 @@ import frc.robot.commands.DriveDistance;
 import frc.robot.commands.DriveRobot;
 import frc.robot.commands.InstrumentedSequentialCommandGroup;
 import frc.robot.commands.Pivot;
-import frc.robot.commands.StartIndexAndShooter;
-import frc.robot.commands.StopIndexAndShooter;
+import frc.robot.commands.StartIndex;
+import frc.robot.commands.StartShooter;
+import frc.robot.commands.StopIndex;
+import frc.robot.commands.StopShooter;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Shooter;
@@ -45,8 +48,10 @@ public class RobotContainer {
     private final Vision visionSub = new Vision();
 
     /* Commands */
-    private final StartIndexAndShooter startIndexShooterCmd = new StartIndexAndShooter(shooterSub, indexSub);
-    private final StopIndexAndShooter stopIndexShooterCmd = new StopIndexAndShooter(shooterSub, indexSub);
+    private final StartShooter startShooterCmd = new StartShooter(shooterSub);
+    private final StopShooter stopShooterCmd = new StopShooter(shooterSub);
+    private final StartIndex startIndexCmd = new StartIndex(indexSub);
+    private final StopIndex stopIndexCmd = new StopIndex(indexSub);
     private final DriveDistance driveDistanceCmd = new DriveDistance(driveSub, 2, 1);
     private final Pivot pivotCmd = new Pivot(driveSub, 180, 0.5);
 
@@ -56,7 +61,7 @@ public class RobotContainer {
 
     /* Buttons */
     private JoystickButton alignWithTargetButton;
-    private JoystickButton indexAndShooterButton;
+    private JoystickButton shooterIndexButton;
     private JoystickButton driveDistanceButton;
     private JoystickButton pivotButton;
 
@@ -82,7 +87,6 @@ public class RobotContainer {
                 new DriveRobot(
                         driveSub, visionSub, alignWithTargetButton, driverController, throttleJoystickID,
                         turnJoystickID));
-
     }
 
     private void configureButtonBindings() {
@@ -97,16 +101,34 @@ public class RobotContainer {
         }
 
         alignWithTargetButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.LeftBumper);
-        indexAndShooterButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.RightTrigger);
+        shooterIndexButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.RightTrigger);
         driveDistanceButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.ButtonY);
         pivotButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.ButtonX);
 
         throttleJoystickID = Constants.Logitech_Dual_Action.LeftStickY;
         turnJoystickID = Constants.Logitech_Dual_Action.RightStickX;
 
-        indexAndShooterButton.whileTrue(startIndexShooterCmd).whileFalse(stopIndexShooterCmd);
+        shooterIndexButton.onTrue(startShooterIndex()).onFalse(stopShooterIndex());
         driveDistanceButton.onTrue(driveDistanceCmd);
         pivotButton.onTrue(pivotCmd);
+    }
+
+    ParallelCommandGroup startShooterIndex() {
+        ParallelCommandGroup theCmd = new ParallelCommandGroup();
+
+        theCmd.addCommands(startShooterCmd);
+        theCmd.addCommands(startIndexCmd);
+
+        return theCmd;
+    }
+
+    ParallelCommandGroup stopShooterIndex() {
+        ParallelCommandGroup theCmd = new ParallelCommandGroup();
+
+        theCmd.addCommands(stopShooterCmd);
+        theCmd.addCommands(stopIndexCmd);
+
+        return theCmd;
     }
 
     private PathPlannerTrajectory loadPath(String name, double velocity, double accel, boolean reverse) {
@@ -126,9 +148,10 @@ public class RobotContainer {
 
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("FirstBase", new PrintCommand("***************MISSION SHOOT FRISBEE IS A GO****************"));
-        eventMap.put("shoot", new StartIndexAndShooter(shooterSub, indexSub));
-        eventMap.put("stop shoot", new StopIndexAndShooter(shooterSub, indexSub));
-        eventMap.put("Final event", new PrintCommand("**************MISSION SHOOT FRISBEE IS A SUCCESS****************"));
+        eventMap.put("shoot", startShooterIndex());
+        eventMap.put("stop shoot", stopShooterIndex());
+        eventMap.put("Final event",
+                new PrintCommand("**************MISSION SHOOT FRISBEE IS A SUCCESS****************"));
 
         PPRamseteCommand basePathCmd = new PPRamseteCommand(
                 path,

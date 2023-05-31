@@ -6,35 +6,34 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Index extends SubsystemBase {
-  WPI_TalonFX hopperMotor;
+  WPI_TalonSRX hopperMotor;
 
-  /** Creates a new Index. */
   public Index() {
-    hopperMotor = new WPI_TalonFX(Constants.IndexConstants.HopperMotorID);
+    hopperMotor = new WPI_TalonSRX(Constants.IndexConstants.HopperMotorID);
     setMotorConfig(hopperMotor);
     hopperMotor.configFactoryDefault();
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
   }
 
-  public void startHopper() {
-    hopperMotor.set(TalonFXControlMode.Velocity, Constants.IndexConstants.HopperMotorSpeed);
+  public void startIndex() {
+    hopperMotor.set(TalonSRXControlMode.Velocity, Constants.IndexConstants.HopperMotorSpeed);
   }
 
-  public void stopHopper() {
-    hopperMotor.set(TalonFXControlMode.Velocity, 0);
+  public void stopIndex() {
+    hopperMotor.set(TalonSRXControlMode.Velocity, 0);
   }
 
-  private void setMotorConfig(WPI_TalonFX motor) {
+  private void setMotorConfig(WPI_TalonSRX motor) {
     motor.configFactoryDefault();
     motor.configClosedloopRamp(Constants.IndexConstants.ClosedVoltageRampingConstant);
     motor.configOpenloopRamp(Constants.IndexConstants.ManualVoltageRampingConstant);

@@ -134,7 +134,7 @@ public class DriveRobot extends CommandBase {
                 // } else {
                 // missedFrames++;
             }
-            yaw = pid.calculate(visionSub.aprilTagDistanceFromCenter());
+            yaw = pid.calculate(visionSub.aprilTagBearing());
             // missedFrames++;
         }
         yaw = pid.calculate(visionSub.aprilTagBearing());

@@ -7,11 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,17 +17,22 @@ import frc.robot.Constants;
 import frc.robot.sim.PhysicsSim;
 import edu.wpi.first.wpilibj.DigitalInput;
 
-
 public class Shooter extends SubsystemBase {
     // private static final TalonSRX hopperMotor = null;
 
     WPI_TalonFX flyWheelMotor;
     WPI_TalonSRX paddleMotor;
-    
+
     DigitalInput hallEffect;
 
     boolean isShooting = false;
     boolean simulationInitialized = false;
+
+    public enum ShooterState {
+        Stopped, SpinningUpFlywheel, AdvancingPaddle, IndexingPaddle
+    }
+
+    ShooterState shooterState = ShooterState.Stopped;
 
     public Shooter() {
         flyWheelMotor = new WPI_TalonFX(Constants.Shooter.FlyWheel.FlyWheelMotorID);
@@ -39,7 +41,7 @@ public class Shooter extends SubsystemBase {
         paddleMotor = new WPI_TalonSRX(Constants.Shooter.Paddle.PaddleMotorID);
         setMotorConfig(paddleMotor);
 
-        hallEffect = new DigitalInput(Constants.Shooter.Paddle.HallEffectID); 
+        hallEffect = new DigitalInput(Constants.Shooter.Paddle.HallEffectID);
 
         CreateNetworkTableEntries();
         simulationInit();
@@ -47,12 +49,60 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Shooter Closed Loop Error", getClosedLoopError());
-        SmartDashboard.putNumber("Fly Wheel Velocity", getVelocity(flyWheelMotor));
-        SmartDashboard.putBoolean("Hall Effect Detected", hallEffectTrue());
+        manageShooterState();
 
-        NetworkTableInstance.getDefault().getEntry("shooter/fly_wheel_velocity").setDouble(getVelocity(flyWheelMotor));
-        NetworkTableInstance.getDefault().getEntry("shooter/paddle_velocity").setDouble(getVelocity(paddleMotor));
+        SmartDashboard.putNumber("Shooter Closed Loop Error", getFlyWheelClosedLoopError());
+        SmartDashboard.putNumber("Fly Wheel Velocity", getFlyWheelVelocity());
+        SmartDashboard.putBoolean("Hall Effect Detected", paddleAtIndexPosition());
+        SmartDashboard.putString("Shooter State", getShooterState());
+    }
+
+    private void manageShooterState() {
+        switch (shooterState) {
+            case Stopped:
+                stopPaddle();
+                stopFlyWheel();
+                break;
+
+            case SpinningUpFlywheel:
+                startFlyWheel();
+                if (flyWheelUpToSpeed()) {
+                    shooterState = ShooterState.AdvancingPaddle;
+                }
+                break;
+
+            case AdvancingPaddle:
+                if (paddleAtIndexPosition() && !flyWheelUpToSpeed()) {
+                    stopPaddle();
+                    shooterState = ShooterState.SpinningUpFlywheel;
+                } else {
+                    startPaddle();
+                }
+                break;
+
+            case IndexingPaddle:
+                startPaddle();
+                if (paddleAtIndexPosition()) {
+                    shooterState = ShooterState.Stopped;
+                }
+                break;
+        }
+    }
+
+    public void startShooter() {
+        if (shooterState != ShooterState.IndexingPaddle) {
+            shooterState = ShooterState.SpinningUpFlywheel; 
+        } 
+    }
+
+    public void stopShooter() {
+        if (shooterState == ShooterState.SpinningUpFlywheel) {
+            shooterState = ShooterState.Stopped;
+        } else if (shooterState == ShooterState.AdvancingPaddle) {
+            shooterState = ShooterState.IndexingPaddle;
+        } else {
+            shooterState = ShooterState.Stopped;
+        }
     }
 
     public void startPaddle() {
@@ -63,6 +113,7 @@ public class Shooter extends SubsystemBase {
         paddleMotor.set(TalonSRXControlMode.Velocity, 0.0);
         isShooting = false;
     }
+
     public void startFlyWheel() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.Shooter.FlyWheel.Velocity);
         isShooting = true;
@@ -72,37 +123,31 @@ public class Shooter extends SubsystemBase {
         flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
         isShooting = false;
     }
-    
 
-    public double getVelocity(TalonFX motor) {
-        double velocity = motor.getSelectedSensorVelocity();
+    public double getFlyWheelVelocity() {
+        double velocity = flyWheelMotor.getSelectedSensorVelocity();
         return velocity;
     }
 
-    public double getVelocity(TalonSRX motor) {
-        double velocity = motor.getSelectedSensorVelocity();
+    public double getPaddleVelocity() {
+        double velocity = paddleMotor.getSelectedSensorVelocity();
         return velocity;
     }
-    
-    public boolean hallEffectTrue() {
-        if (hallEffect.get() == false) {
-            return true;
-        }
-        else {
-            return false;
-        }
+
+    public boolean paddleAtIndexPosition() {
+        return !hallEffect.get();
     }
 
     public boolean flyWheelUpToSpeed() {
-        if (getVelocity(flyWheelMotor) == (0.95 * Constants.Shooter.FlyWheel.Velocity)) {
-            return true;
-        } else {
-            return false;
-        }
+        return getFlyWheelVelocity() == (0.95 * Constants.Shooter.FlyWheel.Velocity); // EHP change 0.95 later
     }
 
-    private double getClosedLoopError() {
+    private double getFlyWheelClosedLoopError() {
         return this.flyWheelMotor.getClosedLoopError();
+    }
+
+    public String getShooterState() {
+        return shooterState.toString();
     }
 
     @Override
@@ -111,14 +156,17 @@ public class Shooter extends SubsystemBase {
 
         builder.setSmartDashboardType("Shooter Subsystem");
 
-        builder.addDoubleProperty("Error", this::getClosedLoopError, null);
+        builder.addStringProperty("State", this::getShooterState, null);
+        builder.addBooleanProperty("Paddle at Index Position", this::paddleAtIndexPosition, null);
+        builder.addDoubleProperty("Fly Wheel Velocity", this::getFlyWheelVelocity, null);
+        builder.addDoubleProperty("Error", this::getFlyWheelClosedLoopError, null);
     }
 
     private void CreateNetworkTableEntries() {
         NetworkTableInstance.getDefault().getEntry("shooter/fly_wheel_velocity").setDouble(0.0);
         NetworkTableInstance.getDefault().getEntry("shooter/paddle_velocity").setDouble(0.0);
     }
-    
+
     private void setMotorConfig(WPI_TalonFX motor) {
         motor.configFactoryDefault();
         motor.configClosedloopRamp(Constants.Shooter.FlyWheel.ClosedVoltageRampingConstant);
@@ -142,11 +190,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public void simulationInit() {
-        PhysicsSim.getInstance().addTalonFX(flyWheelMotor, 0.5, 6800);
+        PhysicsSim.getInstance().addTalonFX(flyWheelMotor, 0.5, 21600);
+        PhysicsSim.getInstance().addTalonSRX(paddleMotor, 0.5, 21600);
     }
 
     @Override
     public void simulationPeriodic() {
-   
     }
 }

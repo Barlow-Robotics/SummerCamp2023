@@ -32,7 +32,7 @@ public class Vision extends SubsystemBase {
   ByteBuffer buffer = ByteBuffer.allocate(1024);
 
   public Vision() {
-    cameraLight = new DigitalOutput(Constants.VisionConstants.CameraLightID);
+    // cameraLight = new DigitalOutput(Constants.VisionConstants.CameraLightID); // error in simulate code
 
     try {
       visionChannel = DatagramChannel.open();

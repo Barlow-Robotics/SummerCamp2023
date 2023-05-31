@@ -99,8 +99,6 @@ public final class Constants {
     }
 
     public static final class Shooter {
-        // All variables are placeholders
-
         public static final class FlyWheel {
             public static final int FlyWheelMotorID = 11;
 
@@ -108,7 +106,6 @@ public final class Constants {
             public static final double RPM = ChainGearRatio / 60.0 * UnitsPerFXRotation / 10.0;
             public static final double Velocity = 4500 * RPM; // * RPM
 
-           
             public static final double kF = 0.055;
             public static final double kP = 0.03;
             public static final double kI = 0.0;
@@ -137,13 +134,10 @@ public final class Constants {
     }
 
     public static final class VisionConstants {
-
         public static final int CameraLightID = 0; // Need to change
-
     }
 
     public final class Logitech_Dual_Action {
-
         // Constants for Axes
         public static final int LeftStickX = 0;
         public static final int LeftStickY = 1;
