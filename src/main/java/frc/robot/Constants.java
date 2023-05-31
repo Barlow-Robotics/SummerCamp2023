@@ -117,7 +117,7 @@ public final class Constants {
         public static final class Paddle {
             public static final int PaddleMotorID = 20;
             
-            public static final double Velocity = 0;
+            public static final double Velocity = 0.2;
 
             public static final int HallEffectID = 0;
 

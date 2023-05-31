@@ -106,11 +106,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public void startPaddle() {
-        paddleMotor.set(TalonSRXControlMode.Velocity, Constants.Shooter.Paddle.Velocity);
+        paddleMotor.set(TalonSRXControlMode.PercentOutput, Constants.Shooter.Paddle.Velocity);
     }
 
     public void stopPaddle() {
-        paddleMotor.set(TalonSRXControlMode.Velocity, 0.0);
+        paddleMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
         isShooting = false;
     }
 
@@ -139,7 +139,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean flyWheelUpToSpeed() {
-        return getFlyWheelVelocity() == (0.95 * Constants.Shooter.FlyWheel.Velocity); // EHP change 0.95 later
+        return getFlyWheelVelocity() >= (0.95 * Constants.Shooter.FlyWheel.Velocity); // EHP change 0.95 later
     }
 
     private double getFlyWheelClosedLoopError() {
@@ -190,8 +190,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public void simulationInit() {
-        PhysicsSim.getInstance().addTalonFX(flyWheelMotor, 0.5, 21600);
-        PhysicsSim.getInstance().addTalonSRX(paddleMotor, 0.5, 21600);
+        PhysicsSim.getInstance().addTalonFX(flyWheelMotor, 0.2, 21777);
+        PhysicsSim.getInstance().addTalonSRX(paddleMotor, 0.2, 21777);
     }
 
     @Override
