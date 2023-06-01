@@ -128,9 +128,9 @@ public class Drive extends SubsystemBase {
      */
     @SuppressWarnings("ParameterName")
     public void drive(double xSpeed, double rot, boolean squareInputs) {
-        NetworkTableInstance.getDefault().getEntry("drive/xSpeed").setDouble(leftLeader.getSelectedSensorVelocity());
-        NetworkTableInstance.getDefault().getEntry("drive/rot").setDouble(leftLeader.getSelectedSensorPosition());
-        NetworkTableInstance.getDefault().getEntry("drive/distance").setDouble(getLeftDistance());
+        NetworkTableInstance.getDefault().getEntry("drive/xSpeed").setDouble(xSpeed);
+        NetworkTableInstance.getDefault().getEntry("drive/rot").setDouble(rot);
+        // NetworkTableInstance.getDefault().getEntry("drive/distance").setDouble(getLeftDistance());
 
         DifferentialDrive.WheelSpeeds relativeSpeeds = DifferentialDrive.arcadeDriveIK(xSpeed, rot, squareInputs);
         DifferentialDrive.WheelSpeeds absoluteSpeeds = new DifferentialDrive.WheelSpeeds(
@@ -161,6 +161,10 @@ public class Drive extends SubsystemBase {
                 speeds.left * Constants.DriveConstants.MetersPerSecondToCountsPer100MSec);
         rightLeader.set(TalonSRXControlMode.Velocity,
                 speeds.right * Constants.DriveConstants.MetersPerSecondToCountsPer100MSec);
+
+        NetworkTableInstance.getDefault().getEntry("drive/leftSpeed").setDouble(speeds.left);
+        NetworkTableInstance.getDefault().getEntry("drive/rightSpeed").setDouble(speeds.right);
+
     }
 
     public void setWheelSpeeds(double left, double right) {
