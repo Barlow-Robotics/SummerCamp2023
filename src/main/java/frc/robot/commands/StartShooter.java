@@ -18,6 +18,7 @@ public class StartShooter extends CommandBase {
 
     @Override
     public void initialize() {
+        
     }
 
     @Override

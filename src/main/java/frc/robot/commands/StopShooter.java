@@ -19,6 +19,7 @@ public class StopShooter extends CommandBase {
 
   @Override
   public void initialize() {
+    
   }
 
   @Override

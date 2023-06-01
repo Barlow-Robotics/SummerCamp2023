@@ -25,7 +25,8 @@
       "/SmartDashboard/Drive": "Subsystem",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Scheduler": "Scheduler",
-      "/SmartDashboard/String Chooser": "String Chooser"
+      "/SmartDashboard/String Chooser": "String Chooser",
+      "/SmartDashboard/Vision": "Subsystem"
     }
   },
   "NetworkTables": {
@@ -33,7 +34,14 @@
       "SmartDashboard": {
         "Field": {
           "open": true
-        }
+        },
+        "Index": {
+          "open": true
+        },
+        "Shooter": {
+          "open": true
+        },
+        "open": true
       },
       "drive": {
         "odometry": {
@@ -44,7 +52,6 @@
         }
       },
       "pathPlanner": {
-        "open": true,
         "rotationError": {
           "open": true
         },
