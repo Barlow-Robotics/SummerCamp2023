@@ -108,27 +108,9 @@ public class RobotContainer {
         throttleJoystickID = Constants.Logitech_Dual_Action.LeftStickY;
         turnJoystickID = Constants.Logitech_Dual_Action.RightStickX;
 
-        shooterIndexButton.onTrue(startShooterIndex()).onFalse(stopShooterIndex());
+        shooterIndexButton.onTrue(startShooterCmd).onFalse(stopShooterCmd);
         driveDistanceButton.onTrue(driveDistanceCmd);
         pivotButton.onTrue(pivotCmd);
-    }
-
-    ParallelCommandGroup startShooterIndex() {
-        ParallelCommandGroup theCmd = new ParallelCommandGroup();
-
-        theCmd.addCommands(startShooterCmd);
-        theCmd.addCommands(startIndexCmd);
-
-        return theCmd;
-    }
-
-    ParallelCommandGroup stopShooterIndex() {
-        ParallelCommandGroup theCmd = new ParallelCommandGroup();
-
-        theCmd.addCommands(stopShooterCmd);
-        theCmd.addCommands(stopIndexCmd);
-
-        return theCmd;
     }
 
     private PathPlannerTrajectory loadPath(String name, double velocity, double accel, boolean reverse) {
@@ -148,8 +130,8 @@ public class RobotContainer {
 
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("FirstBase", new PrintCommand("***************MISSION SHOOT FRISBEE IS A GO****************"));
-        eventMap.put("shoot", startShooterIndex());
-        eventMap.put("stop shoot", stopShooterIndex());
+        eventMap.put("shoot", startShooterCmd);
+        eventMap.put("stop shoot", stopShooterCmd);
         eventMap.put("Final event",
                 new PrintCommand("**************MISSION SHOOT FRISBEE IS A SUCCESS****************"));
 
@@ -222,7 +204,7 @@ public class RobotContainer {
     }
 
     private void buildAutoOptions() {
-        autoChooser.setDefaultOption("Test", "createAutoCmd");
+        autoChooser.setDefaultOption("Test", "autoCom");
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
@@ -232,7 +214,7 @@ public class RobotContainer {
 
         String choice = autoChooser.getSelected();
         if (choice == "autoCom") {
-            return createAutoCmd();
+            return createAutoCmd(); // create error
         } else {
             return null;
         }

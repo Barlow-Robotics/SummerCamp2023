@@ -1,10 +1,5 @@
 {
   "HALProvider": {
-    "DIO": {
-      "window": {
-        "visible": true
-      }
-    },
     "Other Devices": {
       "Talon FX[11]": {
         "header": {
@@ -15,6 +10,9 @@
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     }
   },
@@ -27,11 +25,27 @@
       "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/String Chooser": "String Chooser",
       "/SmartDashboard/Vision": "Subsystem"
+    },
+    "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Field": {
+        "image": "C:\\Users\\Team4572Admin\\Documents\\FRC2023\\field23 - Blue Alliance.png",
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "Drive": {
+          "open": true
+        },
         "Field": {
           "open": true
         },
@@ -40,8 +54,7 @@
         },
         "Shooter": {
           "open": true
-        },
-        "open": true
+        }
       },
       "drive": {
         "odometry": {
@@ -52,6 +65,7 @@
         }
       },
       "pathPlanner": {
+        "open": true,
         "rotationError": {
           "open": true
         },
