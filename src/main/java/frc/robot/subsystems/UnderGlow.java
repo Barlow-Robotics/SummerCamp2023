@@ -20,28 +20,28 @@ public class UnderGlow extends SubsystemBase {
 
   @Override
   public void periodic() {
-      int desiredMode = Constants.UnderGlowConstants.NeonGreen;
+    //   int desiredMode = Constants.UnderGlowConstants.NeonGreen;
 
-      if (DriverStation.isEnabled()) {
-          if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-              desiredMode = Constants.UnderGlowConstants.BlueAlliance;
-          } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-              desiredMode = Constants.UnderGlowConstants.RedAlliance;
-          }
-      } else
+    //   if (DriverStation.isEnabled()) {
+    //       if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+    //           desiredMode = Constants.UnderGlowConstants.BlueAlliance;
+    //       } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+    //           desiredMode = Constants.UnderGlowConstants.RedAlliance;
+    //       }
+    //   } else
 
-      if (currentMode != desiredMode && port != null) {
-          try {
-              port.write(new byte[] { (byte) desiredMode }, 1);
-          } catch (Exception ex) {
+    //   if (currentMode != desiredMode && port != null) {
+    //       try {
+    //           port.write(new byte[] { (byte) desiredMode }, 1);
+    //       } catch (Exception ex) {
 
-          }
-          currentMode = desiredMode;
-        }
+    //       }
+    //       currentMode = desiredMode;
+    //     }
 
-    if (shooterSub.isShooting) {
+    // if (shooterSub.isShooting) {
         
-      } 
+    //   } 
      
 
   }
