@@ -23,7 +23,7 @@ public class Shooter extends SubsystemBase {
 
     DigitalInput hallEffect;
 
-    boolean isShooting = false;
+    public boolean isShooting = false;
     boolean simulationInitialized = false;
 
     public enum ShooterState {
