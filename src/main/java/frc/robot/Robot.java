@@ -51,6 +51,11 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData(CommandScheduler.getInstance());
         SmartDashboard.putData(robotContainer.driveSub);
 
+        SmartDashboard.putData(robotContainer.driveSub);
+        SmartDashboard.putData(robotContainer.visionSub);
+        SmartDashboard.putData(robotContainer.shooterSub);
+        SmartDashboard.putData(robotContainer.indexSub);
+
         if (robotContainer.getCurrentTrajectory() != null) {
             gameField.getObject("traj").setTrajectory(robotContainer.getCurrentTrajectory());
         }
@@ -71,11 +76,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        autonomousCommand = robotContainer.getAutonomousCommand();
 
-        // schedule the autonomous command (example)
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
+            System.out.println("Auto Command is " + autonomousCommand);
+        } else {
+            System.out.println("Auto Command is null");
         }
     }
 

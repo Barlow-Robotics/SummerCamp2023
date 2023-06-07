@@ -4,44 +4,86 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Index extends SubsystemBase {
-  WPI_TalonFX hopperMotor;
+    WPI_TalonSRX hopperMotor;
 
-  /** Creates a new Index. */
-  public Index() {
-    hopperMotor = new WPI_TalonFX(Constants.IndexConstants.HopperMotorID);
-    setMotorConfig(hopperMotor);
-    hopperMotor.configFactoryDefault();
-  }
+    double hopperDirection = 1.0;
+    double hopperSpeed = 0.0;
+    int stuckCount = 0 ;
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    public Index() {
+        hopperMotor = new WPI_TalonSRX(Constants.IndexConstants.HopperMotorID);
+        setMotorConfig(hopperMotor);
+        hopperMotor.configFactoryDefault();
+    }
 
-  public void startHopper() {
-    hopperMotor.set(TalonFXControlMode.Velocity, Constants.IndexConstants.HopperMotorSpeed);
-  }
+    @Override
+    public void periodic() {
+        if (Math.abs(getSupplyCurrent()) > 0.1) {
+            stuckCount++ ;
+            if ( stuckCount > 10) {
+                stuckCount = 0 ;
+                hopperDirection = -hopperDirection;
+            }
+        } else {
+            stuckCount = 0 ;
+        }
+        // if (hopperDirection > 0.0) {
+        //     hopperMotor.setInverted(InvertType.None);
+        // } else {
+        //     hopperMotor.setInverted(InvertType.InvertMotorOutput);
+        // }
+        hopperMotor.set(TalonSRXControlMode.PercentOutput, hopperSpeed * hopperDirection);
+        // System.out.println("current in index periodic is " + getSupplyCurrent()) ;
+    }
 
-  public void stopHopper() {
-    hopperMotor.set(TalonFXControlMode.Velocity, 0);
-  }
+    public void startIndex() {
+        hopperSpeed = Constants.IndexConstants.HopperMotorSpeed;
+    }
 
-  private void setMotorConfig(WPI_TalonFX motor) {
-    motor.configFactoryDefault();
-    motor.configClosedloopRamp(Constants.IndexConstants.ClosedVoltageRampingConstant);
-    motor.configOpenloopRamp(Constants.IndexConstants.ManualVoltageRampingConstant);
-    motor.config_kF(0, Constants.IndexConstants.kF);
-    motor.config_kP(0, Constants.IndexConstants.kP);
-    motor.config_kI(0, Constants.IndexConstants.kI);
-    motor.config_kD(0, Constants.IndexConstants.kD);
-    motor.setNeutralMode(NeutralMode.Brake);
-  }
+    public void stopIndex() {
+        hopperSpeed = 0.0;
+        // hopperMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
+    }
+
+    private double getSupplyCurrent() {
+        return this.hopperMotor.getOutputCurrent();
+        // return this.hopperMotor.getSupplyCurrent();
+    }
+
+    private double getStatorCurrent() {
+        return this.hopperMotor.getStatorCurrent();
+    }
+
+    public double getOutput() {
+        return hopperMotor.getMotorOutputPercent();
+    }
+
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Index Subsystem");
+
+        builder.addDoubleProperty("Percent Output", this::getOutput, null);
+        builder.addDoubleProperty("Supply Current", this::getSupplyCurrent, null);
+        builder.addDoubleProperty("Stator Current", this::getStatorCurrent, null);
+    }
+
+    private void setMotorConfig(WPI_TalonSRX motor) {
+        motor.configFactoryDefault();
+        motor.configClosedloopRamp(Constants.IndexConstants.ClosedVoltageRampingConstant);
+        motor.configOpenloopRamp(Constants.IndexConstants.ManualVoltageRampingConstant);
+        motor.config_kF(0, Constants.IndexConstants.kF);
+        motor.config_kP(0, Constants.IndexConstants.kP);
+        motor.config_kI(0, Constants.IndexConstants.kI);
+        motor.config_kD(0, Constants.IndexConstants.kD);
+        motor.setNeutralMode(NeutralMode.Brake);
+    }
 }

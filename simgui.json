@@ -5,6 +5,14 @@
         "header": {
           "open": true
         }
+      },
+      "Talon SRX[20]": {
+        "header": {
+          "open": true
+        }
+      },
+      "window": {
+        "visible": false
       }
     }
   },
@@ -15,13 +23,36 @@
       "/SmartDashboard/Drive": "Subsystem",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Scheduler": "Scheduler",
-      "/SmartDashboard/String Chooser": "String Chooser"
+      "/SmartDashboard/String Chooser": "String Chooser",
+      "/SmartDashboard/Vision": "Subsystem"
+    },
+    "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Field": {
+        "image": "C:\\Users\\Team4572Admin\\Documents\\FRC2023\\field23 - Blue Alliance.png",
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "Drive": {
+          "open": true
+        },
         "Field": {
+          "open": true
+        },
+        "Index": {
+          "open": true
+        },
+        "Shooter": {
           "open": true
         }
       },
