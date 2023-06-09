@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.SerialPort;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -118,7 +120,7 @@ public final class Constants {
             public static final int PaddleMotorID = 16;
             
 
-            public static final double PercentOutput = 0.2;
+            public static final double PercentOutput = 0.5;
 
             public static final int HallEffectID = 1;
 
@@ -130,6 +132,15 @@ public final class Constants {
             public static final double ManualVoltageRampingConstant = 0;
         }        
     }
+    
+    public static final class UnderGlowConstants {
+        public static final SerialPort.Port Port = SerialPort.Port.kUSB;
+        public static final int RedAlliance = 1;
+        public static final int BlueAlliance = 2;
+        public static final int NeonGreen = 3;
+        public static final int IsShooting = 4;
+        public static final int AutoActivated = 5;
+    }
 
     public static final class AutoConstants {
     }
@@ -138,7 +149,7 @@ public final class Constants {
         public static final int CameraLightID = 0; // Need to change
     }
 
-    public final class Logitech_Dual_Action {
+    public final class LogitechDualAction {
         // Constants for Axes
         public static final int LeftStickX = 0;
         public static final int LeftStickY = 1;
