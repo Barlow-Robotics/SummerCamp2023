@@ -44,14 +44,14 @@ public class RobotContainer {
     /* Subsystems */
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
-    public final Index indexSub = new Index();
+    // public final Index indexSub = new Index();
     public final Vision visionSub = new Vision();
 
     /* Commands */
     private final StartShooter startShooterCmd = new StartShooter(shooterSub);
     private final StopShooter stopShooterCmd = new StopShooter(shooterSub);
-    private final StartIndex startIndexCmd = new StartIndex(indexSub);
-    private final StopIndex stopIndexCmd = new StopIndex(indexSub);
+    // private final StartIndex startIndexCmd = new StartIndex(indexSub);
+    // private final StopIndex stopIndexCmd = new StopIndex(indexSub);
     private final DriveDistance driveDistanceCmd = new DriveDistance(driveSub, 2, 1);
     private final Pivot pivotCmd = new Pivot(driveSub, 180, 0.5);
 
@@ -166,6 +166,7 @@ public class RobotContainer {
         PPRamseteCommand.setLoggingCallbacks(
                 (PathPlannerTrajectory traj) -> {
                     this.currentTrajectory = traj;
+                    System.out.println(currentTrajectory);
                 },
                 (Pose2d targetPose) -> {
                     NetworkTableInstance.getDefault().getEntry("pathPlanner/targetPose/X")

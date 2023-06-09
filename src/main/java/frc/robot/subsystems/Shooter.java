@@ -67,9 +67,11 @@ public class Shooter extends SubsystemBase {
 
             case AdvancingPaddle:
                 if (paddleAtIndexPosition() && !flyWheelUpToSpeed()) {
+                    // System.out.println("AdvancingPaddle:Paddle at index but flywheel not up to speed") ;
                     stopPaddle();
                     shooterState = ShooterState.SpinningUpFlywheel;
                 } else {
+                    // System.out.println("AdvancingPaddle:Paddle at index is " + paddleAtIndexPosition() + " and flywheel up to spees is " + flyWheelUpToSpeed()) ;
                     startPaddle();
                 }
                 break;
