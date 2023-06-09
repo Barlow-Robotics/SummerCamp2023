@@ -134,12 +134,12 @@ public final class Constants {
     }
     
     public static final class UnderGlowConstants {
-        public static final SerialPort.Port Port = SerialPort.Port.kUSB1;
+        public static final SerialPort.Port Port = SerialPort.Port.kUSB;
         public static final int RedAlliance = 1;
         public static final int BlueAlliance = 2;
         public static final int NeonGreen = 3;
         public static final int IsShooting = 4;
-        public static final int Auto = 5;
+        public static final int AutoActivated = 5;
     }
 
     public static final class AutoConstants {

@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
     private RobotContainer robotContainer;
-
+    boolean autoActivated;
     private Field2d gameField;
 
     static long startTime = System.currentTimeMillis();
@@ -65,7 +65,9 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        autoActivated = false;
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -76,6 +78,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        autoActivated = true;
         autonomousCommand = robotContainer.getAutonomousCommand();
 
         if (autonomousCommand != null) {
@@ -86,11 +89,13 @@ public class Robot extends TimedRobot {
         }
     }
 
+
     // @Override
     public void autonomousPeriodic() {}
 
     @Override
     public void teleopInit() {
+        autoActivated = false;
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
@@ -101,6 +106,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
+        autoActivated = false;
         CommandScheduler.getInstance().cancelAll();
     }
 
@@ -109,12 +115,16 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationInit() {
+        autoActivated = false;
         robotContainer.driveSub.simulationInit();
     }
 
     @Override
     public void simulationPeriodic() {
         PhysicsSim.getInstance().run();
+    }
+    public boolean ifAutonomous() {
+        return autoActivated;
     }
 
     static public void reportCommandStart(Command c) {
@@ -135,5 +145,9 @@ public class Robot extends TimedRobot {
 
     private void handleInterrupted(Command c) {
         System.out.println("Commmand " + c + " named " + c.getName() + " was interrupted");
+    }
+
+    public static boolean autoActivated() {
+        return true;
     }
 }
