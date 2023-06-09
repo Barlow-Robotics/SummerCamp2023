@@ -11,9 +11,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.sim.PhysicsSim;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Joystick;
 
 public class Shooter extends SubsystemBase {
     // private static final TalonSRX hopperMotor = null;
@@ -22,7 +24,6 @@ public class Shooter extends SubsystemBase {
     WPI_TalonSRX paddleMotor;
 
     DigitalInput hallEffect;
-
     public boolean isShooting = false;
     boolean simulationInitialized = false;
 
@@ -41,12 +42,25 @@ public class Shooter extends SubsystemBase {
 
         hallEffect = new DigitalInput(Constants.Shooter.Paddle.HallEffectID);
 
+        if (operatorController == null) {
+            System.out.println("Null operator controller, using joystick 2");
+            operatorController = new Joystick(2);
+        }
+
+        flyWheelButton = new JoystickButton(operatorController, Constants.LogitechDualAction.LeftTrigger);
+
         simulationInit();
     }
 
     @Override
     public void periodic() {
         manageShooterState();
+        if (flyWheelButton.getAsBoolean()) {
+            startFlyWheel();
+        }
+        else {
+            stopFlyWheel();
+        }
     }
 
     /******** SHOOTER STATE MACHINE ********/
@@ -55,11 +69,11 @@ public class Shooter extends SubsystemBase {
         switch (shooterState) {
             case Stopped:
                 stopPaddle();
-                stopFlyWheel();
+                // stopFlyWheel();
                 break;
 
             case SpinningUpFlywheel:
-                startFlyWheel();
+                // startFlyWheel();
                 if (flyWheelUpToSpeed()) {
                     shooterState = ShooterState.AdvancingPaddle;
                 }
@@ -94,9 +108,8 @@ public class Shooter extends SubsystemBase {
     public void stopShooter() {
         if (shooterState == ShooterState.SpinningUpFlywheel) {
             shooterState = ShooterState.Stopped;
-            // temporarily commented out until hall effects installed.
-            // } else if (shooterState == ShooterState.AdvancingPaddle) {
-            // shooterState = ShooterState.IndexingPaddle;
+        } else if (shooterState == ShooterState.AdvancingPaddle) {
+            shooterState = ShooterState.IndexingPaddle;
         } else {
             shooterState = ShooterState.Stopped;
         }
@@ -106,11 +119,15 @@ public class Shooter extends SubsystemBase {
         return shooterState.toString();
     }
 
+<<<<<<< HEAD
     public boolean isShooting() {
         return isShooting;
     }
 
     /******** FLYWHEEL ********/
+=======
+    /******** FLY WHEEL ********/
+>>>>>>> 8b5c53ffe7f4323b11f6710f7182ab6090bc7f0f
 
     public void startFlyWheel() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.Shooter.FlyWheel.Velocity);
@@ -120,6 +137,10 @@ public class Shooter extends SubsystemBase {
     public void stopFlyWheel() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
         isShooting = false;
+    }
+
+    public boolean isShooting() {
+        return isShooting;
     }
 
     public double getFlyWheelVelocity() {
@@ -144,6 +165,19 @@ public class Shooter extends SubsystemBase {
     public void stopPaddle() {
         paddleMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
         isShooting = false;
+    }
+
+    public void spinPaddleOnce() {
+        boolean pastFirstTrue = false;
+        startPaddle();
+        if (!paddleAtIndexPosition()) {
+            pastFirstTrue = true;
+        }
+        if (pastFirstTrue) {
+            if (paddleAtIndexPosition()) {
+                stopPaddle();
+            }
+        }
     }
 
     public double getPaddlePercentOutput() {

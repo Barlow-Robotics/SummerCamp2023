@@ -120,7 +120,7 @@ public final class Constants {
             public static final int PaddleMotorID = 16;
             
 
-            public static final double PercentOutput = 0.2;
+            public static final double PercentOutput = 0.5;
 
             public static final int HallEffectID = 1;
 
@@ -149,7 +149,7 @@ public final class Constants {
         public static final int CameraLightID = 0; // Need to change
     }
 
-    public final class Logitech_Dual_Action {
+    public final class LogitechDualAction {
         // Constants for Axes
         public static final int LeftStickX = 0;
         public static final int LeftStickY = 1;
