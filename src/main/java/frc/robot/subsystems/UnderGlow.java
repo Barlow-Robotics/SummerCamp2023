@@ -13,10 +13,16 @@ public class UnderGlow extends SubsystemBase {
 
   Shooter shooterSub;
   
+  boolean isShooting;
+
+  
   int currentMode = 1;
 
   /** Creates a new UnderGlow. */
-  public UnderGlow() {}
+  public UnderGlow() {
+
+
+  }
 
   @Override
   public void periodic() {
@@ -28,22 +34,20 @@ public class UnderGlow extends SubsystemBase {
           } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
               desiredMode = Constants.UnderGlowConstants.RedAlliance;
           }
-      } else
+          
+          if (shooterSub.isShooting()) {
+                isShooting = true;
+                desiredMode = Constants.UnderGlowConstants.IsShooting; // shooting is not a variable in underglow constants
+          }
+          if ()
+          }
 
       if (currentMode != desiredMode && port != null) {
           try {
               port.write(new byte[] { (byte) desiredMode }, 1);
           } catch (Exception ex) {
-
           }
           currentMode = desiredMode;
         }
-
-    if (shooterSub.isShooting) {
-        
-      } 
-     
-
   }
-    // This method will be called once per scheduler run
-  }
+}

@@ -104,6 +104,10 @@ public class Shooter extends SubsystemBase {
         return shooterState.toString();
     }
 
+    public boolean isShooting() {
+        return isShooting;
+    }
+
     /******** FLYWHEEL ********/
 
     public void startFlyWheel() {
