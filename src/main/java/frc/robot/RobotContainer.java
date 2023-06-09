@@ -166,7 +166,6 @@ public class RobotContainer {
         PPRamseteCommand.setLoggingCallbacks(
                 (PathPlannerTrajectory traj) -> {
                     this.currentTrajectory = traj;
-                    System.out.println(currentTrajectory);
                 },
                 (Pose2d targetPose) -> {
                     NetworkTableInstance.getDefault().getEntry("pathPlanner/targetPose/X")
