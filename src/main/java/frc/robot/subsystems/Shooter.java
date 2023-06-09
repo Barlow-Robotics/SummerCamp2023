@@ -24,6 +24,8 @@ public class Shooter extends SubsystemBase {
     WPI_TalonSRX paddleMotor;
 
     DigitalInput hallEffect;
+    private JoystickButton flyWheelButton;
+    Joystick operatorController;
     public boolean isShooting = false;
     boolean simulationInitialized = false;
 
