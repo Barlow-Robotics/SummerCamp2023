@@ -23,20 +23,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.DriveDistance;
 import frc.robot.commands.DriveRobot;
 import frc.robot.commands.InstrumentedSequentialCommandGroup;
-import frc.robot.commands.Pivot;
-import frc.robot.commands.StartIndex;
+import frc.robot.commands.StartFlyWheel;
 import frc.robot.commands.StartShooter;
-import frc.robot.commands.StopIndex;
+import frc.robot.commands.StopFlyWheel;
 import frc.robot.commands.StopShooter;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 
@@ -44,16 +40,13 @@ public class RobotContainer {
     /* Subsystems */
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
-    // public final Index indexSub = new Index();
     public final Vision visionSub = new Vision();
 
     /* Commands */
     private final StartShooter startShooterCmd = new StartShooter(shooterSub);
     private final StopShooter stopShooterCmd = new StopShooter(shooterSub);
-    // private final StartIndex startIndexCmd = new StartIndex(indexSub);
-    // private final StopIndex stopIndexCmd = new StopIndex(indexSub);
-    private final DriveDistance driveDistanceCmd = new DriveDistance(driveSub, 2, 1);
-    private final Pivot pivotCmd = new Pivot(driveSub, 180, 0.5);
+    private final StartFlyWheel startFlyWheelCmd = new StartFlyWheel(shooterSub);
+    private final StopFlyWheel stopFlyWheelCmd = new StopFlyWheel(shooterSub);
 
     /* Controllers */
     Joystick driverController; // Joystick 1
@@ -61,9 +54,8 @@ public class RobotContainer {
 
     /* Buttons */
     private JoystickButton alignWithTargetButton;
-    private JoystickButton shooterIndexButton;
-    private JoystickButton driveDistanceButton;
-    private JoystickButton pivotButton;
+    private JoystickButton shooterButton;
+    private JoystickButton flyWheelButton;
 
     /* Drive Movement Axis */
     public int throttleJoystickID;
@@ -75,8 +67,6 @@ public class RobotContainer {
     /* Autonomous */
     PathPlannerTrajectory path;
     PathPlannerTrajectory currentTrajectory = null;
-
-    // HashMap<String, PathPlannerTrajectory> trajectories;
 
     public RobotContainer() {
         configureButtonBindings();
@@ -90,6 +80,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+        /* Setting Controller Ports */
         if (driverController == null) {
             System.out.println("Null driver controller, using joystick 1");
             driverController = new Joystick(1);
@@ -100,18 +91,20 @@ public class RobotContainer {
             operatorController = new Joystick(2);
         }
 
-        alignWithTargetButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.LeftBumper);
-        shooterIndexButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.RightTrigger);
-        driveDistanceButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.ButtonY);
-        pivotButton = new JoystickButton(driverController, Constants.Logitech_Dual_Action.ButtonX);
+        /* Setting Buttons on Controllers */
+        alignWithTargetButton = new JoystickButton(driverController, Constants.LogitechDualAction.RightTrigger);
+        shooterButton = new JoystickButton(operatorController, Constants.LogitechDualAction.RightTrigger);
+        flyWheelButton = new JoystickButton(operatorController, Constants.LogitechDualAction.LeftTrigger);
 
-        throttleJoystickID = Constants.Logitech_Dual_Action.LeftStickY;
-        turnJoystickID = Constants.Logitech_Dual_Action.RightStickX;
+        throttleJoystickID = Constants.LogitechDualAction.LeftStickY;
+        turnJoystickID = Constants.LogitechDualAction.RightStickX;
 
-        shooterIndexButton.onTrue(startShooterCmd).onFalse(stopShooterCmd);
-        driveDistanceButton.onTrue(driveDistanceCmd);
-        pivotButton.onTrue(pivotCmd);
+        /* Setting Commands of Buttons */
+        shooterButton.onTrue(startShooterCmd).onFalse(stopShooterCmd);
+        // flyWheelButton.onTrue(startFlyWheelCmd).onFalse(stopFlyWheelCmd); // remove commands, added in shooter 
     }
+
+    /************** PATHPLANNER & AUTO **************/
 
     private PathPlannerTrajectory loadPath(String name, double velocity, double accel, boolean reverse) {
         PathPlannerTrajectory temp = PathPlanner.loadPath(
@@ -122,7 +115,6 @@ public class RobotContainer {
     }
 
     InstrumentedSequentialCommandGroup createAutoCmd() {
-        /* print line, drive, shoot, print line */
         InstrumentedSequentialCommandGroup theCmd = new InstrumentedSequentialCommandGroup();
 
         path = loadPath(
