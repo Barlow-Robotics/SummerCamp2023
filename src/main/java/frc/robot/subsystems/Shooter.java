@@ -87,7 +87,7 @@ public class Shooter extends SubsystemBase {
                     stopPaddle();
                     shooterState = ShooterState.SpinningUpFlywheel;
                 } else {
-                    // System.out.println("AdvancingPaddle:Paddle at index is " + paddleAtIndexPosition() + " and flywheel up to spees is " + flyWheelUpToSpeed()) ;
+                    // System.out.println("AdvancingPaddle:Paddle at index is " + paddleAtIndexPosition() + " and flywheel up to speed is " + flyWheelUpToSpeed()) ;
                     startPaddle();
                 }
                 break;
@@ -121,7 +121,7 @@ public class Shooter extends SubsystemBase {
         return shooterState.toString();
     }
 
-    /******** FLY WHEEL ********/
+    /******** FLYWHEEL ********/
 
     public void startFlyWheel() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.Shooter.FlyWheel.Velocity);

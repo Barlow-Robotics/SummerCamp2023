@@ -39,12 +39,13 @@ public class Drive extends SubsystemBase {
 
     private double lastLeftDistance;
     private double lastRightDistance;
-    
+
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.DriveConstants.TrackWidth);
 
     boolean simulationInitialized = false;
 
-    // private final DifferentialDrive diffDrive = new DifferentialDrive(leftLeader, rightLeader);
+    // private final DifferentialDrive diffDrive = new DifferentialDrive(leftLeader,
+    // rightLeader);
 
     // private final SimpleMotorFeedforward m_feedforward = new
     // SimpleMotorFeedforward(1, 3);
@@ -72,12 +73,12 @@ public class Drive extends SubsystemBase {
         rightFollower.setInverted(InvertType.FollowMaster);
         leftFollower.setInverted(InvertType.FollowMaster);
 
-        leftLeader.setSensorPhase(true);
-        rightLeader.setSensorPhase(false);
+        leftLeader.setSensorPhase(false);
+        rightLeader.setSensorPhase(true);
 
         setDefaultNeutralMode();
         gyro.reset();
-        CreateNetworkTableEntries();
+        createNetworkTableEntries();
     }
 
     public void periodic() {
@@ -86,10 +87,7 @@ public class Drive extends SubsystemBase {
                 getLeftDistance(),
                 getRightDistance());
 
-        NetworkTableInstance.getDefault().getEntry("drive/pose/x").setDouble(odometry.getPoseMeters().getX());
-        NetworkTableInstance.getDefault().getEntry("drive/pose/y").setDouble(odometry.getPoseMeters().getY());
-        NetworkTableInstance.getDefault().getEntry("drive/pose/rotation").setDouble(odometry.getPoseMeters().getRotation().getDegrees());
-
+        updateNetworkTableEntries();
     }
 
     public void setDefaultNeutralMode() {
@@ -128,9 +126,8 @@ public class Drive extends SubsystemBase {
      */
     @SuppressWarnings("ParameterName")
     public void drive(double xSpeed, double rot, boolean squareInputs) {
-        NetworkTableInstance.getDefault().getEntry("drive/xSpeed").setDouble(xSpeed);
-        NetworkTableInstance.getDefault().getEntry("drive/rot").setDouble(rot);
-        // NetworkTableInstance.getDefault().getEntry("drive/distance").setDouble(getLeftDistance());
+        NetworkTableInstance.getDefault().getEntry("drive/drive/xSpeed").setDouble(xSpeed);
+        NetworkTableInstance.getDefault().getEntry("drive/drive/rot").setDouble(rot);
 
         DifferentialDrive.WheelSpeeds relativeSpeeds = DifferentialDrive.arcadeDriveIK(xSpeed, rot, squareInputs);
         DifferentialDrive.WheelSpeeds absoluteSpeeds = new DifferentialDrive.WheelSpeeds(
@@ -162,8 +159,8 @@ public class Drive extends SubsystemBase {
         rightLeader.set(TalonSRXControlMode.Velocity,
                 speeds.right * Constants.DriveConstants.MetersPerSecondToCountsPer100MSec);
 
-        NetworkTableInstance.getDefault().getEntry("drive/leftSpeed").setDouble(speeds.left);
-        NetworkTableInstance.getDefault().getEntry("drive/rightSpeed").setDouble(speeds.right);
+        NetworkTableInstance.getDefault().getEntry("drive/setWheelSpeeds/leftSpeed").setDouble(speeds.left);
+        NetworkTableInstance.getDefault().getEntry("drive/setWheelSpeeds/rightSpeed").setDouble(speeds.right);
 
     }
 
@@ -192,20 +189,29 @@ public class Drive extends SubsystemBase {
         odometry.resetPosition(gyro.getRotation2d(), getLeftDistance(), getRightDistance(), pose);
     }
 
-    private void CreateNetworkTableEntries() {
-        NetworkTableInstance.getDefault().getEntry("drive/left_motor_distance").setDouble(0.0);
-        NetworkTableInstance.getDefault().getEntry("drive/right_motor_distance").setDouble(0.0);
-        NetworkTableInstance.getDefault().getEntry("drive/rotation").setDouble(0.0);
-
-        NetworkTableInstance.getDefault().getEntry("drive/leftSpeed").setDouble(0.0);
-        NetworkTableInstance.getDefault().getEntry("drive/rightSpeed").setDouble(0.0);
-
-        NetworkTableInstance.getDefault().getEntry("drive/xSpeed").setDouble(0.0);
-        NetworkTableInstance.getDefault().getEntry("drive/rot").setDouble(0.0);
-        NetworkTableInstance.getDefault().getEntry("drive/arcadeDrive").setDouble(0.0);
+    private void createNetworkTableEntries() {
+        NetworkTableInstance.getDefault().getEntry("drive/leftMotorDistance").setDouble(0.0);
+        NetworkTableInstance.getDefault().getEntry("drive/rightMotorDistance").setDouble(0.0);
 
         NetworkTableInstance.getDefault().getEntry("drive/odometry/X").setDouble(0.0);
         NetworkTableInstance.getDefault().getEntry("drive/odometry/Y").setDouble(0.0);
+        NetworkTableInstance.getDefault().getEntry("drive/odometry/heading").setDouble(0.0);
+
+        NetworkTableInstance.getDefault().getEntry("drive/setWheelSpeeds/leftSpeed").setDouble(0.0);
+        NetworkTableInstance.getDefault().getEntry("drive/setWheelSpeeds/rightSpeed").setDouble(0.0);
+
+        NetworkTableInstance.getDefault().getEntry("drive/drive/xSpeed").setDouble(0.0);
+        NetworkTableInstance.getDefault().getEntry("drive/drive/rot").setDouble(0.0);
+    }
+
+    private void updateNetworkTableEntries() {
+        NetworkTableInstance.getDefault().getEntry("drive/leftMotorDistance").setDouble(getLeftDistance());
+        NetworkTableInstance.getDefault().getEntry("drive/rightMotorDistance").setDouble(getRightDistance());
+
+        NetworkTableInstance.getDefault().getEntry("drive/odometry/X").setDouble(odometry.getPoseMeters().getX());
+        NetworkTableInstance.getDefault().getEntry("drive/odometry/Y").setDouble(odometry.getPoseMeters().getY());
+        NetworkTableInstance.getDefault().getEntry("drive/odometry/heading")
+                .setDouble(odometry.getPoseMeters().getRotation().getDegrees());
     }
 
     private void setMotorConfig(WPI_TalonSRX motor) {
@@ -228,12 +234,12 @@ public class Drive extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        Twist2d twist = kinematics.toTwist2d(this.getLeftDistance()-lastLeftDistance, this.getRightDistance()-lastRightDistance) ;
+        Twist2d twist = kinematics.toTwist2d(this.getLeftDistance() - lastLeftDistance,
+                this.getRightDistance() - lastRightDistance);
         NetworkTableInstance.getDefault().getEntry("drive/twist_angle").setDouble(Units.radiansToDegrees(twist.dtheta));
-        gyroSim.setAngle(gyro.getAngle()- Units.radiansToDegrees(twist.dtheta));
-        lastLeftDistance = this.getLeftDistance() ;
-        lastRightDistance = this.getRightDistance() ;
-
+        gyroSim.setAngle(gyro.getAngle() - Units.radiansToDegrees(twist.dtheta));
+        lastLeftDistance = this.getLeftDistance();
+        lastRightDistance = this.getRightDistance();
 
         int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
         SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Pitch"));
