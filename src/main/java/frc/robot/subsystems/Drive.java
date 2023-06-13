@@ -73,8 +73,8 @@ public class Drive extends SubsystemBase {
         rightFollower.setInverted(InvertType.FollowMaster);
         leftFollower.setInverted(InvertType.FollowMaster);
 
-        leftLeader.setSensorPhase(false);
-        rightLeader.setSensorPhase(true);
+        leftLeader.setSensorPhase(true);
+        rightLeader.setSensorPhase(false);
 
         setDefaultNeutralMode();
         gyro.reset();
@@ -226,9 +226,13 @@ public class Drive extends SubsystemBase {
     }
 
     public void simulationInit() {
-        PhysicsSim.getInstance().addTalonSRX(leftLeader, 0.75, 21777, false);
+        PhysicsSim.getInstance().addTalonSRX(
+            leftLeader, 0.25, 
+            (5330/600.0) * Constants.DriveConstants.EncoderResolution /*/ Constants.DriveConstants.GearRatio*/, true);
         PhysicsSim.getInstance().addVictorSPX(leftFollower);
-        PhysicsSim.getInstance().addTalonSRX(rightLeader, 0.75, 21777, false);
+        PhysicsSim.getInstance().addTalonSRX(
+            rightLeader, 0.25, 
+            (5330/600.0) * Constants.DriveConstants.EncoderResolution/* / Constants.DriveConstants.GearRatio*/, false);
         PhysicsSim.getInstance().addVictorSPX(rightFollower);
     }
 

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.math.util.Units ;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -31,14 +32,13 @@ public final class Constants {
         public static final double kMaxAngularSpeed = 2 * Math.PI; // one rotation per second
         public static final double DriveSpeed = 0.5;
 
-        public static final double TrackWidth = 0.381 * 2; // meters
-        public static final double WheelRadius = 0.0508; // meters
+        public static final double TrackWidth = Units.inchesToMeters(22.0) ; // meters
         public static final int EncoderResolution = 4096;
 
         public static final double GearRatio = 12.75; // Not 100% sure this is right
-        public static final double CountsPerRevolution = EncoderResolution * GearRatio;
-        public static final double InchesToMeters = 0.0254;
-        public static final double WheelDiameter = 6.0 * InchesToMeters;
+        public static final double CountsPerRevolution = EncoderResolution ;
+//        public static final double CountsPerRevolution = EncoderResolution * GearRatio;
+        public static final double WheelDiameter = Units.inchesToMeters(6.0) ;
         public static final double MetersPerRevolution = WheelDiameter * Math.PI;
         public static final double MetersPerCount = MetersPerRevolution / CountsPerRevolution;
         public static final double CountsPerMeter = CountsPerRevolution / MetersPerRevolution;
@@ -46,10 +46,9 @@ public final class Constants {
         public static final double MetersPerSecondToCountsPerSecond = (1 / MetersPerRevolution)
                 * CountsPerRevolution;
 
-        public static final double BaseDiameter = 33 * InchesToMeters;
+        public static final double BaseDiameter = Units.inchesToMeters(33.0);
         public static final double CircumferenceWithBD = BaseDiameter * Math.PI;
-        public static final double WheelBase = 22 * InchesToMeters;
-        public static final double CircumferenceWithWB = WheelBase * Math.PI;
+        public static final double CircumferenceWithWB = TrackWidth * Math.PI;
 
         public static final double MaxVelocityCounts = kMaxSpeed * MetersPerSecondToCountsPer100MSec;
 

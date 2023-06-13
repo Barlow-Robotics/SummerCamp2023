@@ -1,0 +1,107 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 5.0,
+        "y": 5.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.804373106364483,
+        "y": 5.0
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 7.0,
+        "y": 5.0
+      },
+      "prevControl": {
+        "x": 5.742024301524721,
+        "y": 5.0
+      },
+      "nextControl": {
+        "x": 8.3063967226987,
+        "y": 5.0
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 8.5,
+        "y": 3.0
+      },
+      "prevControl": {
+        "x": 8.5,
+        "y": 3.811484365103836
+      },
+      "nextControl": null,
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "startPrint"
+      ]
+    },
+    {
+      "position": 1.0,
+      "names": [
+        "startFlyWheel"
+      ]
+    },
+    {
+      "position": 1.75,
+      "names": [
+        "startShooting",
+        "stopFlywheel"
+      ]
+    },
+    {
+      "position": 1.95,
+      "names": [
+        "stopShooter",
+        "stopFlyWheel"
+      ]
+    },
+    {
+      "position": 2.0,
+      "names": [
+        "endPrint"
+      ]
+    }
+  ]
+}

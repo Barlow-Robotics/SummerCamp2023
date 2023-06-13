@@ -61,7 +61,7 @@ public class Shooter extends SubsystemBase {
             startFlyWheel();
         }
         else {
-            stopFlyWheel();
+            // stopFlyWheel();
         }
     }
 

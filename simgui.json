@@ -1,33 +1,4 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "Talon FX[11]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon SRX[20]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon SRX[4]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon SRX[4]/Quad Encoder": {
-        "header": {
-          "open": true
-        }
-      }
-    },
-    "Timing": {
-      "window": {
-        "visible": false
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -35,7 +6,6 @@
       "/SmartDashboard/Drive": "Subsystem",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Scheduler": "Scheduler",
-      "/SmartDashboard/String Chooser": "String Chooser",
       "/SmartDashboard/Vision": "Subsystem"
     },
     "windows": {
@@ -45,6 +15,11 @@
         }
       },
       "/SmartDashboard/Field": {
+        "image": "C:\\Users\\Team4572Admin\\Documents\\FRC2023\\field23 - Blue Alliance.png",
+        "traj": {
+          "weight": 1.0,
+          "width": 0.009999999776482582
+        },
         "window": {
           "visible": true
         }
@@ -53,46 +28,20 @@
   },
   "NetworkTables": {
     "transitory": {
-      "SmartDashboard": {
-        "Drive": {
-          "open": true
-        },
-        "Field": {
-          "open": true
-        },
-        "Index": {
-          "open": true
-        },
-        "Shooter": {
-          "open": true
-        },
-        "open": true
-      },
       "drive": {
         "odometry": {
           "open": true
         },
-        "open": true,
-        "pose": {
-          "open": true
-        }
+        "open": true
       },
       "pathPlanner": {
-        "rotationError": {
-          "open": true
-        },
-        "setpointSpeeds": {
-          "open": true
-        },
+        "open": true,
         "targetPose": {
           "open": true
         },
         "translationError": {
           "open": true
         }
-      },
-      "shooter": {
-        "open": true
       }
     }
   },
@@ -100,14 +49,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "height": 474,
-          "series": [
-            {
-              "color": [
-                0.3333333432674408,
-                0.658823549747467,
-                0.4078431725502014,
-          "height": 0,
+          "height": 655,
           "series": [
             {
               "color": [
@@ -120,8 +62,6 @@
             },
             {
               "color": [
-                0.7686275243759155,
-                0.30588236451148987,
                 0.8666667342185974,
                 0.5176470875740051,
                 0.32156863808631897,
@@ -132,25 +72,11 @@
             {
               "color": [
                 0.3333333432674408,
-                0.36629441380500793,
-                0.658823549747467,
-                1.0
-              ],
-              "id": "NT:drive/odometry/X"
-            },
-            {
-              "color": [
-                0.7510549426078796,
-                0.7686275243759155,
-                0.30588236451148987,
-                1.0
-              ],
-              "id": "NT:drive/odometry/Y"
                 0.658823549747467,
                 0.4078431725502014,
                 1.0
               ],
-              "id": "NT:drive/pose/x"
+              "id": "NT:drive/odometry/X"
             },
             {
               "color": [
@@ -159,7 +85,7 @@
                 0.32156863808631897,
                 1.0
               ],
-              "id": "NT:drive/pose/y"
+              "id": "NT:drive/odometry/Y"
             }
           ]
         }
@@ -168,7 +94,7 @@
     "Plot <1>": {
       "plots": [
         {
-          "height": 0,
+          "height": 483,
           "series": [
             {
               "color": [
