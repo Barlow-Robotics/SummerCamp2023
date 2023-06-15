@@ -28,14 +28,18 @@
   },
   "NetworkTables": {
     "transitory": {
-      "drive": {
-        "odometry": {
+      "SmartDashboard": {
+        "Shooter": {
           "open": true
         },
         "open": true
       },
+      "drive": {
+        "odometry": {
+          "open": true
+        }
+      },
       "pathPlanner": {
-        "open": true,
         "targetPose": {
           "open": true
         },

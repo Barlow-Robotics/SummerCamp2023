@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.DriveRobot;
@@ -202,8 +203,6 @@ public class RobotContainer {
         eventMap.put("startPrint", new PrintCommand("***************MISSION SHOOT FRISBEE IS A GO****************"));
         eventMap.put("startFlyWheel", startFlyWheelCmd);
         eventMap.put("startShooting", startShooterCmd);
-        eventMap.put("stopShooting", stopShooterCmd);
-        eventMap.put("stopFlyWheel", stopFlyWheelCmd);
         eventMap.put("endPrint", new PrintCommand("**************MISSION SHOOT FRISBEE IS A SUCCESS****************"));
 
         PPRamseteCommand basePathCmd = new PPRamseteCommand(
@@ -222,6 +221,10 @@ public class RobotContainer {
         theCmd.addCommands(new InstantCommand(() -> this.currentTrajectory = path));
         theCmd.addCommands(new InstantCommand(() -> driveSub.setOdometry(path.getInitialPose()), driveSub));
         theCmd.addCommands(eventPathCmd);
+        theCmd.addCommands(new WaitCommand(0.5));
+        theCmd.addCommands(new InstantCommand(() -> shooterSub.shootNDiscs(3), shooterSub));
+        theCmd.addCommands(stopShooterCmd);
+        theCmd.addCommands(stopFlyWheelCmd);
 
         theCmd.onCommandInitialize(Robot::reportCommandStart);
         theCmd.onCommandFinish(Robot::reportCommandFinish);

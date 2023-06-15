@@ -25,12 +25,15 @@ public class Shooter extends SubsystemBase {
 
     DigitalInput hallEffect;
     private JoystickButton flyWheelButton;
+    private JoystickButton shooterButton;
     Joystick operatorController;
     public boolean isShooting = false;
     boolean simulationInitialized = false;
+    int remainingDiscs = 0;
+
 
     public enum ShooterState {
-        Stopped, SpinningUpFlywheel, AdvancingPaddle, IndexingPaddle
+        Stopped, SpinningUpFlywheel, UnIndexingPaddle, FinishShooting, IndexingPaddle
     }
 
     ShooterState shooterState = ShooterState.Stopped;
@@ -50,6 +53,7 @@ public class Shooter extends SubsystemBase {
         }
 
         flyWheelButton = new JoystickButton(operatorController, Constants.LogitechDualAction.LeftTrigger);
+        shooterButton = new JoystickButton(operatorController, Constants.LogitechDualAction.RightTrigger);
 
         simulationInit();
     }
@@ -57,12 +61,12 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         manageShooterState();
-        if (flyWheelButton.getAsBoolean()) {
-            startFlyWheel();
-        }
-        else {
-            // stopFlyWheel();
-        }
+        // if (flyWheelButton.getAsBoolean()) {
+        //     startFlyWheel();
+        // }
+        // else {
+        //     // stopFlyWheel();
+        // }
     }
 
     /******** SHOOTER STATE MACHINE ********/
@@ -71,24 +75,39 @@ public class Shooter extends SubsystemBase {
         switch (shooterState) {
             case Stopped:
                 stopPaddle();
+                remainingDiscs = shootNDiscs(remainingDiscs);
+                if (shooterButton.getAsBoolean()) {
+                    remainingDiscs = 100;
+                }
                 // stopFlyWheel();
                 break;
 
             case SpinningUpFlywheel:
                 // startFlyWheel();
                 if (flyWheelUpToSpeed()) {
-                    shooterState = ShooterState.AdvancingPaddle;
+                    shooterState = ShooterState.UnIndexingPaddle;
                 }
                 break;
 
-            case AdvancingPaddle:
+            case UnIndexingPaddle:
+                startPaddle();
+                if (!paddleAtIndexPosition()) {
+                    remainingDiscs--;
+                    shooterState = ShooterState.FinishShooting;
+                }
+                break;    
+
+            case FinishShooting:
+                startPaddle();
                 if (paddleAtIndexPosition() && !flyWheelUpToSpeed()) {
                     // System.out.println("AdvancingPaddle:Paddle at index but flywheel not up to speed") ;
                     stopPaddle();
                     shooterState = ShooterState.SpinningUpFlywheel;
-                } else {
-                    // System.out.println("AdvancingPaddle:Paddle at index is " + paddleAtIndexPosition() + " and flywheel up to speed is " + flyWheelUpToSpeed()) ;
-                    startPaddle();
+                } else if (remainingDiscs > 0) {
+                    shooterState = ShooterState.UnIndexingPaddle;
+                }
+                if (remainingDiscs == 0) {
+                    shooterState = ShooterState.IndexingPaddle;
                 }
                 break;
 
@@ -110,7 +129,7 @@ public class Shooter extends SubsystemBase {
     public void stopShooter() {
         if (shooterState == ShooterState.SpinningUpFlywheel) {
             shooterState = ShooterState.Stopped;
-        } else if (shooterState == ShooterState.AdvancingPaddle) {
+        } else if (shooterState == ShooterState.FinishShooting) {
             shooterState = ShooterState.IndexingPaddle;
         } else {
             shooterState = ShooterState.Stopped;
@@ -137,6 +156,24 @@ public class Shooter extends SubsystemBase {
         return isShooting;
     }
 
+    public int shootNDiscs(int numDiscs) {
+        return numDiscs;
+        // startPaddle();
+        // if (!paddleAtIndexPosition() && pastFirstTrue != true) { 
+        //     pastFirstTrue = true;
+        // }
+        // if (pastFirstTrue) {
+        //     if (paddleAtIndexPosition()) { 
+        //         counter++;
+        //         if (counter == n) {
+        //             stopShooter();
+        //             counter = 0;
+        //             pastFirstTrue = false;
+        //         }
+        //     }
+        // }
+    }
+
     public double getFlyWheelVelocity() {
         double velocity = flyWheelMotor.getSelectedSensorVelocity();
         return velocity;
@@ -159,19 +196,6 @@ public class Shooter extends SubsystemBase {
     public void stopPaddle() {
         paddleMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
         isShooting = false;
-    }
-
-    public void spinPaddleOnce() {
-        boolean pastFirstTrue = false;
-        startPaddle();
-        if (!paddleAtIndexPosition()) {
-            pastFirstTrue = true;
-        }
-        if (pastFirstTrue) {
-            if (paddleAtIndexPosition()) {
-                stopPaddle();
-            }
-        }
     }
 
     public double getPaddlePercentOutput() {

@@ -84,17 +84,9 @@
       ]
     },
     {
-      "position": 1.75,
+      "position": 1.5,
       "names": [
-        "startShooting",
-        "stopFlywheel"
-      ]
-    },
-    {
-      "position": 1.95,
-      "names": [
-        "stopShooter",
-        "stopFlyWheel"
+        "startShooting"
       ]
     },
     {
