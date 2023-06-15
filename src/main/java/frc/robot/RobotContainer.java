@@ -102,7 +102,7 @@ public class RobotContainer {
 
         /* Setting Commands of Buttons */
         shooterButton.onTrue(startShooterCmd).onFalse(stopShooterCmd);
-        // flyWheelButton.onTrue(startFlyWheelCmd).onFalse(stopFlyWheelCmd); // remove commands, added in shooter 
+        flyWheelButton.onTrue(startFlyWheelCmd).onFalse(stopFlyWheelCmd); // remove commands, added in shooter 
     }
 
     /************** PATHPLANNER & AUTO **************/
@@ -308,6 +308,20 @@ public class RobotContainer {
         return theCmd;
     }
 
+
+    InstrumentedSequentialCommandGroup createShootNTestCmd() {
+        InstrumentedSequentialCommandGroup theCmd = new InstrumentedSequentialCommandGroup();
+        theCmd.addCommands(new StartFlyWheel(shooterSub));
+        // theCmd.addCommands(new Shoo);
+        theCmd.addCommands(new WaitCommand(1.5));
+
+        theCmd.addCommands(new StopFlyWheel(shooterSub));
+
+
+        return theCmd ;
+    }
+
+
     public PathPlannerTrajectory getCurrentTrajectory() {
         return currentTrajectory;
     }
@@ -359,6 +373,7 @@ public class RobotContainer {
         autoChooser.addOption("Arc", "arc");
         autoChooser.addOption("Square", "square");
         autoChooser.addOption("Fancy", "fancy");
+        autoChooser.addOption("ShootNTest", "shootNTest");
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
@@ -377,6 +392,8 @@ public class RobotContainer {
             return createSquareAutoCmd();
         } else if (choice == "fancy") {
             return createFancyAutoCmd();
+        } else if (choice == "fancy") {
+            return createShootNTestCmd();
         } else {
             return null;
         }

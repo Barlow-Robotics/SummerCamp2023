@@ -74,11 +74,6 @@ public class Shooter extends SubsystemBase {
         // else {
         //     // stopFlyWheel();
         // }
-        if (flyWheelButton.getAsBoolean()) {
-            startFlyWheel();
-        } else {
-            // stopFlyWheel();
-        }
     }
 
     /******** SHOOTER STATE MACHINE ********/
@@ -87,10 +82,10 @@ public class Shooter extends SubsystemBase {
         switch (shooterState) {
             case Stopped:
                 stopPaddle();
-                remainingDiscs = shootNDiscs(remainingDiscs);
-                if (shooterButton.getAsBoolean()) {
-                    remainingDiscs = 100;
-                }
+                // remainingDiscs = shootNDiscs(remainingDiscs);
+                // if (shooterButton.getAsBoolean()) {
+                //     remainingDiscs = 100;
+                // }
                 // stopFlyWheel();
                 break;
 
@@ -104,6 +99,7 @@ public class Shooter extends SubsystemBase {
             case UnIndexingPaddle:
                 startPaddle();
                 if (!paddleAtIndexPosition()) {
+                    // paddle has left index position
                     remainingDiscs--;
                     shooterState = ShooterState.FinishShooting;
                 }
@@ -111,15 +107,14 @@ public class Shooter extends SubsystemBase {
 
             case FinishShooting:
                 startPaddle();
-                if (paddleAtIndexPosition() && !flyWheelUpToSpeed()) {
+                if (paddleAtIndexPosition() && !flyWheelUpToSpeed() && remainingDiscs > 0) {
                     // System.out.println("AdvancingPaddle:Paddle at index but flywheel not up to
                     // speed") ;
                     stopPaddle();
                     shooterState = ShooterState.SpinningUpFlywheel;
-                } else if (remainingDiscs > 0) {
+                } else if (paddleAtIndexPosition() && remainingDiscs > 0) {
                     shooterState = ShooterState.UnIndexingPaddle;
-                }
-                if (remainingDiscs == 0) {
+                } else if (remainingDiscs == 0) {
                     shooterState = ShooterState.IndexingPaddle;
                 } else {
                     // System.out.println("AdvancingPaddle:Paddle at index is " +
@@ -132,6 +127,7 @@ public class Shooter extends SubsystemBase {
                 startPaddle();
                 if (paddleAtIndexPosition()) {
                     shooterState = ShooterState.Stopped;
+                    remainingDiscs = 0 ;
                 }
                 break;
         }
@@ -140,6 +136,7 @@ public class Shooter extends SubsystemBase {
     public void startShooter() {
         if (shooterState != ShooterState.IndexingPaddle) {
             shooterState = ShooterState.SpinningUpFlywheel;
+           remainingDiscs = 100;
         }
     }
 
@@ -159,29 +156,29 @@ public class Shooter extends SubsystemBase {
 
     /******** FLYWHEEL ********/
 
-    public double flyWheelVelocity() {
-        double v;
-        if (visionSub.aprilTagDetected()) {
-            int closestIndex = 0;
-            for (int i = 0; i < 5; i++) { // should run until the max length of the distAndVelocityArray
-                if (visionSub.distanceToAprilTag() >= distAndVelocityArray[0][i]
-                        && visionSub.distanceToAprilTag() < distAndVelocityArray[0][i + 1]) {
-                    closestIndex = i;
-                    break;
-                }
-            }
-            v = distAndVelocityArray[1][closestIndex]
-                    + (((visionSub.distanceToAprilTag() - distAndVelocityArray[0][closestIndex])
-                            * (distAndVelocityArray[1][closestIndex + 1] - distAndVelocityArray[1][closestIndex]))
-                            / (distAndVelocityArray[0][closestIndex + 1] - distAndVelocityArray[0][closestIndex]));
-        } else {
-            v = Constants.Shooter.FlyWheel.DefaultVelocity;
-        }
-        return v;
-    }
+    // public double flyWheelVelocity() {
+    //     double v;
+    //     if (visionSub.aprilTagDetected()) {
+    //         int closestIndex = 0;
+    //         for (int i = 0; i < 5; i++) { // should run until the max length of the distAndVelocityArray
+    //             if (visionSub.distanceToAprilTag() >= distAndVelocityArray[0][i]
+    //                     && visionSub.distanceToAprilTag() < distAndVelocityArray[0][i + 1]) {
+    //                 closestIndex = i;
+    //                 break;
+    //             }
+    //         }
+    //         v = distAndVelocityArray[1][closestIndex]
+    //                 + (((visionSub.distanceToAprilTag() - distAndVelocityArray[0][closestIndex])
+    //                         * (distAndVelocityArray[1][closestIndex + 1] - distAndVelocityArray[1][closestIndex]))
+    //                         / (distAndVelocityArray[0][closestIndex + 1] - distAndVelocityArray[0][closestIndex]));
+    //     } else {
+    //         v = Constants.Shooter.FlyWheel.DefaultVelocity;
+    //     }
+    //     return v;
+    // }
 
     public void startFlyWheel() {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, flyWheelVelocity());
+        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.Shooter.FlyWheel.DefaultVelocity);
         isShooting = true;
     }
 
@@ -194,8 +191,10 @@ public class Shooter extends SubsystemBase {
         return isShooting;
     }
 
-    public int shootNDiscs(int numDiscs) {
-        return numDiscs;
+    public void shootNDiscs(int numDiscs) {
+        remainingDiscs = numDiscs;
+        shooterState = ShooterState.SpinningUpFlywheel;
+
         // startPaddle();
         // if (!paddleAtIndexPosition() && pastFirstTrue != true) { 
         //     pastFirstTrue = true;
