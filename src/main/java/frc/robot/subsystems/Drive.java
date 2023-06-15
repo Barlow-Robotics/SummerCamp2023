@@ -226,13 +226,11 @@ public class Drive extends SubsystemBase {
     }
 
     public void simulationInit() {
-        PhysicsSim.getInstance().addTalonSRX(
-            leftLeader, 0.25, 
-            (5330/600.0) * Constants.DriveConstants.EncoderResolution /*/ Constants.DriveConstants.GearRatio*/, true);
+        final double maxCtsPer100ms = ((5330.0 / 600) * Constants.DriveConstants.EncoderResolution) / Constants.DriveConstants.GearRatio ;
+
+        PhysicsSim.getInstance().addTalonSRX( leftLeader, 0.25, maxCtsPer100ms, true);
         PhysicsSim.getInstance().addVictorSPX(leftFollower);
-        PhysicsSim.getInstance().addTalonSRX(
-            rightLeader, 0.25, 
-            (5330/600.0) * Constants.DriveConstants.EncoderResolution/* / Constants.DriveConstants.GearRatio*/, false);
+        PhysicsSim.getInstance().addTalonSRX( rightLeader, 0.25,maxCtsPer100ms, true);
         PhysicsSim.getInstance().addVictorSPX(rightFollower);
     }
 
