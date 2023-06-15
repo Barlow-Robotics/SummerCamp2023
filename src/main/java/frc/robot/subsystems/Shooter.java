@@ -9,16 +9,19 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.sim.PhysicsSim;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Joystick;
 
 public class Shooter extends SubsystemBase {
     // private static final TalonSRX hopperMotor = null;
+
+    Vision visionSub;
 
     WPI_TalonFX flyWheelMotor;
     WPI_TalonSRX paddleMotor;
@@ -31,6 +34,10 @@ public class Shooter extends SubsystemBase {
     boolean simulationInitialized = false;
     int remainingDiscs = 0;
 
+
+    double[][] distAndVelocityArray = { { 1, 2, 3, 4, 5 }, { 6000, 7000, 8000, 9000, 8000 } }; // Values are arbitrary,
+                                                                                               // need
+    // to test
 
     public enum ShooterState {
         Stopped, SpinningUpFlywheel, UnIndexingPaddle, FinishShooting, IndexingPaddle
@@ -67,6 +74,10 @@ public class Shooter extends SubsystemBase {
         // else {
         //     // stopFlyWheel();
         // }
+            startFlyWheel();
+        } else {
+            // stopFlyWheel();
+        }
     }
 
     /******** SHOOTER STATE MACHINE ********/
@@ -100,7 +111,8 @@ public class Shooter extends SubsystemBase {
             case FinishShooting:
                 startPaddle();
                 if (paddleAtIndexPosition() && !flyWheelUpToSpeed()) {
-                    // System.out.println("AdvancingPaddle:Paddle at index but flywheel not up to speed") ;
+                    // System.out.println("AdvancingPaddle:Paddle at index but flywheel not up to
+                    // speed") ;
                     stopPaddle();
                     shooterState = ShooterState.SpinningUpFlywheel;
                 } else if (remainingDiscs > 0) {
@@ -108,6 +120,10 @@ public class Shooter extends SubsystemBase {
                 }
                 if (remainingDiscs == 0) {
                     shooterState = ShooterState.IndexingPaddle;
+                } else {
+                    // System.out.println("AdvancingPaddle:Paddle at index is " +
+                    // paddleAtIndexPosition() + " and flywheel up to speed is " +
+                    // flyWheelUpToSpeed()) ;
                 }
                 break;
 
@@ -142,8 +158,29 @@ public class Shooter extends SubsystemBase {
 
     /******** FLYWHEEL ********/
 
+    public double flyWheelVelocity() {
+        double v;
+        if (visionSub.aprilTagDetected()) {
+            int closestIndex = 0;
+            for (int i = 0; i < 5; i++) { // should run until the max length of the distAndVelocityArray
+                if (visionSub.distanceToAprilTag() >= distAndVelocityArray[0][i]
+                        && visionSub.distanceToAprilTag() < distAndVelocityArray[0][i + 1]) {
+                    closestIndex = i;
+                    break;
+                }
+            }
+            v = distAndVelocityArray[1][closestIndex]
+                    + (((visionSub.distanceToAprilTag() - distAndVelocityArray[0][closestIndex])
+                            * (distAndVelocityArray[1][closestIndex + 1] - distAndVelocityArray[1][closestIndex]))
+                            / (distAndVelocityArray[0][closestIndex + 1] - distAndVelocityArray[0][closestIndex]));
+        } else {
+            v = Constants.Shooter.FlyWheel.DefaultVelocity;
+        }
+        return v;
+    }
+
     public void startFlyWheel() {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.Shooter.FlyWheel.Velocity);
+        flyWheelMotor.set(TalonFXControlMode.Velocity, flyWheelVelocity());
         isShooting = true;
     }
 
@@ -180,7 +217,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean flyWheelUpToSpeed() {
-        return getFlyWheelVelocity() >= (0.95 * Constants.Shooter.FlyWheel.Velocity); // EHP change 0.95 later
+        return getFlyWheelVelocity() >= (0.95 * Constants.Shooter.FlyWheel.DefaultVelocity); // EHP change 0.95 later
     }
 
     private double getFlyWheelClosedLoopError() {
@@ -228,7 +265,7 @@ public class Shooter extends SubsystemBase {
         motor.configFactoryDefault();
         motor.configClosedloopRamp(Constants.Shooter.FlyWheel.ClosedVoltageRampingConstant);
         motor.configOpenloopRamp(Constants.Shooter.FlyWheel.ManualVoltageRampingConstant);
-        motor.config_kF(0, Constants.Shooter.FlyWheel.kF); //EHP fix PID values
+        motor.config_kF(0, Constants.Shooter.FlyWheel.kF); // EHP fix PID values
         motor.config_kP(0, Constants.Shooter.FlyWheel.kP);
         motor.config_kI(0, Constants.Shooter.FlyWheel.kI);
         motor.config_kD(0, Constants.Shooter.FlyWheel.kD);
@@ -239,7 +276,7 @@ public class Shooter extends SubsystemBase {
         motor.configFactoryDefault();
         motor.configClosedloopRamp(Constants.Shooter.Paddle.ClosedVoltageRampingConstant);
         motor.configOpenloopRamp(Constants.Shooter.Paddle.ManualVoltageRampingConstant);
-        motor.config_kF(0, Constants.Shooter.Paddle.kF); //EHP fix PID values
+        motor.config_kF(0, Constants.Shooter.Paddle.kF); // EHP fix PID values
         motor.config_kP(0, Constants.Shooter.Paddle.kP);
         motor.config_kI(0, Constants.Shooter.Paddle.kI);
         motor.config_kD(0, Constants.Shooter.Paddle.kD);

@@ -105,7 +105,7 @@ public final class Constants {
 
             public static final double ChainGearRatio = 24.0 / 42.0; // need to change
             public static final double RPM = ChainGearRatio / 60.0 * UnitsPerFXRotation / 10.0;
-            public static final double Velocity = 4500 * RPM; // * RPM
+            public static final double DefaultVelocity = 4500 * RPM; // * RPM
 
             public static final double kF = 0.055;
             public static final double kP = 0.03;
