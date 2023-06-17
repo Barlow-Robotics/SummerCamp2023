@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.DriveRobot;
 import frc.robot.commands.InstrumentedSequentialCommandGroup;
+import frc.robot.commands.ShootNDiscs;
 import frc.robot.commands.StartFlyWheel;
 import frc.robot.commands.StartShooter;
 import frc.robot.commands.StopFlyWheel;
@@ -312,12 +313,9 @@ public class RobotContainer {
     InstrumentedSequentialCommandGroup createShootNTestCmd() {
         InstrumentedSequentialCommandGroup theCmd = new InstrumentedSequentialCommandGroup();
         theCmd.addCommands(new StartFlyWheel(shooterSub));
-        // theCmd.addCommands(new Shoo);
+        theCmd.addCommands(new ShootNDiscs(5, shooterSub));
         theCmd.addCommands(new WaitCommand(1.5));
-
-        theCmd.addCommands(new StopFlyWheel(shooterSub));
-
-
+        theCmd.addCommands(new StopFlyWheel(shooterSub)) ;
         return theCmd ;
     }
 
@@ -392,7 +390,7 @@ public class RobotContainer {
             return createSquareAutoCmd();
         } else if (choice == "fancy") {
             return createFancyAutoCmd();
-        } else if (choice == "fancy") {
+        } else if (choice == "shootNTest") {
             return createShootNTestCmd();
         } else {
             return null;

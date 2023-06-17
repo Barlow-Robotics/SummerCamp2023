@@ -10,11 +10,13 @@ import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+// import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.sim.PhysicsSim;
 
@@ -27,13 +29,13 @@ public class Shooter extends SubsystemBase {
     WPI_TalonSRX paddleMotor;
 
     DigitalInput hallEffect;
-    private JoystickButton flyWheelButton;
-    private JoystickButton shooterButton;
+    DIOSim hallEffectSim ;
+    // private JoystickButton flyWheelButton;
+    // private JoystickButton shooterButton;
     Joystick operatorController;
     public boolean isShooting = false;
     boolean simulationInitialized = false;
     int remainingDiscs = 0;
-
 
     double[][] distAndVelocityArray = { { 1, 2, 3, 4, 5 }, { 6000, 7000, 8000, 9000, 8000 } }; // Values are arbitrary,
                                                                                                // need
@@ -59,8 +61,8 @@ public class Shooter extends SubsystemBase {
             operatorController = new Joystick(2);
         }
 
-        flyWheelButton = new JoystickButton(operatorController, Constants.LogitechDualAction.LeftTrigger);
-        shooterButton = new JoystickButton(operatorController, Constants.LogitechDualAction.RightTrigger);
+        // flyWheelButton = new JoystickButton(operatorController, Constants.LogitechDualAction.LeftTrigger);
+        // shooterButton = new JoystickButton(operatorController, Constants.LogitechDualAction.RightTrigger);
 
         simulationInit();
     }
@@ -69,10 +71,10 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         manageShooterState();
         // if (flyWheelButton.getAsBoolean()) {
-        //     startFlyWheel();
+        // startFlyWheel();
         // }
         // else {
-        //     // stopFlyWheel();
+        // // stopFlyWheel();
         // }
     }
 
@@ -84,7 +86,7 @@ public class Shooter extends SubsystemBase {
                 stopPaddle();
                 // remainingDiscs = shootNDiscs(remainingDiscs);
                 // if (shooterButton.getAsBoolean()) {
-                //     remainingDiscs = 100;
+                // remainingDiscs = 100;
                 // }
                 // stopFlyWheel();
                 break;
@@ -103,7 +105,7 @@ public class Shooter extends SubsystemBase {
                     remainingDiscs--;
                     shooterState = ShooterState.FinishShooting;
                 }
-                break;    
+                break;
 
             case FinishShooting:
                 startPaddle();
@@ -127,16 +129,20 @@ public class Shooter extends SubsystemBase {
                 startPaddle();
                 if (paddleAtIndexPosition()) {
                     shooterState = ShooterState.Stopped;
-                    remainingDiscs = 0 ;
+                    remainingDiscs = 0;
                 }
                 break;
         }
     }
 
     public void startShooter() {
+        this.startShooter(100);
+    }
+
+    public void startShooter(int numDiscs) {
         if (shooterState != ShooterState.IndexingPaddle) {
             shooterState = ShooterState.SpinningUpFlywheel;
-           remainingDiscs = 100;
+            remainingDiscs = numDiscs;
         }
     }
 
@@ -150,31 +156,42 @@ public class Shooter extends SubsystemBase {
         }
     }
 
-    public String getShooterState() {
+    public String getShooterStateString() {
         return shooterState.toString();
+    }
+
+    public ShooterState getShooterState() {
+        return shooterState;
+    }
+
+    public int getRemainingDiscs() {
+        return remainingDiscs;
     }
 
     /******** FLYWHEEL ********/
 
     // public double flyWheelVelocity() {
-    //     double v;
-    //     if (visionSub.aprilTagDetected()) {
-    //         int closestIndex = 0;
-    //         for (int i = 0; i < 5; i++) { // should run until the max length of the distAndVelocityArray
-    //             if (visionSub.distanceToAprilTag() >= distAndVelocityArray[0][i]
-    //                     && visionSub.distanceToAprilTag() < distAndVelocityArray[0][i + 1]) {
-    //                 closestIndex = i;
-    //                 break;
-    //             }
-    //         }
-    //         v = distAndVelocityArray[1][closestIndex]
-    //                 + (((visionSub.distanceToAprilTag() - distAndVelocityArray[0][closestIndex])
-    //                         * (distAndVelocityArray[1][closestIndex + 1] - distAndVelocityArray[1][closestIndex]))
-    //                         / (distAndVelocityArray[0][closestIndex + 1] - distAndVelocityArray[0][closestIndex]));
-    //     } else {
-    //         v = Constants.Shooter.FlyWheel.DefaultVelocity;
-    //     }
-    //     return v;
+    // double v;
+    // if (visionSub.aprilTagDetected()) {
+    // int closestIndex = 0;
+    // for (int i = 0; i < 5; i++) { // should run until the max length of the
+    // distAndVelocityArray
+    // if (visionSub.distanceToAprilTag() >= distAndVelocityArray[0][i]
+    // && visionSub.distanceToAprilTag() < distAndVelocityArray[0][i + 1]) {
+    // closestIndex = i;
+    // break;
+    // }
+    // }
+    // v = distAndVelocityArray[1][closestIndex]
+    // + (((visionSub.distanceToAprilTag() - distAndVelocityArray[0][closestIndex])
+    // * (distAndVelocityArray[1][closestIndex + 1] -
+    // distAndVelocityArray[1][closestIndex]))
+    // / (distAndVelocityArray[0][closestIndex + 1] -
+    // distAndVelocityArray[0][closestIndex]));
+    // } else {
+    // v = Constants.Shooter.FlyWheel.DefaultVelocity;
+    // }
+    // return v;
     // }
 
     public void startFlyWheel() {
@@ -196,18 +213,18 @@ public class Shooter extends SubsystemBase {
         shooterState = ShooterState.SpinningUpFlywheel;
 
         // startPaddle();
-        // if (!paddleAtIndexPosition() && pastFirstTrue != true) { 
-        //     pastFirstTrue = true;
+        // if (!paddleAtIndexPosition() && pastFirstTrue != true) {
+        // pastFirstTrue = true;
         // }
         // if (pastFirstTrue) {
-        //     if (paddleAtIndexPosition()) { 
-        //         counter++;
-        //         if (counter == n) {
-        //             stopShooter();
-        //             counter = 0;
-        //             pastFirstTrue = false;
-        //         }
-        //     }
+        // if (paddleAtIndexPosition()) {
+        // counter++;
+        // if (counter == n) {
+        // stopShooter();
+        // counter = 0;
+        // pastFirstTrue = false;
+        // }
+        // }
         // }
     }
 
@@ -252,7 +269,8 @@ public class Shooter extends SubsystemBase {
 
         builder.setSmartDashboardType("Shooter Subsystem");
 
-        builder.addStringProperty("State", this::getShooterState, null);
+        builder.addStringProperty("State", this::getShooterStateString, null);
+        builder.addDoubleProperty("Discs Remaining", this::getRemainingDiscs, null);
         builder.addDoubleProperty("Fly Wheel Velocity", this::getFlyWheelVelocity, null);
         builder.addDoubleProperty("Fly Wheel Error", this::getFlyWheelClosedLoopError, null);
         builder.addDoubleProperty("Paddle Percent Output", this::getPaddlePercentOutput, null);
@@ -288,5 +306,33 @@ public class Shooter extends SubsystemBase {
     public void simulationInit() {
         PhysicsSim.getInstance().addTalonFX(flyWheelMotor, 0.2, 21777);
         PhysicsSim.getInstance().addTalonSRX(paddleMotor, 0.2, 21777);
+        hallEffectSim = new DIOSim(hallEffect) ;
+    }
+
+
+    @Override
+    public void simulationPeriodic() {
+        // estimated counts per revolution from looking at counts per second and assuming
+        // on paddle revolution per second
+        final int CountsPerRevolution = 200000 ;
+        final double HallEffectWidth = 8.0 ;
+        int paddleCounts = (int) paddleMotor.getSelectedSensorPosition() ;
+        // ensure that paddle counts is positive. 
+        if (paddleCounts < 0 ) {
+            paddleCounts += Math.abs(paddleCounts) ;
+        }
+        double degrees = 360.0 * ((paddleCounts % CountsPerRevolution) / CountsPerRevolution) ;
+
+        boolean paddleAtIndex = true ;
+
+        // If the paddle position is close enough to 0 or to 180, then set hall false (detected)
+        if ( degrees < HallEffectWidth  
+             || degrees > (360.0 - HallEffectWidth)  
+             || (degrees > 180.0 - HallEffectWidth) && degrees < (180.0 + HallEffectWidth) ) {
+            paddleAtIndex = false ;
+        }
+        hallEffectSim.setValue(paddleAtIndex);
+        NetworkTableInstance.getDefault().getEntry("shooter/simDegrees").setDouble(degrees);
+
     }
 }
