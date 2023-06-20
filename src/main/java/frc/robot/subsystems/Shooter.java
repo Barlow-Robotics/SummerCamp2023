@@ -320,7 +320,7 @@ public class Shooter extends SubsystemBase {
         if (paddleCounts < 0 ) {
             paddleCounts += Math.abs(paddleCounts) ;
         }
-        double degrees = 360.0 * ((paddleCounts % CountsPerRevolution) / CountsPerRevolution) ;
+        double degrees = 360.0 * ((double)(paddleCounts % CountsPerRevolution) / (double)CountsPerRevolution) ;
 
         boolean paddleAtIndex = true ;
 
