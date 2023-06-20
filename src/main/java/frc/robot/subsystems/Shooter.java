@@ -87,11 +87,9 @@ public class Shooter extends SubsystemBase {
                 // if (shooterButton.getAsBoolean()) {
                 // remainingDiscs = 100;
                 // }
-                // stopFlyWheel();
                 break;
 
             case SpinningUpFlywheel:
-                // startFlyWheel();
                 if (flyWheelUpToSpeed()) {
                     shooterState = ShooterState.UnIndexingPaddle;
                 }

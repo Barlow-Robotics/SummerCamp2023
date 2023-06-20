@@ -79,7 +79,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "height": -43,
+          "height": 0,
           "series": [
             {
               "color": [
@@ -119,12 +119,15 @@
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     },
     "Plot <1>": {
       "plots": [
         {
-          "height": -30,
+          "height": 0,
           "series": [
             {
               "color": [
@@ -146,12 +149,15 @@
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     },
     "Plot <2>": {
       "plots": [
         {
-          "height": 599,
+          "height": 0,
           "series": [
             {
               "color": [
@@ -209,7 +215,10 @@
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }
