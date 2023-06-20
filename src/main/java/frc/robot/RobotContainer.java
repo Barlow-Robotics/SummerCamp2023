@@ -201,10 +201,10 @@ public class RobotContainer {
                 "Arc", DriveConstants.DefaultAutoVelocity, DriveConstants.DefaultAutoAccel, false);
 
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("startPrint", new PrintCommand("***************MISSION SHOOT FRISBEE IS A GO****************"));
+        eventMap.put("startPrint", new PrintCommand("********PATH STARTED********"));
         eventMap.put("startFlyWheel", startFlyWheelCmd);
-        eventMap.put("startShooting", startShooterCmd);
-        eventMap.put("endPrint", new PrintCommand("**************MISSION SHOOT FRISBEE IS A SUCCESS****************"));
+        eventMap.put("shootNDiscs", new ShootNDiscs(5, shooterSub));
+        eventMap.put("endPrint", new PrintCommand("********PATH ENDED********"));
 
         PPRamseteCommand basePathCmd = new PPRamseteCommand(
                 path,
@@ -222,9 +222,8 @@ public class RobotContainer {
         theCmd.addCommands(new InstantCommand(() -> this.currentTrajectory = path));
         theCmd.addCommands(new InstantCommand(() -> driveSub.setOdometry(path.getInitialPose()), driveSub));
         theCmd.addCommands(eventPathCmd);
-        theCmd.addCommands(new WaitCommand(0.5));
-        theCmd.addCommands(new InstantCommand(() -> shooterSub.shootNDiscs(3), shooterSub));
-        theCmd.addCommands(stopShooterCmd);
+        // theCmd.addCommands(new WaitCommand(0.5));
+        // theCmd.addCommands(new InstantCommand(() -> shooterSub.shootNDiscs(3), shooterSub));
         theCmd.addCommands(stopFlyWheelCmd);
 
         theCmd.onCommandInitialize(Robot::reportCommandStart);

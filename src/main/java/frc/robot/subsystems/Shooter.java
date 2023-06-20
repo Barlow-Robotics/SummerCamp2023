@@ -38,8 +38,7 @@ public class Shooter extends SubsystemBase {
     int remainingDiscs = 0;
 
     double[][] distAndVelocityArray = { { 1, 2, 3, 4, 5 }, { 6000, 7000, 8000, 9000, 8000 } }; // Values are arbitrary,
-                                                                                               // need
-    // to test
+                                                                                               // need to test
 
     public enum ShooterState {
         Stopped, SpinningUpFlywheel, UnIndexingPaddle, FinishShooting, IndexingPaddle
