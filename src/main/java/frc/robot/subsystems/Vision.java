@@ -13,6 +13,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -29,7 +30,7 @@ public class Vision extends SubsystemBase {
     // double aprilTagZ;
     // double aprilTagBearing;
     double aprilTagDistToCenter;
-    double aprilTagRange; // need to change this to include the distnace to all 4 corners
+    double aprilTagRange;
 
     String sourceIP = "Nothing Received";
 
@@ -125,5 +126,19 @@ public class Vision extends SubsystemBase {
 
     public double aprilTagDistToCenter() {
         return this.aprilTagDistToCenter;
+    }
+
+    /******** SHUFFLEBOARD ********/
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+
+        builder.setSmartDashboardType("Vision Subsystem");
+
+        builder.addDoubleProperty("April Tag ID", this::aprilTagID, null);
+        builder.addDoubleProperty("April Tag Distance to Center", this::aprilTagDistToCenter, null);
+        builder.addDoubleProperty("Arpil Tag Range", this::aprilTagRange, null);
+        builder.addBooleanProperty("April Tag Detected", this::aprilTagDetected, null);
     }
 }
