@@ -172,17 +172,17 @@ public class Shooter extends SubsystemBase {
 
     // public double flyWheelVelocity() {
     //     double v;
-    //     if (visionSub.aprilTagDetected()) {
+    //     if (visionSub.getAprilTagDetected()) {
     //         int closestIndex = 0;
     //         for (int i = 0; i < 5; i++) { // should run until the max length of the distAndVelocityArray
-    //             if (visionSub.distanceToAprilTag() >= distAndVelocityArray[0][i]
-    //                     && visionSub.distanceToAprilTag() < distAndVelocityArray[0][i + 1]) {
+    //             if (visionSub.getDistanceToAprilTag() >= distAndVelocityArray[0][i]
+    //                     && visionSub.getDistanceToAprilTag() < distAndVelocityArray[0][i + 1]) {
     //                 closestIndex = i;
     //                 break;
     //             }
     //         }
     //         v = distAndVelocityArray[1][closestIndex]
-    //                 + (((visionSub.distanceToAprilTag() - distAndVelocityArray[0][closestIndex])
+    //                 + (((distanceToAprilTag() - distAndVelocityArray[0][closestIndex])
     //                         * (distAndVelocityArray[1][closestIndex + 1] -
     //                                 distAndVelocityArray[1][closestIndex]))
     //                         / (distAndVelocityArray[0][closestIndex + 1] -

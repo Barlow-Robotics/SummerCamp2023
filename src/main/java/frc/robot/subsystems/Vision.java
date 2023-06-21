@@ -82,7 +82,7 @@ public class Vision extends SubsystemBase {
                 });
 
                 this.aprilTagID = Double.parseDouble(myMap.get("id"));
-                this.aprilTagDetected = Boolean.parseBoolean(myMap.get("isDetected"));
+                this.aprilTagDetected = Boolean.parseBoolean(myMap.get("detected"));
                 // this.aprilTagX = Double.parseDouble(myMap.get("X"));
                 // this.aprilTagY = Double.parseDouble(myMap.get("Y"));
                 // this.aprilTagZ = Double.parseDouble(myMap.get("Z"));
@@ -92,15 +92,16 @@ public class Vision extends SubsystemBase {
             }
         } catch (Exception ex) {
             this.aprilTagDetected = false;
-            System.out.println("Exception reading data");
+            System.out.println("Exception reading vison data");
         }
+
     }
 
-    public int aprilTagID() {
-        return this.aprilTagID();
+    public double getAprilTagID() {
+        return this.aprilTagID;
     }
 
-    public boolean aprilTagDetected() {
+    public boolean getAprilTagDetected() {
         return this.aprilTagDetected;
     }
 
@@ -120,12 +121,16 @@ public class Vision extends SubsystemBase {
     //     return this.aprilTagBearing;
     // }
 
-    public double aprilTagRange() {
+    public double getAprilTagRange() {
         return this.aprilTagRange;
     }
 
-    public double aprilTagDistToCenter() {
+    public double getAprilTagDistToCenter() {
         return this.aprilTagDistToCenter;
+    }
+
+    public String getSourceIP() {
+        return this.sourceIP;
     }
 
     /******** SHUFFLEBOARD ********/
@@ -136,9 +141,10 @@ public class Vision extends SubsystemBase {
 
         builder.setSmartDashboardType("Vision Subsystem");
 
-        builder.addDoubleProperty("April Tag ID", this::aprilTagID, null);
-        builder.addDoubleProperty("April Tag Distance to Center", this::aprilTagDistToCenter, null);
-        builder.addDoubleProperty("Arpil Tag Range", this::aprilTagRange, null);
-        builder.addBooleanProperty("April Tag Detected", this::aprilTagDetected, null);
+        builder.addDoubleProperty("April Tag ID", this::getAprilTagID, null);
+        builder.addDoubleProperty("April Tag Distance to Center", this::getAprilTagDistToCenter, null);
+        builder.addDoubleProperty("Arpil Tag Range", this::getAprilTagRange, null);
+        builder.addBooleanProperty("April Tag Detected", this::getAprilTagDetected, null);
+        builder.addStringProperty("Sender ID", this::getSourceIP, null);
     }
 }
