@@ -3,12 +3,12 @@
     {
       "anchorPoint": {
         "x": 5.0,
-        "y": 5.0
+        "y": 7.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.804373106364483,
-        "y": 5.0
+        "y": 7.5
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -25,15 +25,15 @@
     {
       "anchorPoint": {
         "x": 7.0,
-        "y": 5.0
+        "y": 7.5
       },
       "prevControl": {
         "x": 5.742024301524721,
-        "y": 5.0
+        "y": 7.5
       },
       "nextControl": {
         "x": 8.3063967226987,
-        "y": 5.0
+        "y": 7.5
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -50,11 +50,61 @@
     {
       "anchorPoint": {
         "x": 8.5,
-        "y": 3.0
+        "y": 6.5
       },
       "prevControl": {
         "x": 8.5,
-        "y": 3.811484365103836
+        "y": 7.311484365103836
+      },
+      "nextControl": {
+        "x": 8.5,
+        "y": 5.688515634896164
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 8.5,
+        "y": 2.0
+      },
+      "prevControl": {
+        "x": 8.5,
+        "y": 2.433072644520669
+      },
+      "nextControl": {
+        "x": 8.5,
+        "y": 1.566927355479331
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 10.0,
+        "y": 1.0
+      },
+      "prevControl": {
+        "x": 9.486010569827645,
+        "y": 1.0
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -84,15 +134,21 @@
       ]
     },
     {
-      "position": 1.5,
+      "position": 2.0,
       "names": [
-        "shootNDiscs"
+        "shootNDiscsA"
       ]
     },
     {
-      "position": 2.0,
+      "position": 4.0,
       "names": [
         "endPrint"
+      ]
+    },
+    {
+      "position": 3.0,
+      "names": [
+        "shootNDiscsB"
       ]
     }
   ]

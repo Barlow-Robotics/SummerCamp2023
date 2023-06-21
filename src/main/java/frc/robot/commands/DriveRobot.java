@@ -94,7 +94,7 @@ public class DriveRobot extends CommandBase {
             if (visionSub.aprilTagDetected()) {
                 missedFrames = 0;
                 autoSteering = true;
-                error = visionSub.aprilTagBearing();
+                error = visionSub.aprilTagDistToCenter();
                 adjustment = pid.calculate(error);
                 adjustment = Math.signum(adjustment)
                         * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
@@ -111,7 +111,7 @@ public class DriveRobot extends CommandBase {
                 pid.reset();
             }
 
-            yaw = pid.calculate(visionSub.aprilTagBearing());
+            yaw = pid.calculate(visionSub.aprilTagDistToCenter());
         }
         
         NetworkTableInstance.getDefault().getEntry("drive/speed").setDouble(-speed);

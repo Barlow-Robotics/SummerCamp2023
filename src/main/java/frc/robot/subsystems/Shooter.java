@@ -29,7 +29,7 @@ public class Shooter extends SubsystemBase {
     WPI_TalonSRX paddleMotor;
 
     DigitalInput hallEffect;
-    DIOSim hallEffectSim ;
+    DIOSim hallEffectSim;
     // private JoystickButton flyWheelButton;
     // private JoystickButton shooterButton;
     Joystick operatorController;
@@ -37,8 +37,7 @@ public class Shooter extends SubsystemBase {
     boolean simulationInitialized = false;
     int remainingDiscs = 0;
 
-    double[][] distAndVelocityArray = { { 1, 2, 3, 4, 5 }, { 6000, 7000, 8000, 9000, 8000 } }; // Values are arbitrary,
-                                                                                               // need to test
+    // double[][] distAndVelocityArray = { { 1, 2, 3, 4, 5 }, { 6000, 7000, 8000, 9000, 8000 } };
 
     public enum ShooterState {
         Stopped, SpinningUpFlywheel, UnIndexingPaddle, FinishShooting, IndexingPaddle
@@ -46,7 +45,7 @@ public class Shooter extends SubsystemBase {
 
     ShooterState shooterState = ShooterState.Stopped;
 
-    public Shooter() {
+    public Shooter(Vision v) {
         flyWheelMotor = new WPI_TalonFX(Constants.Shooter.FlyWheel.FlyWheelMotorID);
         setMotorConfig(flyWheelMotor);
 
@@ -60,8 +59,12 @@ public class Shooter extends SubsystemBase {
             operatorController = new Joystick(2);
         }
 
-        // flyWheelButton = new JoystickButton(operatorController, Constants.LogitechDualAction.LeftTrigger);
-        // shooterButton = new JoystickButton(operatorController, Constants.LogitechDualAction.RightTrigger);
+        visionSub = v;
+
+        // flyWheelButton = new JoystickButton(operatorController,
+        // Constants.LogitechDualAction.LeftTrigger);
+        // shooterButton = new JoystickButton(operatorController,
+        // Constants.LogitechDualAction.RightTrigger);
 
         simulationInit();
     }
@@ -168,30 +171,30 @@ public class Shooter extends SubsystemBase {
     /******** FLYWHEEL ********/
 
     // public double flyWheelVelocity() {
-    // double v;
-    // if (visionSub.aprilTagDetected()) {
-    // int closestIndex = 0;
-    // for (int i = 0; i < 5; i++) { // should run until the max length of the
-    // distAndVelocityArray
-    // if (visionSub.distanceToAprilTag() >= distAndVelocityArray[0][i]
-    // && visionSub.distanceToAprilTag() < distAndVelocityArray[0][i + 1]) {
-    // closestIndex = i;
-    // break;
-    // }
-    // }
-    // v = distAndVelocityArray[1][closestIndex]
-    // + (((visionSub.distanceToAprilTag() - distAndVelocityArray[0][closestIndex])
-    // * (distAndVelocityArray[1][closestIndex + 1] -
-    // distAndVelocityArray[1][closestIndex]))
-    // / (distAndVelocityArray[0][closestIndex + 1] -
-    // distAndVelocityArray[0][closestIndex]));
-    // } else {
-    // v = Constants.Shooter.FlyWheel.DefaultVelocity;
-    // }
-    // return v;
+    //     double v;
+    //     if (visionSub.aprilTagDetected()) {
+    //         int closestIndex = 0;
+    //         for (int i = 0; i < 5; i++) { // should run until the max length of the distAndVelocityArray
+    //             if (visionSub.distanceToAprilTag() >= distAndVelocityArray[0][i]
+    //                     && visionSub.distanceToAprilTag() < distAndVelocityArray[0][i + 1]) {
+    //                 closestIndex = i;
+    //                 break;
+    //             }
+    //         }
+    //         v = distAndVelocityArray[1][closestIndex]
+    //                 + (((visionSub.distanceToAprilTag() - distAndVelocityArray[0][closestIndex])
+    //                         * (distAndVelocityArray[1][closestIndex + 1] -
+    //                                 distAndVelocityArray[1][closestIndex]))
+    //                         / (distAndVelocityArray[0][closestIndex + 1] -
+    //                                 distAndVelocityArray[0][closestIndex]));
+    //     } else {
+    //         v = Constants.Shooter.FlyWheel.DefaultVelocity;
+    //     }
+    //     return v;
     // }
 
     public void startFlyWheel() {
+        // flyWheelMotor.set(TalonFXControlMode.Velocity, flyWheelVelocity());
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.Shooter.FlyWheel.DefaultVelocity);
         isShooting = true;
     }
@@ -303,30 +306,31 @@ public class Shooter extends SubsystemBase {
     public void simulationInit() {
         PhysicsSim.getInstance().addTalonFX(flyWheelMotor, 0.2, 21777);
         PhysicsSim.getInstance().addTalonSRX(paddleMotor, 0.2, 21777);
-        hallEffectSim = new DIOSim(hallEffect) ;
+        hallEffectSim = new DIOSim(hallEffect);
     }
-
 
     @Override
     public void simulationPeriodic() {
-        // estimated counts per revolution from looking at counts per second and assuming
+        // estimated counts per revolution from looking at counts per second and
+        // assuming
         // on paddle revolution per second
-        final int CountsPerRevolution = 200000 ;
-        final double HallEffectWidth = 8.0 ;
-        int paddleCounts = (int) paddleMotor.getSelectedSensorPosition() ;
-        // ensure that paddle counts is positive. 
-        if (paddleCounts < 0 ) {
-            paddleCounts += Math.abs(paddleCounts) ;
+        final int CountsPerRevolution = 200000;
+        final double HallEffectWidth = 8.0;
+        int paddleCounts = (int) paddleMotor.getSelectedSensorPosition();
+        // ensure that paddle counts is positive.
+        if (paddleCounts < 0) {
+            paddleCounts += Math.abs(paddleCounts);
         }
-        double degrees = 360.0 * ((double)(paddleCounts % CountsPerRevolution) / (double)CountsPerRevolution) ;
+        double degrees = 360.0 * ((double) (paddleCounts % CountsPerRevolution) / (double) CountsPerRevolution);
 
-        boolean paddleAtIndex = true ;
+        boolean paddleAtIndex = true;
 
-        // If the paddle position is close enough to 0 or to 180, then set hall false (detected)
-        if ( degrees < HallEffectWidth  
-             || degrees > (360.0 - HallEffectWidth)  
-             || (degrees > 180.0 - HallEffectWidth) && degrees < (180.0 + HallEffectWidth) ) {
-            paddleAtIndex = false ;
+        // If the paddle position is close enough to 0 or to 180, then set hall false
+        // (detected)
+        if (degrees < HallEffectWidth
+                || degrees > (360.0 - HallEffectWidth)
+                || (degrees > 180.0 - HallEffectWidth) && degrees < (180.0 + HallEffectWidth)) {
+            paddleAtIndex = false;
         }
         hallEffectSim.setValue(paddleAtIndex);
         NetworkTableInstance.getDefault().getEntry("shooter/simDegrees").setDouble(degrees);

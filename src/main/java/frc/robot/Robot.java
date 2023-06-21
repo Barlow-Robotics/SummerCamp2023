@@ -79,6 +79,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        CommandScheduler.getInstance().clearComposedCommands();
+
         autoActivated = true;
         autonomousCommand = robotContainer.getAutonomousCommand();
 
@@ -124,10 +126,10 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {
         PhysicsSim.getInstance().run();
 
-        if (ifAutonomous()) {
-            InstantCommand clearComposedCommands = new InstantCommand(() -> CommandScheduler.clearComposedCommands());
-            clearComposedCommands.schedule();
-        }
+        // if (ifAutonomous()) {
+        //     InstantCommand clearComposedCommands = new InstantCommand(() -> CommandScheduler.clearComposedCommands());
+        //     clearComposedCommands.schedule();
+        // }
     }
 
     public boolean ifAutonomous() {

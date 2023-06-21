@@ -24,13 +24,13 @@ public class Vision extends SubsystemBase {
 
     double aprilTagID;
     boolean aprilTagDetected;
-    double aprilTagX;
-    double aprilTagY;
-    double aprilTagZ;
-    double aprilTagBearing;
+    // double aprilTagX;
+    // double aprilTagY;
+    // double aprilTagZ;
+    // double aprilTagBearing;
     double aprilTagDistToCenter;
-    
     double aprilTagRange; // need to change this to include the distnace to all 4 corners
+
     String sourceIP = "Nothing Received";
 
     private DatagramChannel visionChannel = null;
@@ -80,17 +80,17 @@ public class Vision extends SubsystemBase {
                 myMap = objectMapper.readValue(message, new TypeReference<HashMap<String, String>>() {
                 });
 
-                /////*****NEED TO CHANGE THESE VALUES (CHECK CODE IN JETSON)*****/////
                 this.aprilTagID = Double.parseDouble(myMap.get("id"));
                 this.aprilTagDetected = Boolean.parseBoolean(myMap.get("isDetected"));
-                this.aprilTagX = Double.parseDouble(myMap.get("X"));
-                this.aprilTagY = Double.parseDouble(myMap.get("Y"));
-                this.aprilTagZ = Double.parseDouble(myMap.get("Z"));
-                this.aprilTagBearing = Double.parseDouble(myMap.get("bearing"));
+                // this.aprilTagX = Double.parseDouble(myMap.get("X"));
+                // this.aprilTagY = Double.parseDouble(myMap.get("Y"));
+                // this.aprilTagZ = Double.parseDouble(myMap.get("Z"));
+                // this.aprilTagBearing = Double.parseDouble(myMap.get("bearing"));
                 this.aprilTagRange = Double.parseDouble(myMap.get("range")); 
                 this.aprilTagDistToCenter = Double.parseDouble(myMap.get("distToCenter")); 
             }
         } catch (Exception ex) {
+            this.aprilTagDetected = false;
             System.out.println("Exception reading data");
         }
     }
@@ -103,23 +103,23 @@ public class Vision extends SubsystemBase {
         return this.aprilTagDetected;
     }
 
-    public double aprilTagX() {
-        return this.aprilTagX;
-    }
+    // public double aprilTagX() {
+    //     return this.aprilTagX;
+    // }
 
-    public double aprilTagY() {
-        return this.aprilTagY;
-    }
+    // public double aprilTagY() {
+    //     return this.aprilTagY;
+    // }
 
-    public double aprilTagZ() {
-        return this.aprilTagZ;
-    }
+    // public double aprilTagZ() {
+    //     return this.aprilTagZ;
+    // }
 
-    public double aprilTagBearing() {
-        return this.aprilTagBearing;
-    }
+    // public double aprilTagBearing() {
+    //     return this.aprilTagBearing;
+    // }
 
-    public double distanceToAprilTag() {
+    public double aprilTagRange() {
         return this.aprilTagRange;
     }
 
