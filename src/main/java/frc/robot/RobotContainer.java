@@ -203,8 +203,7 @@ public class RobotContainer {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("startPrint", new PrintCommand("********PATH STARTED********"));
         eventMap.put("startFlyWheel", new StartFlyWheel(shooterSub));
-        eventMap.put("shootNDiscsA", new ShootNDiscs(6, shooterSub));
-        eventMap.put("shootNDiscsB", new ShootNDiscs(6, shooterSub));
+        eventMap.put("shootNDiscs", new ShootNDiscs(6, shooterSub));
         eventMap.put("endPrint", new PrintCommand("********PATH ENDED********"));
 
         PPRamseteCommand basePathCmd = new PPRamseteCommand(
@@ -223,9 +222,8 @@ public class RobotContainer {
         theCmd.addCommands(new InstantCommand(() -> this.currentTrajectory = path));
         theCmd.addCommands(new InstantCommand(() -> driveSub.setOdometry(path.getInitialPose()), driveSub));
         theCmd.addCommands(eventPathCmd);
-        // theCmd.addCommands(new WaitCommand(0.5));
-        // theCmd.addCommands(new InstantCommand(() -> shooterSub.shootNDiscs(3), shooterSub));
-        theCmd.addCommands(stopFlyWheelCmd);
+        theCmd.addCommands(new ShootNDiscs(6, shooterSub));
+        theCmd.addCommands(new StopFlyWheel(shooterSub));
 
         theCmd.onCommandInitialize(Robot::reportCommandStart);
         theCmd.onCommandFinish(Robot::reportCommandFinish);

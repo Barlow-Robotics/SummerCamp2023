@@ -113,10 +113,12 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "endPrint"
+        ],
         "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "after",
+        "waitTime": 1.0
       }
     }
   ],
@@ -136,19 +138,7 @@
     {
       "position": 2.0,
       "names": [
-        "shootNDiscsA"
-      ]
-    },
-    {
-      "position": 4.0,
-      "names": [
-        "endPrint"
-      ]
-    },
-    {
-      "position": 3.0,
-      "names": [
-        "shootNDiscsB"
+        "shootNDiscs"
       ]
     }
   ]
