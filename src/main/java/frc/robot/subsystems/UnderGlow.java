@@ -23,7 +23,8 @@ public class UnderGlow extends SubsystemBase {
     int currentMode = 1;
 
     /** Creates a new UnderGlow. */
-    public UnderGlow() {
+    public UnderGlow(Shooter s) {
+        shooterSub = s;
         try {
             port = new SerialPort(9600, Constants.UnderGlowConstants.Port); //Ask Mr. Kinahan about serial port number
         } catch (Exception ex) {
@@ -56,6 +57,7 @@ public class UnderGlow extends SubsystemBase {
             try {
                 port.write(new byte[] { (byte) desiredMode }, 1);
             } catch (Exception ex) {
+                int wpk = 1 ;
             }
             currentMode = desiredMode;
         }
