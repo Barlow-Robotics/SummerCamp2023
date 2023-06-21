@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.HashMap;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,7 +37,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         robotContainer = new RobotContainer();
 
-        // DriverStation.silenceJoystickConnectionWarning(true) ;
+        DriverStation.silenceJoystickConnectionWarning(true);
 
         gameField = new Field2d();
         SmartDashboard.putData("Field", gameField);
@@ -79,6 +80,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        CommandScheduler.getInstance().clearComposedCommands();
+
         autoActivated = true;
         autonomousCommand = robotContainer.getAutonomousCommand();
 

@@ -13,6 +13,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,13 +25,13 @@ public class Vision extends SubsystemBase {
 
     double aprilTagID;
     boolean aprilTagDetected;
-    double aprilTagX;
-    double aprilTagY;
-    double aprilTagZ;
-    double aprilTagBearing;
+    // double aprilTagX;
+    // double aprilTagY;
+    // double aprilTagZ;
+    // double aprilTagBearing;
     double aprilTagDistToCenter;
-    
-    double aprilTagRange; // need to change this to include the distnace to all 4 corners
+    double aprilTagRange;
+
     String sourceIP = "Nothing Received";
 
     private DatagramChannel visionChannel = null;
@@ -80,50 +81,70 @@ public class Vision extends SubsystemBase {
                 myMap = objectMapper.readValue(message, new TypeReference<HashMap<String, String>>() {
                 });
 
-                /////*****NEED TO CHANGE THESE VALUES (CHECK CODE IN JETSON)*****/////
                 this.aprilTagID = Double.parseDouble(myMap.get("id"));
-                this.aprilTagDetected = Boolean.parseBoolean(myMap.get("isDetected"));
-                this.aprilTagX = Double.parseDouble(myMap.get("X"));
-                this.aprilTagY = Double.parseDouble(myMap.get("Y"));
-                this.aprilTagZ = Double.parseDouble(myMap.get("Z"));
-                this.aprilTagBearing = Double.parseDouble(myMap.get("bearing"));
+                this.aprilTagDetected = Boolean.parseBoolean(myMap.get("detected"));
+                // this.aprilTagX = Double.parseDouble(myMap.get("X"));
+                // this.aprilTagY = Double.parseDouble(myMap.get("Y"));
+                // this.aprilTagZ = Double.parseDouble(myMap.get("Z"));
+                // this.aprilTagBearing = Double.parseDouble(myMap.get("bearing"));
                 this.aprilTagRange = Double.parseDouble(myMap.get("range")); 
                 this.aprilTagDistToCenter = Double.parseDouble(myMap.get("distToCenter")); 
             }
         } catch (Exception ex) {
-            System.out.println("Exception reading data");
+            this.aprilTagDetected = false;
+            System.out.println("Exception reading vison data");
         }
+
     }
 
-    public int aprilTagID() {
-        return this.aprilTagID();
+    public double getAprilTagID() {
+        return this.aprilTagID;
     }
 
-    public boolean aprilTagDetected() {
+    public boolean getAprilTagDetected() {
         return this.aprilTagDetected;
     }
 
-    public double aprilTagX() {
-        return this.aprilTagX;
-    }
+    // public double aprilTagX() {
+    //     return this.aprilTagX;
+    // }
 
-    public double aprilTagY() {
-        return this.aprilTagY;
-    }
+    // public double aprilTagY() {
+    //     return this.aprilTagY;
+    // }
 
-    public double aprilTagZ() {
-        return this.aprilTagZ;
-    }
+    // public double aprilTagZ() {
+    //     return this.aprilTagZ;
+    // }
 
-    public double aprilTagBearing() {
-        return this.aprilTagBearing;
-    }
+    // public double aprilTagBearing() {
+    //     return this.aprilTagBearing;
+    // }
 
-    public double distanceToAprilTag() {
+    public double getAprilTagRange() {
         return this.aprilTagRange;
     }
 
-    public double aprilTagDistToCenter() {
+    public double getAprilTagDistToCenter() {
         return this.aprilTagDistToCenter;
+    }
+
+    public String getSourceIP() {
+        return this.sourceIP;
+    }
+
+    /******** SHUFFLEBOARD ********/
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+
+        builder.setSmartDashboardType("Vision Subsystem");
+
+        builder.addDoubleProperty("April Tag ID", this::getAprilTagID, null);
+        builder.addDoubleProperty("April Tag Distance to Center", this::getAprilTagDistToCenter, null);
+        builder.addDoubleProperty("Arpil Tag Range", this::getAprilTagRange, null);
+        builder.addBooleanProperty("April Tag Detected", this::getAprilTagDetected, null);
+        builder.addStringProperty("Sender ID", this::getSourceIP, null);
     }
 }
