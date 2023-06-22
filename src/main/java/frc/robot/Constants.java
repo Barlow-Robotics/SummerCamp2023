@@ -49,7 +49,6 @@ public final class Constants {
         public static final double BaseDiameter = Units.inchesToMeters(33.0);
         public static final double CircumferenceWithBD = BaseDiameter * Math.PI;
         public static final double CircumferenceWithWB = TrackWidth * Math.PI;
-
         public static final double MaxVelocityCounts = kMaxSpeed * MetersPerSecondToCountsPer100MSec;
 
         public static final double ClosedVoltageRampingConstant = 0.0;
@@ -62,7 +61,7 @@ public final class Constants {
         public static final double kPAutoAlign = 0;
         public static final double kIAutoAlign = 0;
         public static final double kDAutoAlign = 0;
-        public static final double CorrectionRotationSpeed = 0;
+        public static final double CorrectionRotationSpeed = 1/CircumferenceWithWB;
 
         public static final double DefaultAutoAccel = 4.0;
         public static final double DefaultAutoVelocity = 1.0; // metres per second
