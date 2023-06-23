@@ -16,7 +16,7 @@ public class UnderGlow extends SubsystemBase {
     SerialPort port;
 
     Shooter shooterSub;
-    Robot robotSub;
+    Robot robot;
 
     boolean autoActivated;
     boolean isShooting;
@@ -24,8 +24,9 @@ public class UnderGlow extends SubsystemBase {
     int currentMode = 1;
 
     /** Creates a new UnderGlow. */
-    public UnderGlow(Shooter s) {
+    public UnderGlow(Shooter s, Robot r) {
         shooterSub = s;
+        robot = r;
         try {
             port = new SerialPort(9600, Constants.UnderGlowConstants.Port); //Ask Mr. Kinahan about serial port number
         } catch (Exception ex) {
@@ -52,9 +53,9 @@ public class UnderGlow extends SubsystemBase {
             // if (shooterSub.isShooting()) {
             //     isShooting = true;
             //     desiredMode = Constants.UnderGlowConstants.IsShooting; // shooting is not a variable in underglow
-            //                                                            // constants
-            // }
-            if (robotSub.ifAutonomous()) {
+                                                                       // constants
+            //}
+            if (robot.ifAutonomous()) {
                 autoActivated = true;
                 desiredMode = Constants.UnderGlowConstants.AutoActivated;
             }

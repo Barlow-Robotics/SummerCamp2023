@@ -34,30 +34,25 @@ import frc.robot.commands.StartFlyWheel;
 import frc.robot.commands.StartShooter;
 import frc.robot.commands.StopFlyWheel;
 import frc.robot.commands.StopShooter;
-import frc.robot.commands.TurnOffUnderGlow;
-import frc.robot.commands.TurnOnUnderGlow;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.UnderGlow;
 import frc.robot.subsystems.Vision;
+import frc.robot.Robot;
 
 public class RobotContainer {
     /* Subsystems */
+    public final Robot robot = new Robot();
     public final Drive driveSub = new Drive();
     public final Vision visionSub = new Vision();
     public final Shooter shooterSub = new Shooter(visionSub);
-    public final UnderGlow underGlowSub = new UnderGlow(shooterSub);
+    public final UnderGlow underGlowSub = new UnderGlow(shooterSub, robot);
     
     /* Commands */
     private final StartShooter startShooterCmd = new StartShooter(shooterSub);
     private final StopShooter stopShooterCmd = new StopShooter(shooterSub);
     private final StartFlyWheel startFlyWheelCmd = new StartFlyWheel(shooterSub);
     private final StopFlyWheel stopFlyWheelCmd = new StopFlyWheel(shooterSub);
-    private final TurnOnUnderGlow TurnOnUnderGlowCmd = new TurnOnUnderGlow(underGlowSub);
-    private final TurnOffUnderGlow TurnOffUnderGlowCmd = new TurnOffUnderGlow(underGlowSub);
-
-   
-    
     
 
     /* Controllers */
