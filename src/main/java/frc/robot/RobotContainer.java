@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.AutoAlign;
 import frc.robot.commands.DriveRobot;
 import frc.robot.commands.InstrumentedSequentialCommandGroup;
 import frc.robot.commands.ShootNDiscs;
@@ -65,13 +66,13 @@ public class RobotContainer {
     Joystick operatorController; // Joystick 2
 
     /* Buttons */
-    private JoystickButton alignWithTargetButton;
-    private JoystickButton shooterButton;
-    private JoystickButton flyWheelButton;
+    private JoystickButton alignWithTargetButton; // right trigger (driver controller)
+    private JoystickButton shooterButton; // right trigger (operator controller)
+    private JoystickButton flyWheelButton; // left trigger (operator controller)
 
     /* Drive Movement Axis */
-    public int throttleJoystickID;
-    public int turnJoystickID;
+    public int throttleJoystickID; // left axis (driver controller)
+    public int turnJoystickID; // right axis (driver controller)
 
     /* Shuffleboard */
     final SendableChooser<String> autoChooser = new SendableChooser<String>();
@@ -116,7 +117,9 @@ public class RobotContainer {
         flyWheelButton.onTrue(startFlyWheelCmd).onFalse(stopFlyWheelCmd); // remove commands, added in shooter 
     }
 
+    /************************************************/
     /************** PATHPLANNER & AUTO **************/
+    /************************************************/
 
     private PathPlannerTrajectory loadPath(String name, double velocity, double accel, boolean reverse) {
         PathPlannerTrajectory temp = PathPlanner.loadPath(
@@ -145,7 +148,7 @@ public class RobotContainer {
                 path,
                 driveSub::getPose,
                 new RamseteController(),
-                new DifferentialDriveKinematics(DriveConstants.TrackWidth),
+                new DifferentialDriveKinematics(DriveConstants.WheelBase),
                 driveSub::setWheelSpeeds,
                 driveSub);
 
@@ -183,7 +186,7 @@ public class RobotContainer {
                 path,
                 driveSub::getPose,
                 new RamseteController(),
-                new DifferentialDriveKinematics(DriveConstants.TrackWidth),
+                new DifferentialDriveKinematics(DriveConstants.WheelBase),
                 driveSub::setWheelSpeeds,
                 driveSub);
 
@@ -220,7 +223,7 @@ public class RobotContainer {
                 path,
                 driveSub::getPose,
                 new RamseteController(),
-                new DifferentialDriveKinematics(DriveConstants.TrackWidth),
+                new DifferentialDriveKinematics(DriveConstants.WheelBase),
                 driveSub::setWheelSpeeds,
                 driveSub);
 
@@ -232,6 +235,7 @@ public class RobotContainer {
         theCmd.addCommands(new InstantCommand(() -> this.currentTrajectory = path));
         theCmd.addCommands(new InstantCommand(() -> driveSub.setOdometry(path.getInitialPose()), driveSub));
         theCmd.addCommands(eventPathCmd);
+        // theCmd.addCommands(new AutoAlign(driveSub, visionSub));
         theCmd.addCommands(new ShootNDiscs(6, shooterSub));
         theCmd.addCommands(new StopFlyWheel(shooterSub));
 
@@ -260,7 +264,7 @@ public class RobotContainer {
                 path,
                 driveSub::getPose,
                 new RamseteController(),
-                new DifferentialDriveKinematics(DriveConstants.TrackWidth),
+                new DifferentialDriveKinematics(DriveConstants.WheelBase),
                 driveSub::setWheelSpeeds,
                 driveSub);
 
@@ -298,7 +302,7 @@ public class RobotContainer {
                 path,
                 driveSub::getPose,
                 new RamseteController(),
-                new DifferentialDriveKinematics(DriveConstants.TrackWidth),
+                new DifferentialDriveKinematics(DriveConstants.WheelBase),
                 driveSub::setWheelSpeeds,
                 driveSub);
 
