@@ -82,7 +82,6 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         CommandScheduler.getInstance().clearComposedCommands();
 
-        autoActivated = true;
         autonomousCommand = robotContainer.getAutonomousCommand();
 
         if (autonomousCommand != null) {
@@ -91,11 +90,13 @@ public class Robot extends TimedRobot {
         } else {
             System.out.println("Auto Command is null");
         }
+        autoActivated = true;
     }
 
 
     // @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+    }
 
     @Override
     public void teleopInit() {
@@ -155,9 +156,5 @@ public class Robot extends TimedRobot {
 
     private void handleInterrupted(Command c) {
         System.out.println("Commmand " + c + " named " + c.getName() + " was interrupted");
-    }
-
-    public static boolean autoActivated() {
-        return true;
     }
 }
