@@ -117,7 +117,7 @@ public class Vision extends SubsystemBase {
             System.out.println("Exception reading vison data");
         }
 
-        System.out.println("Deteted :" + aprilTagDetected);
+        System.out.println("Detected :" + aprilTagDetected);
         System.out.println("ID: " + aprilTagID);
         System.out.println("distToCenter: " + aprilTagDistToCenter);
         System.out.println("Range: " + aprilTagRange);
@@ -170,7 +170,7 @@ public class Vision extends SubsystemBase {
 
         builder.addDoubleProperty("April Tag ID", this::getAprilTagID, null);
         builder.addDoubleProperty("April Tag Distance to Center", this::getAprilTagDistToCenter, null);
-        builder.addDoubleProperty("Arpil Tag Range", this::getAprilTagRange, null);
+        builder.addDoubleProperty("April Tag Range", this::getAprilTagRange, null);
         builder.addBooleanProperty("April Tag Detected", this::getAprilTagDetected, null);
         builder.addStringProperty("Sender ID", this::getSourceIP, null);
     }
