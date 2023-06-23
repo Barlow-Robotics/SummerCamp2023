@@ -32,7 +32,7 @@ public class Vision extends SubsystemBase {
 
     String sourceIP = "Nothing Received";
 
-    String DELETE = "{ \"detections\": [ { \"detected\": true, \"distToCenter\": 80, \"id\": 1, \"range\": 1 }, { \"detected\": false }, { \"detected\": false }, { \"detected\": true, \"distToCenter\": -88.25484466552734, \"id\": 4, \"range\": 1.5504128731987945 }]}";
+    // String DELETE = "{ \"detections\": [ { \"detected\": true, \"distToCenter\": 80, \"id\": 1, \"range\": 1 }, { \"detected\": false }, { \"detected\": false }, { \"detected\": true, \"distToCenter\": -88.25484466552734, \"id\": 4, \"range\": 1.5504128731987945 }]}";
 
     private DatagramChannel visionChannel = null;
     ByteBuffer buffer = ByteBuffer.allocate(1024);
@@ -74,8 +74,6 @@ public class Vision extends SubsystemBase {
                 buffer.clear();
             }
 
-            message = DELETE;
-
             if (message.length() > 0) {
                 // Map<String, String> myMap = new HashMap<String, String>();
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -104,6 +102,7 @@ public class Vision extends SubsystemBase {
             }
         } catch (Exception ex) {
             this.aprilTagDetected = false;
+            this.aprilTagDistToCenter = 0; // I dunno :]
             System.out.println("Exception reading vison data");
         }
 
