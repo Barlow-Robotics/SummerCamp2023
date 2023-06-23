@@ -47,7 +47,7 @@ public class DriveRobot extends CommandBase {
         this.controllerTurnID = turnID;
 
         pid = new PIDController(
-                Constants.DriveConstants.kPAutoAlign, //EHP add PID values so they're not 0
+                Constants.DriveConstants.kPAutoAlign, //EHP fix PID values
                 Constants.DriveConstants.kIAutoAlign,
                 Constants.DriveConstants.kDAutoAlign);
 
@@ -62,7 +62,7 @@ public class DriveRobot extends CommandBase {
 
     @Override
     public void execute() {
-        boolean autoAlignEnabled = autoAlignButton.getAsBoolean();
+        boolean autoAlignEnabled = autoAlignButton.getAsBoolean(); //right trigger (driver controller)
 
         SmartDashboard.putBoolean("Auto Align Enabled", autoAlignEnabled); // fix
 
@@ -79,7 +79,7 @@ public class DriveRobot extends CommandBase {
         double speed = throttle;
         double turn = yaw;
 
-        if (!autoAlignEnabled) {
+        if (!autoAlignEnabled || !autoSteering) {
             yaw = -turn;
 
             // yawMultiplier = (float) (0.3 + Math.abs(speed) * 0.2f);
@@ -111,7 +111,7 @@ public class DriveRobot extends CommandBase {
                 pid.reset();
             }
 
-            yaw = pid.calculate(visionSub.getAprilTagDistToCenter());
+            // yaw = pid.calculate(visionSub.getAprilTagDistToCenter());
         }
         
         NetworkTableInstance.getDefault().getEntry("drive/speed").setDouble(-speed);

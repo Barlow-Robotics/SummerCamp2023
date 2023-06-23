@@ -40,7 +40,7 @@ public class Drive extends SubsystemBase {
     private double lastLeftDistance;
     private double lastRightDistance;
 
-    DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.DriveConstants.TrackWidth);
+    DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.DriveConstants.WheelBase);
 
     boolean simulationInitialized = false;
 
