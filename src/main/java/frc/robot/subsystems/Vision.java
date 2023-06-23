@@ -32,7 +32,12 @@ public class Vision extends SubsystemBase {
 
     String sourceIP = "Nothing Received";
 
-    // String DELETE = "{ \"detections\": [ { \"detected\": true, \"distToCenter\": 80, \"id\": 1, \"range\": 1 }, { \"detected\": false }, { \"detected\": false }, { \"detected\": true, \"distToCenter\": -88.25484466552734, \"id\": 4, \"range\": 1.5504128731987945 }]}";
+    int missedFrames = 0;
+
+    // String DELETE = "{ \"detections\": [ { \"detected\": true, \"distToCenter\":
+    // 80, \"id\": 1, \"range\": 1 }, { \"detected\": false }, { \"detected\": false
+    // }, { \"detected\": true, \"distToCenter\": -88.25484466552734, \"id\": 4,
+    // \"range\": 1.5504128731987945 }]}";
 
     private DatagramChannel visionChannel = null;
     ByteBuffer buffer = ByteBuffer.allocate(1024);
@@ -99,10 +104,16 @@ public class Vision extends SubsystemBase {
                 // System.out.println("distToCenter: " +
                 // detectionsNode.findValues("distToCenter"));
                 // System.out.println("Ranges: " + detectionsNode.findValues("range"));
+            } else {
+                missedFrames++;
+
+                if (missedFrames >= 10) {
+                    this.aprilTagDetected = false;
+                    this.aprilTagDistToCenter = 0; // I dunno :]
+                    missedFrames = 0;
+                }
             }
         } catch (Exception ex) {
-            this.aprilTagDetected = false;
-            this.aprilTagDistToCenter = 0; // I dunno :]
             System.out.println("Exception reading vison data");
         }
 
