@@ -10,12 +10,13 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 
 public class UnderGlow extends SubsystemBase {
     SerialPort port;
 
     Shooter shooterSub;
-    Robot auto;
+    Robot robotSub;
 
     boolean autoActivated;
     boolean isShooting;
@@ -31,23 +32,29 @@ public class UnderGlow extends SubsystemBase {
 
         }
     }
+    
 
     @Override
     public void periodic() {
         int desiredMode = Constants.UnderGlowConstants.NeonGreen;
+        
+        // if (DriverStation.isEnabled() && !autoActivated) {
         if (DriverStation.isEnabled()) {
             if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
                 desiredMode = Constants.UnderGlowConstants.BlueAlliance;
             } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
                 desiredMode = Constants.UnderGlowConstants.RedAlliance;
             }
+        // if (DriverStation.isDisabled()) {
+        //     desiredMode = Constants.UnderGlowConstants.NeonGreen;
+        // }
 
-            if (shooterSub.isShooting()) {
-                isShooting = true;
-                desiredMode = Constants.UnderGlowConstants.IsShooting; // shooting is not a variable in underglow
-                                                                       // constants
-            }
-            if (auto.autoActivated()){
+            // if (shooterSub.isShooting()) {
+            //     isShooting = true;
+            //     desiredMode = Constants.UnderGlowConstants.IsShooting; // shooting is not a variable in underglow
+            //                                                            // constants
+            // }
+            if (robotSub.ifAutonomous()) {
                 autoActivated = true;
                 desiredMode = Constants.UnderGlowConstants.AutoActivated;
             }
