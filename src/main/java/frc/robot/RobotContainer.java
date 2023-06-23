@@ -212,7 +212,6 @@ public class RobotContainer {
         eventMap.put("startPrint", new PrintCommand("********PATH STARTED********"));
         eventMap.put("startFlyWheel", new StartFlyWheel(shooterSub));
         eventMap.put("shootNDiscs", new ShootNDiscs(6, shooterSub));
-        eventMap.put("endPrint", new PrintCommand("********PATH ENDED********"));
 
         PPRamseteCommand basePathCmd = new PPRamseteCommand(
                 path,

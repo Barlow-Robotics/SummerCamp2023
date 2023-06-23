@@ -75,16 +75,13 @@
     {
       "anchorPoint": {
         "x": 8.5,
-        "y": 2.0
+        "y": 4.0
       },
       "prevControl": {
         "x": 8.5,
-        "y": 2.433072644520669
+        "y": 4.433072644520669
       },
-      "nextControl": {
-        "x": 8.5,
-        "y": 1.566927355479331
-      },
+      "nextControl": null,
       "holonomicAngle": 0,
       "isReversal": false,
       "velOverride": null,
@@ -95,30 +92,6 @@
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 10.0,
-        "y": 1.0
-      },
-      "prevControl": {
-        "x": 9.486010569827645,
-        "y": 1.0
-      },
-      "nextControl": null,
-      "holonomicAngle": 0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [
-          "endPrint"
-        ],
-        "executionBehavior": "parallel",
-        "waitBehavior": "after",
-        "waitTime": 1.0
       }
     }
   ],
