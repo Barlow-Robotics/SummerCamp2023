@@ -7,11 +7,10 @@ package frc.robot.subsystems;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalOutput;
@@ -22,17 +21,18 @@ public class Vision extends SubsystemBase {
 
     DigitalOutput cameraLight;
 
-
     double aprilTagID;
     boolean aprilTagDetected;
     // double aprilTagX;
     // double aprilTagY;
     // double aprilTagZ;
     // double aprilTagBearing;
-    double aprilTagDistToCenter;
+    double aprilTagDistToCenter = 700;
     double aprilTagRange;
 
     String sourceIP = "Nothing Received";
+
+    String DELETE = "{ \"detections\": [ { \"detected\": true, \"distToCenter\": 80, \"id\": 1, \"range\": 1 }, { \"detected\": false }, { \"detected\": false }, { \"detected\": true, \"distToCenter\": -88.25484466552734, \"id\": 4, \"range\": 1.5504128731987945 }]}";
 
     private DatagramChannel visionChannel = null;
     ByteBuffer buffer = ByteBuffer.allocate(1024);
@@ -74,26 +74,43 @@ public class Vision extends SubsystemBase {
                 buffer.clear();
             }
 
+            message = DELETE;
+
             if (message.length() > 0) {
-                Map<String, String> myMap = new HashMap<String, String>();
-
+                // Map<String, String> myMap = new HashMap<String, String>();
                 ObjectMapper objectMapper = new ObjectMapper();
-                myMap = objectMapper.readValue(message, new TypeReference<HashMap<String, String>>() {
-                });
+                JsonNode rootNode = objectMapper.readTree(message); // .readValue(message, new
+                                                                    // TypeReference<HashMap<String,
+                                                                    // String>>() {
 
-                this.aprilTagID = Double.parseDouble(myMap.get("id"));
-                this.aprilTagDetected = Boolean.parseBoolean(myMap.get("detected"));
-                // this.aprilTagX = Double.parseDouble(myMap.get("X"));
-                // this.aprilTagY = Double.parseDouble(myMap.get("Y"));
-                // this.aprilTagZ = Double.parseDouble(myMap.get("Z"));
-                // this.aprilTagBearing = Double.parseDouble(myMap.get("bearing"));
-                this.aprilTagRange = Double.parseDouble(myMap.get("range")); 
-                this.aprilTagDistToCenter = Double.parseDouble(myMap.get("distToCenter")); 
+                ArrayNode detectionsNode = (ArrayNode) rootNode.get("detections");
+
+                for (int i = 0; i < 4; i++) {
+                    JsonNode detection = detectionsNode.get(i);
+                    if (detection.get("detected").asBoolean()) {
+                        if (Math.abs(detection.get("distToCenter").asDouble()) < Math.abs(aprilTagDistToCenter)) {
+                            aprilTagDistToCenter = detection.get("distToCenter").asDouble();
+                            aprilTagID = i + 1;
+                            aprilTagRange = detection.get("range").asDouble();
+                            aprilTagDetected = detection.get("detected").asBoolean();
+                        }
+                    }
+                }
+
+                // System.out.println("IDs: " + detectionsNode.findValues("id"));
+                // System.out.println("distToCenter: " +
+                // detectionsNode.findValues("distToCenter"));
+                // System.out.println("Ranges: " + detectionsNode.findValues("range"));
             }
         } catch (Exception ex) {
             this.aprilTagDetected = false;
             System.out.println("Exception reading vison data");
         }
+
+        System.out.println("Deteted :" + aprilTagDetected);
+        System.out.println("ID: " + aprilTagID);
+        System.out.println("distToCenter: " + aprilTagDistToCenter);
+        System.out.println("Range: " + aprilTagRange);
 
     }
 
@@ -106,19 +123,19 @@ public class Vision extends SubsystemBase {
     }
 
     // public double aprilTagX() {
-    //     return this.aprilTagX;
+    // return this.aprilTagX;
     // }
 
     // public double aprilTagY() {
-    //     return this.aprilTagY;
+    // return this.aprilTagY;
     // }
 
     // public double aprilTagZ() {
-    //     return this.aprilTagZ;
+    // return this.aprilTagZ;
     // }
 
     // public double aprilTagBearing() {
-    //     return this.aprilTagBearing;
+    // return this.aprilTagBearing;
     // }
 
     public double getAprilTagRange() {
