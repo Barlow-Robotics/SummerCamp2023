@@ -211,7 +211,8 @@ public class RobotContainer {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("startPrint", new PrintCommand("********PATH STARTED********"));
         eventMap.put("startFlyWheel", new StartFlyWheel(shooterSub));
-        eventMap.put("shootNDiscs", new ShootNDiscs(6, shooterSub));
+        // eventMap.put("shootNDiscs", new ShootNDiscs(6, shooterSub));
+        eventMap.put("shootNDiscs", new PrintCommand("********Shooting Discs********"));
 
         PPRamseteCommand basePathCmd = new PPRamseteCommand(
                 path,
@@ -229,6 +230,8 @@ public class RobotContainer {
         theCmd.addCommands(new InstantCommand(() -> this.currentTrajectory = path));
         theCmd.addCommands(new InstantCommand(() -> driveSub.setOdometry(path.getInitialPose()), driveSub));
         theCmd.addCommands(eventPathCmd);
+        theCmd.addCommands(new WaitCommand(1.5));
+
         // theCmd.addCommands(new AutoAlign(driveSub, visionSub));
         theCmd.addCommands(new ShootNDiscs(6, shooterSub));
         theCmd.addCommands(new StopFlyWheel(shooterSub));

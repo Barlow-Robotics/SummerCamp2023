@@ -46,7 +46,7 @@ public final class Constants {
         public static final double MetersPerSecondToCountsPerSecond = (1 / MetersPerRevolution)
                 * CountsPerRevolution;
 
-        public static final double BaseDiameter = Units.inchesToMeters(33.0);
+        public static final double BaseDiameter = Units.inchesToMeters(22.0);
         public static final double CircumferenceWithBD = BaseDiameter * Math.PI;
         public static final double CircumferenceWithWB = WheelBase * Math.PI;
 
@@ -59,9 +59,10 @@ public final class Constants {
         public static final double kP = 0.001;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kPAutoAlign = 0.063;
-        public static final double kIAutoAlign = 0;
-        public static final double kDAutoAlign = 0;
+//        public static final double kPAutoAlign = 0.063;
+        public static final double kPAutoAlign = 0.0063;
+        public static final double kIAutoAlign = 0.0 ;
+        public static final double kDAutoAlign =0.0;
         public static final double CorrectionRotationSpeed = 20.0/CircumferenceWithWB;
 
         public static final double DefaultAutoAccel = 4.0;
