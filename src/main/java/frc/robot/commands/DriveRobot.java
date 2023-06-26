@@ -90,7 +90,7 @@ public class DriveRobot extends CommandBase {
             if (Math.abs(yaw) < 0.02f) {
                 yaw = 0.0f;
             }
-            driveSub.drive(-speed * 0.8, yaw * 0.6, true);
+            driveSub.drive(-speed, yaw * 0.6, true);
 
         } else {
             if (visionSub.getAprilTagDetected()) {
