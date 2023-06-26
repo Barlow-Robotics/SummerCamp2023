@@ -79,16 +79,18 @@ public class DriveRobot extends CommandBase {
         double speed = throttle;
         double turn = yaw;
 
-        if (!autoAlignEnabled || !autoSteering) {
+        // if (!autoAlignEnabled || !autoSteering) {
+        if  (!autoAlignEnabled ) {
             yaw = -turn;
 
             // yawMultiplier = (float) (0.3 + Math.abs(speed) * 0.2f);
-            yawMultiplier = 0.5f;
-            yaw = Math.signum(yaw) * (yaw * yaw) * yawMultiplier;
+            // yawMultiplier = 0.5f;
+            // yaw = Math.signum(yaw) * (yaw * yaw) * yawMultiplier;
 
             if (Math.abs(yaw) < 0.02f) {
                 yaw = 0.0f;
             }
+            driveSub.drive(-speed * 0.8, yaw * 0.6, true);
 
         } else {
             if (visionSub.getAprilTagDetected()) {
@@ -96,10 +98,12 @@ public class DriveRobot extends CommandBase {
                 autoSteering = true;
                 error = visionSub.getAprilTagDistToCenter();
                 adjustment = pid.calculate(error);
-                adjustment = Math.signum(adjustment)
-                        * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
-                leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
-                rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+                // adjustment = Math.signum(adjustment)
+                //         * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
+                // leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
+                // rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+                leftVelocity = adjustment;
+                rightVelocity = -adjustment;
 
                 driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
             } else {
@@ -118,7 +122,7 @@ public class DriveRobot extends CommandBase {
         NetworkTableInstance.getDefault().getEntry("drive/speed").setDouble(-speed);
         NetworkTableInstance.getDefault().getEntry("drive/yaw").setDouble(yaw);
 
-        driveSub.drive(-speed * 0.8, yaw * 0.6, true);
+        // driveSub.drive(-speed * 0.8, yaw * 0.6, true);
     }
 
     @Override

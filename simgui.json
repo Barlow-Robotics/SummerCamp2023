@@ -58,6 +58,9 @@
         "Shooter": {
           "open": true
         },
+        "Vision": {
+          "open": true
+        },
         "open": true
       },
       "drive": {
@@ -82,7 +85,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "height": 526,
+          "height": 655,
           "series": [
             {
               "color": [
@@ -96,6 +99,27 @@
           ]
         }
       ]
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "height": 593,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Vision/April Tag Distance to Center"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }

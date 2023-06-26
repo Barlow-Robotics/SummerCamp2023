@@ -21,14 +21,14 @@ public class Vision extends SubsystemBase {
 
     DigitalOutput cameraLight;
 
-    double aprilTagID;
-    boolean aprilTagDetected;
+    int aprilTagID;
+    boolean aprilTagDetected = false ;
+    double aprilTagDistToCenter ;
+    double aprilTagRange;
     // double aprilTagX;
     // double aprilTagY;
     // double aprilTagZ;
     // double aprilTagBearing;
-    double aprilTagDistToCenter = 700;
-    double aprilTagRange;
 
     String sourceIP = "Nothing Received";
 
@@ -80,47 +80,33 @@ public class Vision extends SubsystemBase {
             }
 
             if (message.length() > 0) {
-                // Map<String, String> myMap = new HashMap<String, String>();
                 ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(message); // .readValue(message, new
-                                                                    // TypeReference<HashMap<String,
-                                                                    // String>>() {
-
+                JsonNode rootNode = objectMapper.readTree(message); 
                 ArrayNode detectionsNode = (ArrayNode) rootNode.get("detections");
+                double minDistance = Double.MAX_VALUE ;
 
                 for (int i = 0; i < 4; i++) {
                     JsonNode detection = detectionsNode.get(i);
                     if (detection.get("detected").asBoolean()) {
-                        if (Math.abs(detection.get("distToCenter").asDouble()) < Math.abs(aprilTagDistToCenter)) {
+                        if (Math.abs(detection.get("distToCenter").asDouble()) < Math.abs(minDistance)) {
                             aprilTagDistToCenter = detection.get("distToCenter").asDouble();
-                            aprilTagID = i + 1;
+                            aprilTagID = detection.get("id").asInt();
                             aprilTagRange = detection.get("range").asDouble();
                             aprilTagDetected = detection.get("detected").asBoolean();
+                            minDistance = aprilTagDistToCenter ;
+                            missedFrames = 0;
                         }
                     }
                 }
-
-                // System.out.println("IDs: " + detectionsNode.findValues("id"));
-                // System.out.println("distToCenter: " +
-                // detectionsNode.findValues("distToCenter"));
-                // System.out.println("Ranges: " + detectionsNode.findValues("range"));
             } else {
                 missedFrames++;
-
                 if (missedFrames >= 10) {
                     this.aprilTagDetected = false;
-                    this.aprilTagDistToCenter = 0; // I dunno :]
-                    missedFrames = 0;
                 }
             }
         } catch (Exception ex) {
             System.out.println("Exception reading vison data");
         }
-
-        System.out.println("Detected :" + aprilTagDetected);
-        System.out.println("ID: " + aprilTagID);
-        System.out.println("distToCenter: " + aprilTagDistToCenter);
-        System.out.println("Range: " + aprilTagRange);
 
     }
 
