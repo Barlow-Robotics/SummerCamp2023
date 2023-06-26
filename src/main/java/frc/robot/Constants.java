@@ -136,7 +136,7 @@ public final class Constants {
         public static final SerialPort.Port Port = SerialPort.Port.kUSB;
         public static final int RedAlliance = 1;
         public static final int BlueAlliance = 2;
-        public static final int NeonGreen = 3;
+        public static final int Enabled = 3;
         public static final int IsShooting = 4;
         public static final int AutoActivated = 5;
     }

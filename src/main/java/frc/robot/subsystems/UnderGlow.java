@@ -37,25 +37,33 @@ public class UnderGlow extends SubsystemBase {
 
     @Override
     public void periodic() {
-        int desiredMode = Constants.UnderGlowConstants.NeonGreen;
+        byte data = 0;
+
+
+        int desiredMode = Constants.UnderGlowConstants.Enabled;
+
         
         // if (DriverStation.isEnabled() && !autoActivated) {
         if (DriverStation.isEnabled()) {
+            data += 8; 
             if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
                 desiredMode = Constants.UnderGlowConstants.BlueAlliance;
             } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+                data += 2; 
                 desiredMode = Constants.UnderGlowConstants.RedAlliance;
             }
         // if (DriverStation.isDisabled()) {
         //     desiredMode = Constants.UnderGlowConstants.NeonGreen;
         // }
 
-            // if (shooterSub.isShooting()) {
-            //     isShooting = true;
-            //     desiredMode = Constants.UnderGlowConstants.IsShooting; // shooting is not a variable in underglow
-                                                                       // constants
-            //}
+            if (shooterSub.isShooting()) {
+                data += 1;
+                isShooting = true;
+                desiredMode = Constants.UnderGlowConstants.IsShooting; // shooting is not a variable in underglow constants
+                                                                     
+            }
             if (robot.ifAutonomous()) {
+                data += 4;
                 autoActivated = true;
                 desiredMode = Constants.UnderGlowConstants.AutoActivated;
             }
@@ -63,7 +71,7 @@ public class UnderGlow extends SubsystemBase {
 
         if (currentMode != desiredMode && port != null) {
             try {
-                port.write(new byte[] { (byte) desiredMode }, 1);
+                port.write(new byte[] { (byte) data }, 1);
             } catch (Exception ex) {
                 int wpk = 1 ;
             }
@@ -93,5 +101,13 @@ public class UnderGlow extends SubsystemBase {
     }
     // This method will be called once per scheduler run
     // >>>>>>> 698634a3fffcb5a2a68c5ab6cfff223e07641823
+    //if (currentMode != desiredMode && port != null) {
+    //     try {
+    //         port.write(new byte[] { (byte) desiredMode }, 1);
+    //     } catch (Exception ex) {
+    //         int wpk = 1 ;
+    //     }
+    //     currentMode = desiredMode;
+    // }
 }
 
