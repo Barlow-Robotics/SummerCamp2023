@@ -4,13 +4,11 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.RobotContainer;
 
 public class UnderGlow extends SubsystemBase {
     SerialPort port;
@@ -38,36 +36,29 @@ public class UnderGlow extends SubsystemBase {
     public void periodic() {
         byte data = 0;
 
-
         int desiredMode = Constants.UnderGlowConstants.Enabled;
 
-        
-        int desiredMode = Constants.UnderGlowConstants.NeonGreen;
-
-        // if (DriverStation.isEnabled() && !autoActivated) {
         if (DriverStation.isEnabled()) {
-            data += 8; 
-            if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-                desiredMode = Constants.UnderGlowConstants.BlueAlliance;
-            } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-                data += 2; 
-                desiredMode = Constants.UnderGlowConstants.RedAlliance;
-            }
-            if (DriverStation.isDisabled()) {
-                desiredMode = Constants.UnderGlowConstants.NeonGreen;
-            }
-
-            if (shooterSub.isShooting()) {
-                data += 1;
-                isShooting = true;
-                desiredMode = Constants.UnderGlowConstants.IsShooting; // shooting is not a variable in underglow constants
-                                                                     
-            }
+            data += 8;
             if (robot.ifAutonomous()) {
                 data += 4;
                 autoActivated = true;
                 desiredMode = Constants.UnderGlowConstants.AutoActivated;
             }
+
+            if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+                desiredMode = Constants.UnderGlowConstants.BlueAlliance;
+            } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+                data += 2;
+                desiredMode = Constants.UnderGlowConstants.RedAlliance;
+            }
+
+            if (shooterSub.isShooting()) {
+                data += 1;
+                isShooting = true;
+                desiredMode = Constants.UnderGlowConstants.IsShooting;
+            }
+
         }
 
         if (currentMode != desiredMode && port != null) {
@@ -78,36 +69,6 @@ public class UnderGlow extends SubsystemBase {
             }
             currentMode = desiredMode;
         }
-        if (DriverStation.isEnabled()) {
-            if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-                desiredMode = Constants.UnderGlowConstants.BlueAlliance;
-            } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-                desiredMode = Constants.UnderGlowConstants.RedAlliance;
-            }
-        } else
-
-        if (currentMode != desiredMode && port != null) {
-            try {
-                port.write(new byte[] { (byte) desiredMode }, 1);
-            } catch (Exception ex) {
-
-            }
-            currentMode = desiredMode;
-        }
-
-        if (shooterSub.isShooting) {
-
-        }
 
     }
-    // This method will be called once per scheduler run
-    // >>>>>>> 698634a3fffcb5a2a68c5ab6cfff223e07641823
-    //if (currentMode != desiredMode && port != null) {
-    //     try {
-    //         port.write(new byte[] { (byte) desiredMode }, 1);
-    //     } catch (Exception ex) {
-    //         int wpk = 1 ;
-    //     }
-    //     currentMode = desiredMode;
-    // }
 }
