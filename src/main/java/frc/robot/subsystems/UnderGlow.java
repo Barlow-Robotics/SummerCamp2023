@@ -26,11 +26,12 @@ public class UnderGlow extends SubsystemBase {
         shooterSub = s;
         robot = r;
         try {
-            port = new SerialPort(9600, Constants.UnderGlowConstants.Port); // Ask Mr. Kinahan about serial port number
+            port = new SerialPort(9600, Constants.UnderGlowConstants.Port); 
         } catch (Exception ex) {
 
         }
     }
+    
 
     @Override
     public void periodic() {
@@ -39,36 +40,36 @@ public class UnderGlow extends SubsystemBase {
         int desiredMode = Constants.UnderGlowConstants.Enabled;
 
         if (DriverStation.isEnabled()) {
-            data += 8;
+            data += 8; 
+            if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+                desiredMode = Constants.UnderGlowConstants.BlueAlliance;
+            } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+                data += 2; 
+                desiredMode = Constants.UnderGlowConstants.RedAlliance;
+            }
+
+            // if (shooterSub.isShooting()) {
+            //     data += 1;
+            //     isShooting = true;
+            //     desiredMode = Constants.UnderGlowConstants.IsShooting;                                                  
+            // }
+
             if (robot.ifAutonomous()) {
                 data += 4;
                 autoActivated = true;
                 desiredMode = Constants.UnderGlowConstants.AutoActivated;
             }
-
-            if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-                desiredMode = Constants.UnderGlowConstants.BlueAlliance;
-            } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-                data += 2;
-                desiredMode = Constants.UnderGlowConstants.RedAlliance;
-            }
-
-            if (shooterSub.isShooting()) {
-                data += 1;
-                isShooting = true;
-                desiredMode = Constants.UnderGlowConstants.IsShooting;
-            }
-
         }
 
         if (currentMode != desiredMode && port != null) {
             try {
                 port.write(new byte[] { (byte) data }, 1);
             } catch (Exception ex) {
-                int wpk = 1;
+                int wpk = 1 ;
             }
             currentMode = desiredMode;
         }
 
     }
 }
+
