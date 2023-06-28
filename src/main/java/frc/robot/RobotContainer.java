@@ -145,6 +145,7 @@ public class RobotContainer {
                 new RamseteController(),
                 new DifferentialDriveKinematics(DriveConstants.WheelBase),
                 driveSub::setWheelSpeeds,
+                false,
                 driveSub);
 
         FollowPathWithEvents eventPathCmd = new FollowPathWithEvents(
@@ -183,6 +184,7 @@ public class RobotContainer {
                 new RamseteController(),
                 new DifferentialDriveKinematics(DriveConstants.WheelBase),
                 driveSub::setWheelSpeeds,
+                false,
                 driveSub);
 
         FollowPathWithEvents eventPathCmd = new FollowPathWithEvents(
@@ -220,6 +222,7 @@ public class RobotContainer {
                 new RamseteController(),
                 new DifferentialDriveKinematics(DriveConstants.WheelBase),
                 driveSub::setWheelSpeeds,
+                false,
                 driveSub);
 
         FollowPathWithEvents eventPathCmd = new FollowPathWithEvents(
@@ -263,6 +266,7 @@ public class RobotContainer {
                 new RamseteController(),
                 new DifferentialDriveKinematics(DriveConstants.WheelBase),
                 driveSub::setWheelSpeeds,
+                true,
                 driveSub);
 
         FollowPathWithEvents eventPathCmd = new FollowPathWithEvents(
@@ -279,45 +283,6 @@ public class RobotContainer {
 
         return theCmd;
     }
-
-    /* CREATE FANCY AUTO COMMAND */
-
-    InstrumentedSequentialCommandGroup createFancyAutoCmd() {
-        InstrumentedSequentialCommandGroup theCmd = new InstrumentedSequentialCommandGroup();
-
-        path = loadPath(
-                "Fancy", DriveConstants.DefaultAutoVelocity, DriveConstants.DefaultAutoAccel, false);
-
-        HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("FirstBase", new PrintCommand("***************MISSION SHOOT FRISBEE IS A GO****************"));
-        eventMap.put("shoot", startShooterCmd);
-        eventMap.put("stop shoot", stopShooterCmd);
-        eventMap.put("Final event",
-                new PrintCommand("**************MISSION SHOOT FRISBEE IS A SUCCESS****************"));
-
-        PPRamseteCommand basePathCmd = new PPRamseteCommand(
-                path,
-                driveSub::getPose,
-                new RamseteController(),
-                new DifferentialDriveKinematics(DriveConstants.WheelBase),
-                driveSub::setWheelSpeeds,
-                driveSub);
-
-        FollowPathWithEvents eventPathCmd = new FollowPathWithEvents(
-                basePathCmd,
-                path.getMarkers(),
-                eventMap);
-
-        theCmd.addCommands(new InstantCommand(() -> this.currentTrajectory = path));
-        theCmd.addCommands(new InstantCommand(() -> driveSub.setOdometry(path.getInitialPose()), driveSub));
-        theCmd.addCommands(eventPathCmd);
-
-        theCmd.onCommandInitialize(Robot::reportCommandStart);
-        theCmd.onCommandFinish(Robot::reportCommandFinish);
-
-        return theCmd;
-    }
-
 
     InstrumentedSequentialCommandGroup createShootNTestCmd() {
         InstrumentedSequentialCommandGroup theCmd = new InstrumentedSequentialCommandGroup();
@@ -379,7 +344,6 @@ public class RobotContainer {
         autoChooser.addOption("Big Curve", "bigCurve");
         autoChooser.addOption("Arc", "arc");
         autoChooser.addOption("Square", "square");
-        autoChooser.addOption("Fancy", "fancy");
         autoChooser.addOption("ShootNTest", "shootNTest");
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -397,8 +361,6 @@ public class RobotContainer {
             return createArcAutoCmd();
         } else if (choice == "square") {
             return createSquareAutoCmd();
-        } else if (choice == "fancy") {
-            return createFancyAutoCmd();
         } else if (choice == "shootNTest") {
             return createShootNTestCmd();
         } else {
