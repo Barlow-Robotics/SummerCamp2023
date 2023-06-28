@@ -39,6 +39,7 @@ public class UnderGlow extends SubsystemBase {
 
         int desiredMode = Constants.UnderGlowConstants.Enabled;
 
+        // if (DriverStation.isEnabled() && !autoActivated) {
         if (DriverStation.isEnabled()) {
             data += 8; 
             if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
@@ -54,6 +55,15 @@ public class UnderGlow extends SubsystemBase {
             //     desiredMode = Constants.UnderGlowConstants.IsShooting;                                                  
             // }
 
+            // if (DriverStation.isDisabled()) {
+            //     desiredMode = Constants.UnderGlowConstants.Enabled;
+            // }
+            if (shooterSub.isShooting()) {
+                data += 1;
+                isShooting = true;
+                desiredMode = Constants.UnderGlowConstants.IsShooting; // shooting is not a variable in underglow constants
+                                                                     
+            }
             if (robot.ifAutonomous()) {
                 data += 4;
                 autoActivated = true;
