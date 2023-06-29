@@ -121,7 +121,8 @@ public class RobotContainer {
                 name,
                 new PathConstraints(velocity, accel),
                 reverse);
-        return PathPlannerTrajectory.transformTrajectoryForAlliance(temp, DriverStation.getAlliance());
+        return temp ;
+        // return PathPlannerTrajectory.transformTrajectoryForAlliance(temp, DriverStation.getAlliance());
     }
 
     /* CREATE LINE AUTO COMMAND */
