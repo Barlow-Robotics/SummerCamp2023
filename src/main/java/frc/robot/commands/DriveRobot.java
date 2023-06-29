@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drive;
@@ -29,8 +28,6 @@ public class DriveRobot extends CommandBase {
 
     Trigger autoAlignButton;
     Trigger toggleTargetButton;
-    POVButton leftButton;
-    POVButton rightButton;
     Joystick driverController;
     int controllerThrottleID;
     int controllerTurnID;
@@ -47,8 +44,6 @@ public class DriveRobot extends CommandBase {
         this.driverController = driverController;
         this.controllerThrottleID = throttleID;
         this.controllerTurnID = turnID;
-        leftButton = new POVButton(driverController, 270);
-        rightButton = new POVButton(driverController, 90);
 
         pid = new PIDController(
                 Constants.DriveConstants.kPAutoAlign, //EHP fix PID values
@@ -66,10 +61,6 @@ public class DriveRobot extends CommandBase {
 
     @Override
     public void execute() {
-        leftVelocity = 0.0;
-        rightVelocity = 0.0;
-        boolean isLeftPressed = leftButton.getAsBoolean();
-        boolean isRightPressed = rightButton.getAsBoolean();
         boolean autoAlignEnabled = autoAlignButton.getAsBoolean(); //right trigger (driver controller)
 
         SmartDashboard.putBoolean("Auto Align Enabled", autoAlignEnabled); // fix
@@ -77,12 +68,6 @@ public class DriveRobot extends CommandBase {
         double throttle = driverController.getRawAxis(controllerThrottleID);
         if (Math.abs(throttle) < 0.005) {
             throttle = 0.0;
-        }
-        if (isLeftPressed) {
-            leftVelocity = Constants.DriveConstants.degreesPerSecond;
-        }
-        if (isRightPressed) {
-            rightVelocity = Constants.DriveConstants.degreesPerSecond;
         }
 
         double yaw = driverController.getRawAxis(controllerTurnID);
@@ -101,18 +86,17 @@ public class DriveRobot extends CommandBase {
             // yawMultiplier = 0.5f;
             // yaw = Math.signum(yaw) * (yaw * yaw) * yawMultiplier;
 
-
             if (Math.abs(yaw) < 0.02f) {
                 yaw = 0.0f;
             }
-            /*
-             * Clicking the left position: getPOV(0) would return 270.0 degrees.
-
-                Clicking the right position: getPOV(0) would return 90.0 degrees.
-             */
 
             driveSub.drive(-speed, yaw * 0.6, true);
-            driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
+
+            if (driverController.getPOV(0) == 270.0) { //turn left
+                driveSub.setWheelSpeeds(Constants.DriveConstants.degreesPerSecond, -Constants.DriveConstants.degreesPerSecond);
+            } else if (driverController.getPOV(0) == 90) { //turn right
+                driveSub.setWheelSpeeds(-Constants.DriveConstants.degreesPerSecond, Constants.DriveConstants.degreesPerSecond);
+            }
 
         } else {
             if (visionSub.getAprilTagDetected()) {
