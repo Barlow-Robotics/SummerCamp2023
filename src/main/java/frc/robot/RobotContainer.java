@@ -60,7 +60,7 @@ public class RobotContainer {
     Joystick operatorController; // Joystick 2
 
     /* Buttons */
-    private JoystickButton alignWithTargetButton; // right trigger (driver controller)
+    private JoystickButton alignWithTargetButton; // right bumper (driver controller)
     private JoystickButton shooterButton; // right trigger (operator controller)
     private JoystickButton flyWheelButton; // left trigger (operator controller)
 
@@ -99,7 +99,7 @@ public class RobotContainer {
         }
 
         /* Setting Buttons on Controllers */
-        alignWithTargetButton = new JoystickButton(driverController, Constants.LogitechDualAction.RightTrigger);
+        alignWithTargetButton = new JoystickButton(driverController, Constants.LogitechDualAction.RightBumper);
         shooterButton = new JoystickButton(operatorController, Constants.LogitechDualAction.RightTrigger);
         flyWheelButton = new JoystickButton(operatorController, Constants.LogitechDualAction.LeftTrigger);
 
@@ -234,8 +234,7 @@ public class RobotContainer {
         theCmd.addCommands(new InstantCommand(() -> driveSub.setOdometry(path.getInitialPose()), driveSub));
         theCmd.addCommands(eventPathCmd);
         theCmd.addCommands(new WaitCommand(1.5));
-
-        // theCmd.addCommands(new AutoAlign(driveSub, visionSub));
+        theCmd.addCommands(new AutoAlign(driveSub, visionSub));
         theCmd.addCommands(new ShootNDiscs(6, shooterSub));
         theCmd.addCommands(new StopFlyWheel(shooterSub));
 

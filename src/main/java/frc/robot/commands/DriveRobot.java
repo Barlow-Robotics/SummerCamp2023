@@ -50,6 +50,8 @@ public class DriveRobot extends CommandBase {
                 Constants.DriveConstants.kIAutoAlign,
                 Constants.DriveConstants.kDAutoAlign);
 
+        pid.setSetpoint(28);
+
         addRequirements(driveSub);
     }
 
@@ -90,12 +92,12 @@ public class DriveRobot extends CommandBase {
                 yaw = 0.0f;
             }
 
-            driveSub.drive(-speed, yaw * 0.6, true);
-
-            if (driverController.getPOV(0) == 270.0) { //turn left
-                driveSub.setWheelSpeeds(Constants.DriveConstants.degreesPerSecond, -Constants.DriveConstants.degreesPerSecond);
+            if (driverController.getPOV(0) == 270) { //turn left
+                driveSub.setWheelSpeeds(-Constants.DriveConstants.SlowTurnVelocity, Constants.DriveConstants.SlowTurnVelocity);
             } else if (driverController.getPOV(0) == 90) { //turn right
-                driveSub.setWheelSpeeds(-Constants.DriveConstants.degreesPerSecond, Constants.DriveConstants.degreesPerSecond);
+                driveSub.setWheelSpeeds(Constants.DriveConstants.SlowTurnVelocity, -Constants.DriveConstants.SlowTurnVelocity);
+            } else {
+                driveSub.drive(-speed, yaw * 0.6, true);
             }
 
         } else {
@@ -103,10 +105,8 @@ public class DriveRobot extends CommandBase {
                 missedFrames = 0;
                 error = visionSub.getAprilTagDistToCenter();
                 adjustment = pid.calculate(error);
-                // adjustment = Math.signum(adjustment)
-                //         * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
-                // leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
-                // rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+                adjustment = Math.signum(adjustment) 
+                            * Math.min(Math.abs(adjustment), 2 * Constants.DriveConstants.SlowTurnVelocity);
                 leftVelocity = adjustment;
                 rightVelocity = -adjustment;
 

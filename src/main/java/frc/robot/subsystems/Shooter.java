@@ -62,15 +62,10 @@ public class Shooter extends SubsystemBase {
 
         visionSub = v;
 
-        if(DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
             flyWheelMotor.setInverted(true);
             paddleMotor.setInverted(true);
         }
-
-        // flyWheelButton = new JoystickButton(operatorController,
-        // Constants.LogitechDualAction.LeftTrigger);
-        // shooterButton = new JoystickButton(operatorController,
-        // Constants.LogitechDualAction.RightTrigger);
 
         simulationInit();
     }

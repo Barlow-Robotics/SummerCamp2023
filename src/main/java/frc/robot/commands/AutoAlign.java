@@ -16,7 +16,8 @@ public class AutoAlign extends CommandBase {
     Drive driveSub;
     Vision visionSub;
 
-    private double error;
+    private double pixelOffset;
+    static private double setPoint = 28 ;
     private double leftVelocity;
     private double rightVelocity;
     private int missedFrames;
@@ -33,6 +34,8 @@ public class AutoAlign extends CommandBase {
                 Constants.DriveConstants.kIAutoAlign,
                 Constants.DriveConstants.kDAutoAlign);
 
+        pid.setSetpoint(28);
+
         addRequirements(driveSub);
     }
 
@@ -46,12 +49,12 @@ public class AutoAlign extends CommandBase {
     public void execute() {
         if (visionSub.getAprilTagDetected()) {
             missedFrames = 0;
-            error = visionSub.getAprilTagDistToCenter();
-            adjustment = pid.calculate(error);
-            adjustment = Math.signum(adjustment)
-                    * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
-            leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
-            rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+            pixelOffset = visionSub.getAprilTagDistToCenter();
+            adjustment = pid.calculate(pixelOffset);
+            adjustment = Math.signum(adjustment) 
+                            * Math.min(Math.abs(adjustment), 2 * Constants.DriveConstants.SlowTurnVelocity);
+            leftVelocity = adjustment;
+            rightVelocity = -adjustment;
 
             driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
         } else {
@@ -65,6 +68,6 @@ public class AutoAlign extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return (missedFrames > 10) || (Math.abs(error) < 5);
+        return (missedFrames > 10) || (Math.abs(pixelOffset - setPoint) < 10);
     }
 }
