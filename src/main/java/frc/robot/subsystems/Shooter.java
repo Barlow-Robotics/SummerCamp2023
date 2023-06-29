@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -53,13 +54,18 @@ public class Shooter extends SubsystemBase {
         setMotorConfig(paddleMotor);
 
         hallEffect = new DigitalInput(Constants.Shooter.Paddle.HallEffectID);
-
+        
         if (operatorController == null) {
             System.out.println("Null operator controller, using joystick 2");
             operatorController = new Joystick(2);
         }
 
         visionSub = v;
+
+        if(DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+            flyWheelMotor.setInverted(true);
+            paddleMotor.setInverted(true);
+        }
 
         // flyWheelButton = new JoystickButton(operatorController,
         // Constants.LogitechDualAction.LeftTrigger);

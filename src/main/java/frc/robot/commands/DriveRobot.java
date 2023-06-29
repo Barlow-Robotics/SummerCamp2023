@@ -20,7 +20,6 @@ public class DriveRobot extends CommandBase {
     Drive driveSub;
     Vision visionSub;
 
-    private boolean autoSteering = false;
     private float yawMultiplier = 1.0f;
     private double error;
     private double leftVelocity;
@@ -95,7 +94,7 @@ public class DriveRobot extends CommandBase {
         double turn = yaw;
 
         // if (!autoAlignEnabled || !autoSteering) {
-        if  (!autoAlignEnabled ) {
+        if  (!autoAlignEnabled) {
             yaw = -turn;
             
             // yawMultiplier = (float) (0.3 + Math.abs(speed) * 0.2f);
@@ -118,7 +117,6 @@ public class DriveRobot extends CommandBase {
         } else {
             if (visionSub.getAprilTagDetected()) {
                 missedFrames = 0;
-                autoSteering = true;
                 error = visionSub.getAprilTagDistToCenter();
                 adjustment = pid.calculate(error);
                 // adjustment = Math.signum(adjustment)
@@ -134,11 +132,9 @@ public class DriveRobot extends CommandBase {
             }
 
             if (missedFrames >= 10) {
-                autoSteering = false;
+                autoAlignEnabled = false;
                 pid.reset();
             }
-
-            // yaw = pid.calculate(visionSub.getAprilTagDistToCenter());
         }
 
         

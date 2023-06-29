@@ -55,7 +55,6 @@ public class RobotContainer {
     private final StartFlyWheel startFlyWheelCmd = new StartFlyWheel(shooterSub);
     private final StopFlyWheel stopFlyWheelCmd = new StopFlyWheel(shooterSub);
     
-
     /* Controllers */
     Joystick driverController; // Joystick 1
     Joystick operatorController; // Joystick 2
