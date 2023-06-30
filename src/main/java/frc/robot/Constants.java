@@ -63,7 +63,7 @@ public final class Constants {
         public static final double kDAutoAlign = 0.001;
         public static final double CorrectionRotationSpeed = 20.0/CircumferenceWithWB;
         
-        public static final double SlowTurnVelocity = 100 * (CircumferenceWithWB / 360);
+        public static final double SlowTurnVelocity = 120 * (CircumferenceWithWB / 360);
 
         public static final double DefaultAutoAccel = 4.0;
         public static final double DefaultAutoVelocity = 1.0; // metres per second

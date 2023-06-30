@@ -128,14 +128,10 @@ public class RobotContainer {
         InstrumentedSequentialCommandGroup theCmd = new InstrumentedSequentialCommandGroup();
 
         path = loadPath(
-                "Line", DriveConstants.DefaultAutoVelocity, DriveConstants.DefaultAutoAccel, true);
+                "Line", DriveConstants.DefaultAutoVelocity, DriveConstants.DefaultAutoAccel, false);
 
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("FirstBase", new PrintCommand("***************MISSION SHOOT FRISBEE IS A GO****************"));
-        eventMap.put("shoot", startShooterCmd);
-        eventMap.put("stop shoot", stopShooterCmd);
-        eventMap.put("Final event",
-                new PrintCommand("**************MISSION SHOOT FRISBEE IS A SUCCESS****************"));
+        eventMap.put("startFlyWheel", new StartFlyWheel(shooterSub));
 
         PPRamseteCommand basePathCmd = new PPRamseteCommand(
                 path,
@@ -153,7 +149,9 @@ public class RobotContainer {
 
         theCmd.addCommands(new InstantCommand(() -> this.currentTrajectory = path));
         theCmd.addCommands(new InstantCommand(() -> driveSub.setOdometry(path.getInitialPose()), driveSub));
-        theCmd.addCommands(basePathCmd);
+        theCmd.addCommands(eventPathCmd);
+        theCmd.addCommands(new ShootNDiscs(6, shooterSub));
+        theCmd.addCommands(new StopFlyWheel(shooterSub));
 
         theCmd.onCommandInitialize(Robot::reportCommandStart);
         theCmd.onCommandFinish(Robot::reportCommandFinish);
