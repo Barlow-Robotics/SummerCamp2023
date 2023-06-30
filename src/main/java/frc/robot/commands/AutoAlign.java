@@ -22,6 +22,7 @@ public class AutoAlign extends CommandBase {
     private double rightVelocity;
     private int missedFrames;
     private double adjustment;
+    boolean autoAlignEnabled;
 
     public PIDController pid;
 
@@ -48,6 +49,7 @@ public class AutoAlign extends CommandBase {
     @Override
     public void execute() {
         if (visionSub.getAprilTagDetected()) {
+            autoAlignEnabled = true;
             missedFrames = 0;
             pixelOffset = visionSub.getAprilTagDistToCenter();
             adjustment = pid.calculate(pixelOffset);
@@ -59,6 +61,11 @@ public class AutoAlign extends CommandBase {
             driveSub.setWheelSpeeds(leftVelocity, rightVelocity);
         } else {
             missedFrames++;
+        }
+
+        if (missedFrames >= 10) {
+            autoAlignEnabled = false;
+            pid.reset();
         }
     }
 

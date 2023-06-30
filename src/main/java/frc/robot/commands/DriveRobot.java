@@ -20,7 +20,7 @@ public class DriveRobot extends CommandBase {
     Vision visionSub;
 
     private float yawMultiplier = 1.0f;
-    private double error;
+    private double pixelOffset;
     private double leftVelocity;
     private double rightVelocity;
     private int missedFrames = 0;
@@ -103,8 +103,8 @@ public class DriveRobot extends CommandBase {
         } else {
             if (visionSub.getAprilTagDetected()) {
                 missedFrames = 0;
-                error = visionSub.getAprilTagDistToCenter();
-                adjustment = pid.calculate(error);
+                pixelOffset = visionSub.getAprilTagDistToCenter();
+                adjustment = pid.calculate(pixelOffset);
                 adjustment = Math.signum(adjustment) 
                             * Math.min(Math.abs(adjustment), 2 * Constants.DriveConstants.SlowTurnVelocity);
                 leftVelocity = adjustment;
