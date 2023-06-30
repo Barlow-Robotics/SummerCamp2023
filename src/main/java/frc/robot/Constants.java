@@ -140,6 +140,7 @@ public final class Constants {
         public static final int Enabled = 3;
         public static final int IsShooting = 4;
         public static final int AutoActivated = 5;
+        public static final int IsDriving = 6;
     }
 
     public static final class AutoConstants {

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -21,6 +22,8 @@ public class DriveRobot extends CommandBase {
 
     private float yawMultiplier = 1.0f;
     private double pixelOffset;
+    // private float yawMultiplier = 1.0f;
+    private double error;
     private double leftVelocity;
     private double rightVelocity;
     private int missedFrames = 0;
@@ -29,19 +32,24 @@ public class DriveRobot extends CommandBase {
     Trigger autoAlignButton;
     Trigger toggleTargetButton;
     Joystick driverController;
+    Joystick operatorController;
     int controllerThrottleID;
     int controllerTurnID;
+
+    double setPoint;
 
     public PIDController pid;
 
     public DriveRobot(
-            Drive driveSub, Vision visionSub, Trigger autoAlignButton, Joystick driverController, int throttleID,
-            int turnID) {
+            Drive driveSub, Vision visionSub, 
+            Trigger autoAlignButton, Joystick driverController, Joystick operatorController, 
+            int throttleID, int turnID) {
 
         this.driveSub = driveSub;
         this.visionSub = visionSub;
         this.autoAlignButton = autoAlignButton;
         this.driverController = driverController;
+        this.operatorController = operatorController;
         this.controllerThrottleID = throttleID;
         this.controllerTurnID = turnID;
 
@@ -50,7 +58,13 @@ public class DriveRobot extends CommandBase {
                 Constants.DriveConstants.kIAutoAlign,
                 Constants.DriveConstants.kDAutoAlign);
 
-        pid.setSetpoint(28);
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+            setPoint = 2;
+        } else {
+            setPoint = 28;
+        }
+
+        pid.setSetpoint(setPoint);
 
         addRequirements(driveSub);
     }
@@ -92,9 +106,9 @@ public class DriveRobot extends CommandBase {
                 yaw = 0.0f;
             }
 
-            if (driverController.getPOV(0) == 270) { //turn left
+            if (operatorController.getPOV(0) == 270) { //turn left
                 driveSub.setWheelSpeeds(-Constants.DriveConstants.SlowTurnVelocity, Constants.DriveConstants.SlowTurnVelocity);
-            } else if (driverController.getPOV(0) == 90) { //turn right
+            } else if (operatorController.getPOV(0) == 90) { //turn right
                 driveSub.setWheelSpeeds(Constants.DriveConstants.SlowTurnVelocity, -Constants.DriveConstants.SlowTurnVelocity);
             } else {
                 driveSub.drive(-speed, yaw * 0.6, true);

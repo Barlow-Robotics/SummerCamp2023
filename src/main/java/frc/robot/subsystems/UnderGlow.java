@@ -15,20 +15,24 @@ public class UnderGlow extends SubsystemBase {
 
     Shooter shooterSub;
     Robot robot;
+    Drive driveSub;
 
     boolean autoActivated;
     boolean isShooting;
+    boolean isDriving;
 
     int currentMode = 1;
 
     /** Creates a new UnderGlow. */
-    public UnderGlow(Shooter s, Robot r) {
+    public UnderGlow(Shooter s, Robot r, Drive d) {
         shooterSub = s;
         robot = r;
+        driveSub = d;
+
         try {
             port = new SerialPort(9600, Constants.UnderGlowConstants.Port); 
         } catch (Exception ex) {
-
+            int wpk = 1;
         }
     }
     
@@ -68,6 +72,11 @@ public class UnderGlow extends SubsystemBase {
                 data += 4;
                 autoActivated = true;
                 desiredMode = Constants.UnderGlowConstants.AutoActivated;
+            }
+            if (driveSub.getWheelSpeeds().left >= 0 || driveSub.getWheelSpeeds().right >= 0) {
+                data += 16;
+                isDriving = true;
+                desiredMode = Constants.UnderGlowConstants.IsDriving;
             }
         }
 
