@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drive;
@@ -17,7 +17,7 @@ public class AutoAlign extends CommandBase {
     Vision visionSub;
 
     private double pixelOffset;
-    static private double setPoint = 28 ;
+    static private double setPoint;
     private double leftVelocity;
     private double rightVelocity;
     private int missedFrames;
@@ -34,7 +34,13 @@ public class AutoAlign extends CommandBase {
                 Constants.DriveConstants.kIAutoAlign,
                 Constants.DriveConstants.kDAutoAlign);
 
-        pid.setSetpoint(28);
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+            setPoint = 2;
+        } else {
+            setPoint = 28;
+        }
+
+        pid.setSetpoint(setPoint);
 
         addRequirements(driveSub);
     }

@@ -13,11 +13,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.sim.PhysicsSim;
 
@@ -38,6 +36,8 @@ public class Shooter extends SubsystemBase {
     boolean simulationInitialized = false;
     int remainingDiscs = 0;
 
+    DigitalInput blueBot ;
+
     // double[][] distAndVelocityArray = { { 1, 2, 3, 4, 5 }, { 6000, 7000, 8000, 9000, 8000 } };
 
     public enum ShooterState {
@@ -47,6 +47,8 @@ public class Shooter extends SubsystemBase {
     ShooterState shooterState = ShooterState.Stopped;
 
     public Shooter(Vision v) {
+
+        blueBot = new DigitalInput(9) ;
         flyWheelMotor = new WPI_TalonFX(Constants.Shooter.FlyWheel.FlyWheelMotorID);
         setMotorConfig(flyWheelMotor);
 
@@ -61,8 +63,9 @@ public class Shooter extends SubsystemBase {
         }
 
         visionSub = v;
+        // if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
 
-        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+        if (!blueBot.get() ) {
             flyWheelMotor.setInverted(true);
             paddleMotor.setInverted(true);
         }

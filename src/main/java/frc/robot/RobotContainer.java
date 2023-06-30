@@ -17,7 +17,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,7 +38,6 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.UnderGlow;
 import frc.robot.subsystems.Vision;
-import frc.robot.Robot;
 
 public class RobotContainer {
     /* Subsystems */
@@ -47,7 +45,7 @@ public class RobotContainer {
     public final Drive driveSub = new Drive();
     public final Vision visionSub = new Vision();
     public final Shooter shooterSub = new Shooter(visionSub);
-    public final UnderGlow underGlowSub = new UnderGlow(shooterSub, robot);
+    public final UnderGlow underGlowSub = new UnderGlow(shooterSub, robot, driveSub);
     
     /* Commands */
     private final StartShooter startShooterCmd = new StartShooter(shooterSub);
@@ -82,8 +80,9 @@ public class RobotContainer {
 
         driveSub.setDefaultCommand(
                 new DriveRobot(
-                        driveSub, visionSub, alignWithTargetButton, driverController, throttleJoystickID,
-                        turnJoystickID));
+                        driveSub, visionSub, 
+                        alignWithTargetButton, driverController, operatorController, 
+                        throttleJoystickID, turnJoystickID));
     }
 
     private void configureButtonBindings() {
@@ -99,7 +98,7 @@ public class RobotContainer {
         }
 
         /* Setting Buttons on Controllers */
-        alignWithTargetButton = new JoystickButton(driverController, Constants.LogitechDualAction.RightBumper);
+        alignWithTargetButton = new JoystickButton(operatorController, Constants.LogitechDualAction.ButtonB);
         shooterButton = new JoystickButton(operatorController, Constants.LogitechDualAction.RightTrigger);
         flyWheelButton = new JoystickButton(operatorController, Constants.LogitechDualAction.LeftTrigger);
 
@@ -121,7 +120,6 @@ public class RobotContainer {
                 new PathConstraints(velocity, accel),
                 reverse);
         return temp ;
-        // return PathPlannerTrajectory.transformTrajectoryForAlliance(temp, DriverStation.getAlliance());
     }
 
     /* CREATE LINE AUTO COMMAND */
