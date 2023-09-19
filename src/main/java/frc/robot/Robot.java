@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,6 +16,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.sim.PhysicsSim;
 
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -22,7 +31,7 @@ import frc.robot.sim.PhysicsSim;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
     private Command autonomousCommand;
 
     private RobotContainer robotContainer;
@@ -45,6 +54,26 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().onCommandInitialize(Robot::reportCommandStart);
         CommandScheduler.getInstance().onCommandFinish(Robot::reportCommandFinish);
         CommandScheduler.getInstance().onCommandInterrupt(this::handleInterrupted);
+
+        Logger logger = Logger.getInstance();
+
+        logger.recordMetadata("ProjectName", "WPI-Swerve-Prototype"); // Set a metadata value
+    
+        if (isReal()) {
+            // Logger.getInstance().addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
+            Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+            new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
+        } else {
+            // setUseTiming(false); // Run as fast as possible
+            // String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+            logger.addDataReceiver(new WPILOGWriter(""));
+            logger.addDataReceiver(new NT4Publisher());
+        }
+        
+        // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
+        Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+    
+    
     }
 
     @Override
